@@ -23,7 +23,7 @@ const STYLES = [
   { name: "Art Deco", emoji: "🎭", color: "from-yellow-400 to-amber-500" },
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
-const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/fEwk9i7bm032aCl0QvhCYgDLsRgyIqEohYDVIU800XYLQSGLA/tmpqwu2ggsv.jpeg", style: "Luxury" }];
+const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/sP298gGKXcIdAlcReXvD6HHkrE8h6ri70tbCQx8rT9OkiSGLA/tmpx5fmlf2b.jpeg", style: "Luxury" }];
 
 const FURNITURE: Record<string, { name: string; emoji: string }[]> = {
   "Modern": [
@@ -238,7 +238,7 @@ export default function Home() {
             Upload a photo of your room and watch AI transform it into 15+ stunning design styles. Professional interior design — without the designer.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={() => document.getElementById("generator")?.scrollIntoView({ behavior: "smooth" })} className="group relative px-8 py-4 rounded-xl font-semibold text-lg overflow-hidden">
+            <button onClick={() => { if (!session?.user) { signIn("google"); } else { document.getElementById("generator")?.scrollIntoView({ behavior: "smooth" }); } }} className="group relative px-8 py-4 rounded-xl font-semibold text-lg overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all group-hover:scale-105" /><span className="relative">Try it free →</span>
             </button>
             <a href="#examples" className="px-8 py-4 rounded-xl font-semibold text-lg border border-white/10 hover:bg-white/5 transition-colors">See examples</a>
