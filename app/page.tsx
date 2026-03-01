@@ -23,7 +23,7 @@ const STYLES = [
   { name: "Art Deco", emoji: "🎭", color: "from-yellow-400 to-amber-500" },
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
-const EXAMPLES = [{ before: "/original-room.jpg", after: "https://replicate.delivery/xezq/yOYfWOIwTHSVRqjIM4VeBE6KjbOEurEmJeGNY1zcqQ2dSLZsA/tmpryvpirb0.jpeg", style: "Luxury" }];
+const EXAMPLES = [{ before: "/original-room.jpg", after: "/after-room.jpg", style: "Mid-Century Modern" }];
 
 const FURNITURE: Record<string, { name: string; emoji: string }[]> = {
   "Modern": [
