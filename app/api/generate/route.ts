@@ -3,24 +3,25 @@ import Replicate from "replicate";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
 
-const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374";
+// ControlNet interior-design - preserves room structure, changes style
+const CONTROLNET_VERSION = "76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38";
 
 const stylePrompts: Record<string, string> = {
-  "Modern": "modern interior design, clean lines, neutral colors, minimal furniture, large windows, natural light",
-  "Minimalist": "minimalist interior, very few items, white walls, simple furniture, zen-like, spacious",
-  "Scandinavian": "scandinavian design, light wood, white and gray, cozy textiles, hygge, simple elegant",
-  "Industrial": "industrial style, exposed brick, metal pipes, concrete floors, vintage lighting, raw materials",
-  "Luxury": "luxury interior, marble floors, gold accents, designer furniture, crystal chandelier, premium materials",
-  "Bohemian": "bohemian style, colorful textiles, plants everywhere, eclectic mix, layered rugs, macrame",
-  "Japanese": "japanese interior, tatami, shoji screens, minimal, natural wood, zen garden view, wabi-sabi",
-  "Mid-Century Modern": "mid-century modern, retro furniture, warm wood tones, iconic chairs, geometric patterns",
-  "Coastal": "coastal style, blue and white, natural textures, driftwood, sea-inspired, breezy and light",
-  "Farmhouse": "modern farmhouse, shiplap walls, barn doors, rustic wood, vintage accents, cozy and warm",
-  "Contemporary": "contemporary design, bold art pieces, mixed materials, statement lighting, sophisticated",
-  "Rustic": "rustic interior, reclaimed wood, stone fireplace, warm earthy tones, cabin-like comfort",
-  "Tropical": "tropical interior, palm plants, rattan furniture, bright colors, resort-style, natural materials",
-  "Art Deco": "art deco interior, geometric patterns, velvet furniture, gold and black, glamorous, 1920s inspired",
-  "Futuristic": "futuristic interior, LED lighting, curved furniture, minimalist high-tech, smart home, sleek surfaces",
+  "Modern": "modern interior design, clean lines, neutral tones, minimal furniture, sleek surfaces, large windows, natural light, oak flooring",
+  "Minimalist": "minimalist interior, white walls, very few items, simple elegant furniture, zen-like spacious, natural materials",
+  "Scandinavian": "scandinavian design, light wood floors, white and soft gray palette, cozy wool textiles, hygge atmosphere, simple elegant",
+  "Industrial": "industrial loft style, exposed brick walls, black metal fixtures, concrete accents, Edison bulb lighting, raw materials",
+  "Luxury": "luxury high-end interior, marble accents, gold fixtures, plush velvet furniture, crystal chandelier, premium materials",
+  "Bohemian": "bohemian boho style, colorful layered textiles, many green plants, macrame wall art, eclectic mix of patterns, warm and cozy",
+  "Japanese": "japanese zen interior, tatami elements, shoji screen inspiration, natural wood, minimal decoration, peaceful wabi-sabi aesthetic",
+  "Mid-Century Modern": "mid-century modern interior, iconic retro furniture, warm walnut wood tones, geometric patterns, statement pieces, organic shapes",
+  "Coastal": "coastal beach house style, soft blue and white palette, natural rope and rattan textures, driftwood accents, breezy light fabrics",
+  "Farmhouse": "modern farmhouse interior, shiplap accent wall, rustic reclaimed wood, vintage fixtures, cozy warm textiles, barn-inspired details",
+  "Contemporary": "contemporary interior, bold art pieces, mixed material textures, dramatic statement lighting, sophisticated neutral palette",
+  "Rustic": "rustic cabin interior, reclaimed wood walls, stone fireplace, warm earth tones, handcrafted furniture, cozy wool throws",
+  "Tropical": "tropical resort interior, palm leaf patterns, rattan and bamboo furniture, lush green plants, bright accent colors, natural materials",
+  "Art Deco": "art deco interior, bold geometric patterns, rich jewel tones, velvet upholstery, gold and brass accents, glamorous 1920s inspired",
+  "Futuristic": "futuristic interior, ambient LED lighting, curved smooth surfaces, minimalist high-tech, white and chrome palette, smart home aesthetic",
 };
 
 export async function POST(request: Request) {
@@ -31,14 +32,18 @@ export async function POST(request: Request) {
   }
 
   const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  const prompt = `Redesign this ${room.toLowerCase()} in ${styleDesc} style. Keep the same room layout and dimensions but completely change the furniture, materials, colors and decoration. Professional interior photography, 8k uhd, architectural digest quality, photorealistic`;
+  const prompt = `${styleDesc}, ${room.toLowerCase()}, same room layout and dimensions, professional interior design photography, architectural digest quality, 8k uhd, highly detailed, photorealistic`;
 
   try {
     const prediction = await replicate.predictions.create({
-      version: NANO_BANANA_PRO,
+      version: CONTROLNET_VERSION,
       input: {
+        image: imageUrl,
         prompt,
-        image_input: [imageUrl],
+        negative_prompt: "lowres, watermark, banner, logo, text, blurry, ugly, deformed, noisy, dark, cartoon, painting, sketch, different room, extra walls, missing walls",
+        prompt_strength: 0.4,
+        guidance_scale: 15,
+        num_inference_steps: 50,
       },
     });
 
