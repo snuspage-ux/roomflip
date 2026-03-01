@@ -3,7 +3,7 @@ import Replicate from "replicate";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
 
-const SDXL_CONTROLNET_VERSION = "06d6fae3b75ab68a28cd2900afa6033166910dd09fd9751047043a5bbb4c184b";
+const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374";
 
 const stylePrompts: Record<string, string> = {
   "Modern": "modern interior design, clean lines, neutral colors, minimal furniture, large windows, natural light",
@@ -31,18 +31,14 @@ export async function POST(request: Request) {
   }
 
   const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  const prompt = `a beautiful ${styleDesc}, ${room.toLowerCase()}, professional interior photography, 8k uhd, architectural digest, highly detailed`;
+  const prompt = `Redesign this ${room.toLowerCase()} in ${styleDesc} style. Keep the same room layout and dimensions but completely change the furniture, materials, colors and decoration. Professional interior photography, 8k uhd, architectural digest quality, photorealistic`;
 
   try {
     const prediction = await replicate.predictions.create({
-      version: SDXL_CONTROLNET_VERSION,
+      version: NANO_BANANA_PRO,
       input: {
-        image: imageUrl,
         prompt,
-        negative_prompt: "lowres, watermark, banner, logo, text, blurry, ugly, deformed, noisy, dark, cartoon, painting, sketch",
-        num_inference_steps: 30,
-        guidance_scale: 7.5,
-        condition_scale: 0.5,
+        image_input: [imageUrl],
       },
     });
 
