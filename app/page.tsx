@@ -23,7 +23,7 @@ const STYLES = [
   { name: "Art Deco", emoji: "🎭", color: "from-yellow-400 to-amber-500" },
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
-const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/sP298gGKXcIdAlcReXvD6HHkrE8h6ri70tbCQx8rT9OkiSGLA/tmpx5fmlf2b.jpeg", style: "Luxury" }];
+const EXAMPLES = [{ before: "/original-room.jpg", after: "https://replicate.delivery/xezq/yOYfWOIwTHSVRqjIM4VeBE6KjbOEurEmJeGNY1zcqQ2dSLZsA/tmpryvpirb0.jpeg", style: "Luxury" }];
 
 const FURNITURE: Record<string, { name: string; emoji: string }[]> = {
   "Modern": [
