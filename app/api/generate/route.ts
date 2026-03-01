@@ -3,6 +3,8 @@ import Replicate from "replicate";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
 
+const SDXL_CONTROLNET_VERSION = "06d6fae3b75ab68a28cd2900afa6033166910dd09fd9751047043a5bbb4c184b";
+
 const stylePrompts: Record<string, string> = {
   "Modern": "modern interior design, clean lines, neutral colors, minimal furniture, large windows, natural light",
   "Minimalist": "minimalist interior, very few items, white walls, simple furniture, zen-like, spacious",
@@ -29,19 +31,18 @@ export async function POST(request: Request) {
   }
 
   const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  const prompt = `a beautiful ${styleDesc}, ${room.toLowerCase()}, professional interior photography, 8k uhd, architectural digest`;
+  const prompt = `a beautiful ${styleDesc}, ${room.toLowerCase()}, professional interior photography, 8k uhd, architectural digest, highly detailed`;
 
   try {
-    // Replicate accepts data URIs directly
     const prediction = await replicate.predictions.create({
-      version: "76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38",
+      version: SDXL_CONTROLNET_VERSION,
       input: {
         image: imageUrl,
         prompt,
-        guidance_scale: 15,
-        negative_prompt: "lowres, watermark, banner, logo, text, blurry, ugly, deformed, noisy, dark",
-        prompt_strength: 0.5,
-        num_inference_steps: 50,
+        negative_prompt: "lowres, watermark, banner, logo, text, blurry, ugly, deformed, noisy, dark, cartoon, painting, sketch",
+        num_inference_steps: 30,
+        guidance_scale: 7.5,
+        condition_scale: 0.5,
       },
     });
 
@@ -52,7 +53,8 @@ export async function POST(request: Request) {
     }
 
     if (result.status === "succeeded") {
-      return NextResponse.json({ output: result.output });
+      const output = Array.isArray(result.output) ? result.output[0] : result.output;
+      return NextResponse.json({ output });
     }
     return NextResponse.json({ error: result.error || "Generation failed" }, { status: 500 });
   } catch (error: unknown) {
