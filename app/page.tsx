@@ -23,7 +23,7 @@ const STYLES = [
   { name: "Art Deco", emoji: "🎭", color: "from-yellow-400 to-amber-500" },
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
-const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600", after: "https://replicate.delivery/xezq/WNBAeeUyZ7gEOUISEOPoF066v8RiGKkfeGQrOlHDXyrPk9xYB/tmplmrbowi1.jpeg", style: "Modern" }];
+const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/fEwk9i7bm032aCl0QvhCYgDLsRgyIqEohYDVIU800XYLQSGLA/tmpqwu2ggsv.jpeg", style: "Luxury" }];
 const PLANS = [
   { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "15 styles", "720p resolution"], cta: "Current Plan", highlight: false },
   { key: "starter", name: "Starter", price: "$5", period: "/month", features: ["15 redesigns/month", "No watermark", "15 styles", "HD resolution"], cta: "Get Starter", highlight: false },
