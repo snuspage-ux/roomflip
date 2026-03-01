@@ -24,8 +24,10 @@ const STYLES = [
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
 const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/fEwk9i7bm032aCl0QvhCYgDLsRgyIqEohYDVIU800XYLQSGLA/tmpqwu2ggsv.jpeg", style: "Luxury" }];
+const FREE_STYLES = ["Modern", "Minimalist", "Luxury", "Industrial", "Mid-Century Modern"];
+
 const PLANS = [
-  { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "15 styles", "720p resolution"], cta: "Current Plan", highlight: false },
+  { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "5 styles", "720p resolution"], cta: "Current Plan", highlight: false },
   { key: "starter", name: "Starter", price: "$5", period: "/month", features: ["15 redesigns/month", "No watermark", "15 styles", "HD resolution"], cta: "Get Starter", highlight: false },
   { key: "pro", name: "Pro", price: "$9", period: "/month", features: ["50 redesigns/month", "No watermark", "15 styles", "HD resolution", "Priority generation"], cta: "Start Pro", highlight: true },
   { key: "unlimited", name: "Unlimited", price: "$29", period: "/month", features: ["Unlimited redesigns", "No watermark", "15 styles", "4K resolution", "Priority generation", "API access", "Commercial use"], cta: "Go Unlimited", highlight: false },
@@ -195,7 +197,7 @@ export default function Home() {
                 <div>
                   <label className="block text-sm font-medium text-slate-400 mb-2">Design Style</label>
                   <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
-                    {STYLES.map((s) => <option key={s.name} value={s.name} className="bg-slate-900">{s.emoji} {s.name}</option>)}
+                    {(plan === "free" ? STYLES.filter(s => FREE_STYLES.includes(s.name)) : STYLES).map((s) => <option key={s.name} value={s.name} className="bg-slate-900">{s.emoji} {s.name}</option>)}
                   </select>
                 </div>
               </div>
