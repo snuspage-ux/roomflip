@@ -56,13 +56,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No credits remaining. Upgrade your plan!" }, { status: 403 });
   }
 
-  const { imageUrl, theme, room } = await request.json();
+  const { imageUrl, theme, room, furniture } = await request.json();
   if (!imageUrl || !theme || !room) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  const prompt = `Edit this ${room.toLowerCase()} photo: redesign the interior in ${styleDesc}. Keep the exact same room layout, walls, windows, ceiling and dimensions. Only change the furniture, flooring, colors, materials and decorations. Professional interior design photography, photorealistic, 8k quality.`;
+  const furnitureDesc = furniture && furniture.length > 0 ? ` Include these specific furniture pieces: ${furniture.join(", ")}.` : "";
+  const prompt = `Edit this ${room.toLowerCase()} photo: redesign the interior in ${styleDesc}. Keep the exact same room layout, walls, windows, ceiling and dimensions. Only change the furniture, flooring, colors, materials and decorations.${furnitureDesc} Professional interior design photography, photorealistic, 8k quality.`;
 
   try {
     const prediction = await replicate.predictions.create({

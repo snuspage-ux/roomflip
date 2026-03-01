@@ -24,13 +24,122 @@ const STYLES = [
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
 const EXAMPLES = [{ before: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800", after: "https://replicate.delivery/xezq/fEwk9i7bm032aCl0QvhCYgDLsRgyIqEohYDVIU800XYLQSGLA/tmpqwu2ggsv.jpeg", style: "Luxury" }];
+
+const FURNITURE: Record<string, { name: string; emoji: string }[]> = {
+  "Modern": [
+    { name: "Minimalist sofa", emoji: "🛋️" },
+    { name: "Glass coffee table", emoji: "☕" },
+    { name: "Floor lamp", emoji: "💡" },
+    { name: "Abstract wall art", emoji: "🖼️" },
+    { name: "Floating shelves", emoji: "📚" },
+  ],
+  "Minimalist": [
+    { name: "Platform bed", emoji: "🛏️" },
+    { name: "Simple wooden chair", emoji: "🪑" },
+    { name: "Paper lantern", emoji: "🏮" },
+    { name: "Single plant", emoji: "🌿" },
+    { name: "Low bench", emoji: "🪵" },
+  ],
+  "Scandinavian": [
+    { name: "Wool throw blanket", emoji: "🧶" },
+    { name: "Rattan armchair", emoji: "🪑" },
+    { name: "Wooden side table", emoji: "🪵" },
+    { name: "Sheepskin rug", emoji: "🐑" },
+    { name: "Pendant light", emoji: "💡" },
+  ],
+  "Industrial": [
+    { name: "Metal bar stool", emoji: "🪑" },
+    { name: "Pipe shelving unit", emoji: "📚" },
+    { name: "Leather sofa", emoji: "🛋️" },
+    { name: "Edison pendant lights", emoji: "💡" },
+    { name: "Metal trunk table", emoji: "📦" },
+  ],
+  "Luxury": [
+    { name: "Velvet chaise lounge", emoji: "🛋️" },
+    { name: "Crystal chandelier", emoji: "✨" },
+    { name: "Marble console", emoji: "🏛️" },
+    { name: "Gold mirror", emoji: "🪞" },
+    { name: "Silk curtains", emoji: "🎭" },
+  ],
+  "Bohemian": [
+    { name: "Macrame wall hanging", emoji: "🧶" },
+    { name: "Floor cushions", emoji: "🛋️" },
+    { name: "Hanging plants", emoji: "🌿" },
+    { name: "Moroccan pouf", emoji: "🟤" },
+    { name: "Woven basket", emoji: "🧺" },
+  ],
+  "Japanese": [
+    { name: "Tatami mat", emoji: "🟫" },
+    { name: "Shoji screen divider", emoji: "🚪" },
+    { name: "Bonsai tree", emoji: "🌳" },
+    { name: "Low tea table", emoji: "🍵" },
+    { name: "Zabuton cushion", emoji: "🧘" },
+  ],
+  "Mid-Century Modern": [
+    { name: "Eames lounge chair", emoji: "🪑" },
+    { name: "Sunburst clock", emoji: "🕐" },
+    { name: "Teak sideboard", emoji: "🪵" },
+    { name: "Arc floor lamp", emoji: "💡" },
+    { name: "Tulip dining table", emoji: "🌷" },
+  ],
+  "Coastal": [
+    { name: "Rope swing chair", emoji: "🪑" },
+    { name: "Driftwood coffee table", emoji: "🪵" },
+    { name: "Coral decor", emoji: "🪸" },
+    { name: "Linen sofa", emoji: "🛋️" },
+    { name: "Nautical lantern", emoji: "🏮" },
+  ],
+  "Farmhouse": [
+    { name: "Barn door", emoji: "🚪" },
+    { name: "Mason jar lights", emoji: "💡" },
+    { name: "Farmhouse dining table", emoji: "🪵" },
+    { name: "Vintage ladder shelf", emoji: "🪜" },
+    { name: "Wicker basket set", emoji: "🧺" },
+  ],
+  "Contemporary": [
+    { name: "Sculptural chair", emoji: "🪑" },
+    { name: "Oversized art piece", emoji: "🖼️" },
+    { name: "Geometric rug", emoji: "🔷" },
+    { name: "Statement pendant", emoji: "💡" },
+    { name: "Lacquer side table", emoji: "🔲" },
+  ],
+  "Rustic": [
+    { name: "Log coffee table", emoji: "🪵" },
+    { name: "Antler chandelier", emoji: "🦌" },
+    { name: "Stone fireplace", emoji: "🔥" },
+    { name: "Plaid wool throw", emoji: "🧶" },
+    { name: "Iron candle holders", emoji: "🕯️" },
+  ],
+  "Tropical": [
+    { name: "Banana leaf chair", emoji: "🌴" },
+    { name: "Bamboo bed frame", emoji: "🎋" },
+    { name: "Monstera plant", emoji: "🌿" },
+    { name: "Tiki torch lamp", emoji: "🔥" },
+    { name: "Rattan daybed", emoji: "🛋️" },
+  ],
+  "Art Deco": [
+    { name: "Velvet tufted sofa", emoji: "🛋️" },
+    { name: "Geometric mirror", emoji: "🪞" },
+    { name: "Gold bar cart", emoji: "🍸" },
+    { name: "Fan-shaped chair", emoji: "🪑" },
+    { name: "Fringed table lamp", emoji: "💡" },
+  ],
+  "Futuristic": [
+    { name: "Egg pod chair", emoji: "🥚" },
+    { name: "LED strip lighting", emoji: "💡" },
+    { name: "Floating desk", emoji: "🖥️" },
+    { name: "Transparent ghost chair", emoji: "🪑" },
+    { name: "Smart mirror", emoji: "🪞" },
+  ],
+};
+
 const FREE_STYLES = ["Modern", "Minimalist", "Luxury", "Industrial", "Mid-Century Modern"];
 
 const PLANS = [
   { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "5 styles", "720p resolution"], cta: "Current Plan", highlight: false },
   { key: "starter", name: "Starter", price: "$5", period: "/month", features: ["15 redesigns/month", "No watermark", "15 styles", "HD resolution"], cta: "Get Starter", highlight: false },
-  { key: "pro", name: "Pro", price: "$9", period: "/month", features: ["50 redesigns/month", "No watermark", "15 styles", "HD resolution", "Priority generation"], cta: "Start Pro", highlight: true },
-  { key: "unlimited", name: "Unlimited", price: "$29", period: "/month", features: ["Unlimited redesigns", "No watermark", "15 styles", "4K resolution", "Priority generation", "API access", "Commercial use"], cta: "Go Unlimited", highlight: false },
+  { key: "pro", name: "Pro", price: "$9", period: "/month", features: ["50 redesigns/month", "No watermark", "15 styles", "HD resolution", "Priority generation", "Add specific furniture"], cta: "Start Pro", highlight: true },
+  { key: "unlimited", name: "Unlimited", price: "$29", period: "/month", features: ["Unlimited redesigns", "No watermark", "15 styles", "4K resolution", "Priority generation", "Add specific furniture", "API access", "Commercial use"], cta: "Go Unlimited", highlight: false },
 ];
 
 export default function Home() {
@@ -45,6 +154,7 @@ export default function Home() {
   const [credits, setCredits] = useState<number | null>(null);
   const [plan, setPlan] = useState("free");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [selectedFurniture, setSelectedFurniture] = useState<string[]>([]);
 
   useEffect(() => {
     if (session?.user) {
@@ -61,7 +171,7 @@ export default function Home() {
     if (!session?.user) { signIn("google"); return; }
     setLoading(true); setError(null); setResult(null);
     try {
-      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, room }) });
+      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, room, furniture: selectedFurniture }) });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
       setResult(typeof data.output === "string" ? data.output : null);
@@ -196,11 +306,35 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-400 mb-2">Design Style</label>
-                  <select value={style} onChange={(e) => setStyle(e.target.value)} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                  <select value={style} onChange={(e) => { setStyle(e.target.value); setSelectedFurniture([]); }} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
                     {(plan === "free" ? STYLES.filter(s => FREE_STYLES.includes(s.name)) : STYLES).map((s) => <option key={s.name} value={s.name} className="bg-slate-900">{s.emoji} {s.name}</option>)}
                   </select>
                 </div>
               </div>
+
+              {/* Furniture Picker - Pro+ only */}
+              {(plan !== "free" && plan !== "starter") && FURNITURE[style] && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-slate-400 mb-2">Add Furniture <span className="text-indigo-400 text-xs">(Pro+)</span></label>
+                  <div className="flex flex-wrap gap-2">
+                    {FURNITURE[style]?.map((f) => {
+                      const selected = selectedFurniture.includes(f.name);
+                      return (
+                        <button key={f.name} type="button"
+                          onClick={() => setSelectedFurniture(prev => selected ? prev.filter(x => x !== f.name) : [...prev, f.name])}
+                          className={"px-3 py-1.5 rounded-lg text-sm border transition-all " + (selected ? "border-indigo-500 bg-indigo-500/20 text-indigo-300" : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20")}>
+                          {f.emoji} {f.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+              {(plan === "free" || plan === "starter") && (
+                <div className="mb-6 p-3 bg-white/[0.02] border border-white/5 rounded-xl">
+                  <p className="text-xs text-slate-500">🪑 <span className="text-slate-400">Add specific furniture</span> — available from <a href="#pricing" className="text-indigo-400 hover:text-indigo-300">Pro plan ($9/mo)</a></p>
+                </div>
+              )}
               <motion.button onClick={handleGenerate} disabled={!image || loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/25">
                 {loading ? (<span className="flex items-center justify-center gap-3"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />Transforming your room...</span>)
