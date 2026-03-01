@@ -43,8 +43,7 @@ export default function Home() {
       });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
-      const output = Array.isArray(data.output) ? data.output[0] : data.output;
-      setResult(typeof output === "string" ? output : output?.url || null);
+      setResult(typeof data.output === "string" ? data.output : null);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Generation failed");
     } finally {
@@ -59,80 +58,51 @@ export default function Home() {
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
             RoomAI
           </h1>
-          <p className="text-xl text-slate-300">
-            Upload a photo of your room. AI redesigns it in any style.
-          </p>
+          <p className="text-xl text-slate-300">Upload a photo of your room. AI redesigns it in any style.</p>
+          <p className="text-sm text-slate-500 mt-2">✨ 15 design styles • Results in ~30 seconds</p>
         </div>
 
         <div className="bg-slate-800/50 backdrop-blur rounded-2xl p-8 border border-slate-700/50">
-          {/* Upload */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-slate-300 mb-2">
-              Upload your room photo
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleUpload}
-              className="block w-full text-sm text-slate-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:cursor-pointer cursor-pointer"
-            />
+            <label className="block text-sm font-medium text-slate-300 mb-2">📸 Upload your room photo</label>
+            <input type="file" accept="image/*" onChange={handleUpload}
+              className="block w-full text-sm text-slate-300 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 file:cursor-pointer cursor-pointer" />
           </div>
 
-          {/* Preview */}
-          {image && (
-            <div className="mb-6">
-              <img src={image} alt="Your room" className="rounded-xl max-h-64 mx-auto" />
-            </div>
-          )}
+          {image && <div className="mb-6"><img src={image} alt="Your room" className="rounded-xl max-h-72 mx-auto" /></div>}
 
-          {/* Selectors */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Room Type</label>
-              <select
-                value={room}
-                onChange={(e) => setRoom(e.target.value)}
-                className="w-full bg-slate-700 rounded-xl px-4 py-3 text-white border border-slate-600 focus:border-indigo-500 focus:outline-none"
-              >
+              <label className="block text-sm font-medium text-slate-300 mb-2">🏠 Room Type</label>
+              <select value={room} onChange={(e) => setRoom(e.target.value)}
+                className="w-full bg-slate-700 rounded-xl px-4 py-3 text-white border border-slate-600 focus:border-indigo-500 focus:outline-none">
                 {ROOMS.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Design Style</label>
-              <select
-                value={style}
-                onChange={(e) => setStyle(e.target.value)}
-                className="w-full bg-slate-700 rounded-xl px-4 py-3 text-white border border-slate-600 focus:border-indigo-500 focus:outline-none"
-              >
+              <label className="block text-sm font-medium text-slate-300 mb-2">🎨 Design Style</label>
+              <select value={style} onChange={(e) => setStyle(e.target.value)}
+                className="w-full bg-slate-700 rounded-xl px-4 py-3 text-white border border-slate-600 focus:border-indigo-500 focus:outline-none">
                 {STYLES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
           </div>
 
-          {/* Generate */}
-          <button
-            onClick={handleGenerate}
-            disabled={!image || loading}
-            className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
+          <button onClick={handleGenerate} disabled={!image || loading}
+            className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Redesigning your room...
+                Redesigning... (~30 sec)
               </span>
             ) : "✨ Redesign My Room"}
           </button>
 
-          {error && (
-            <div className="mt-4 p-4 bg-red-900/50 border border-red-700 rounded-xl text-red-300">
-              {error}
-            </div>
-          )}
+          {error && <div className="mt-4 p-4 bg-red-900/50 border border-red-700 rounded-xl text-red-300">⚠️ {error}</div>}
 
-          {/* Result */}
           {result && (
             <div className="mt-8">
               <h2 className="text-2xl font-bold mb-4 text-center">Your Redesigned Room</h2>
@@ -147,11 +117,8 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-4 text-center">
-                <a
-                  href={result}
-                  download="roomai-redesign.png"
-                  className="inline-block px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-medium transition-colors"
-                >
+                <a href={result} download="roomai-redesign.png" target="_blank"
+                  className="inline-block px-6 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl font-medium transition-colors">
                   ⬇️ Download Result
                 </a>
               </div>
@@ -159,9 +126,7 @@ export default function Home() {
           )}
         </div>
 
-        <footer className="text-center mt-12 text-slate-500 text-sm">
-          Powered by AI • Your photos are not stored
-        </footer>
+        <footer className="text-center mt-12 text-slate-500 text-sm">Powered by AI • Your photos are not stored permanently</footer>
       </div>
     </main>
   );
