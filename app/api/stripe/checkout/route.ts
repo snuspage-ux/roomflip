@@ -8,7 +8,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const PRICE_MAP: Record<string, string> = {
   starter: process.env.STRIPE_STARTER_PRICE_ID!,
   pro: process.env.STRIPE_PRO_PRICE_ID!,
-  unlimited: process.env.STRIPE_UNLIMITED_PRICE_ID!,
 };
 
 export async function POST(request: Request) {

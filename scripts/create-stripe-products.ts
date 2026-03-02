@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 async function main() {
   // Create product
   const product = await stripe.products.create({
-    name: "RoomAI",
+    name: "RoomFlip",
     description: "AI Interior Design - Redesign any room with AI",
   });
   console.log("Product:", product.id);

@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const PLAN_CREDITS: Record<string, number> = { starter: 15, pro: 50, unlimited: 999999 };
+const PLAN_CREDITS: Record<string, number> = { starter: 20, pro: 50 };
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -25,7 +25,19 @@ export async function POST(request: Request) {
     const userId = s.metadata?.userId;
     const plan = s.metadata?.plan;
     if (userId && plan) {
-      await prisma.user.update({ where: { id: userId }, data: { plan, credits: PLAN_CREDITS[plan] || 15, stripeCustomerId: s.customer as string } });
+      await prisma.user.update({ where: { id: userId }, data: { plan, credits: PLAN_CREDITS[plan] || 20, stripeCustomerId: s.customer as string } });
+    }
+  }
+
+  // Monthly credit refresh
+  if (event.type === "invoice.payment_succeeded") {
+    const invoice = event.data.object as Stripe.Invoice;
+    if (invoice.billing_reason === "subscription_cycle") {
+      const user = await prisma.user.findFirst({ where: { stripeCustomerId: invoice.customer as string } });
+      if (user) {
+        const refreshCredits = PLAN_CREDITS[user.plan] || 20;
+        await prisma.user.update({ where: { id: user.id }, data: { credits: refreshCredits } });
+      }
     }
   }
 

@@ -7,6 +7,9 @@ export default async function HistoryPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/");
 
+  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+  if (!user || user.plan === "free") redirect("/");
+
   const generations = await prisma.generation.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },

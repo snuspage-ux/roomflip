@@ -5,12 +5,11 @@ import { motion, AnimatePresence } from "motion/react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { CompareSlider } from "@/components/ui/compare-slider";
 
-const ROOMS = ["Living Room","Bedroom","Kitchen","Bathroom","Dining Room","Home Office","Kids Room","Hallway","Outdoor Patio","Garage"];
 const STYLES = [
   { name: "Modern", emoji: "🏢", color: "from-slate-500 to-gray-600" },
   { name: "Minimalist", emoji: "⬜", color: "from-gray-400 to-slate-500" },
   { name: "Scandinavian", emoji: "🌲", color: "from-amber-400 to-yellow-600" },
-  { name: "Industrial", emoji: "🔩", color: "from-zinc-500 to-stone-600" },
+  { name: "Vintage", emoji: "🕰️", color: "from-amber-400 to-orange-500" },
   { name: "Luxury", emoji: "✨", color: "from-amber-300 to-yellow-500" },
   { name: "Bohemian", emoji: "🌸", color: "from-pink-400 to-rose-500" },
   { name: "Japanese", emoji: "🎋", color: "from-emerald-400 to-green-600" },
@@ -23,129 +22,86 @@ const STYLES = [
   { name: "Art Deco", emoji: "🎭", color: "from-yellow-400 to-amber-500" },
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
-const EXAMPLES = [{ before: "/original-room.jpg", after: "/after-room.jpg", style: "Mid-Century Modern" }];
 
-const FURNITURE: Record<string, { name: string; emoji: string }[]> = {
+const AFFILIATE_TAG = "roomflip-20"; // Amazon affiliate tag
+const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; store: string }[]> = {
   "Modern": [
-    { name: "Minimalist sofa", emoji: "🛋️" },
-    { name: "Glass coffee table", emoji: "☕" },
-    { name: "Floor lamp", emoji: "💡" },
-    { name: "Abstract wall art", emoji: "🖼️" },
-    { name: "Floating shelves", emoji: "📚" },
+    { name: "Minimalist Sofa", emoji: "🛋️", url: `https://www.amazon.com/s?k=modern+minimalist+sofa&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Glass Coffee Table", emoji: "☕", url: `https://www.amazon.com/s?k=glass+coffee+table+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Floor Lamp", emoji: "💡", url: `https://www.amazon.com/s?k=modern+floor+lamp+minimalist&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Wall Art Set", emoji: "🖼️", url: `https://www.amazon.com/s?k=abstract+wall+art+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Minimalist": [
-    { name: "Platform bed", emoji: "🛏️" },
-    { name: "Simple wooden chair", emoji: "🪑" },
-    { name: "Paper lantern", emoji: "🏮" },
-    { name: "Single plant", emoji: "🌿" },
-    { name: "Low bench", emoji: "🪵" },
+    { name: "Platform Bed", emoji: "🛏️", url: `https://www.amazon.com/s?k=minimalist+platform+bed&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "White Shelves", emoji: "📚", url: `https://www.amazon.com/s?k=floating+white+shelves&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Linen Curtains", emoji: "🪟", url: `https://www.amazon.com/s?k=white+linen+curtains&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Ceramic Vase", emoji: "🏺", url: `https://www.amazon.com/s?k=minimalist+ceramic+vase&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Scandinavian": [
-    { name: "Wool throw blanket", emoji: "🧶" },
-    { name: "Rattan armchair", emoji: "🪑" },
-    { name: "Wooden side table", emoji: "🪵" },
-    { name: "Sheepskin rug", emoji: "🐑" },
-    { name: "Pendant light", emoji: "💡" },
-  ],
-  "Industrial": [
-    { name: "Metal bar stool", emoji: "🪑" },
-    { name: "Pipe shelving unit", emoji: "📚" },
-    { name: "Leather sofa", emoji: "🛋️" },
-    { name: "Edison pendant lights", emoji: "💡" },
-    { name: "Metal trunk table", emoji: "📦" },
+    { name: "Wood Dining Table", emoji: "🪵", url: `https://www.amazon.com/s?k=scandinavian+dining+table+wood&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Wool Throw", emoji: "🧶", url: `https://www.amazon.com/s?k=scandinavian+wool+throw+blanket&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Pendant Light", emoji: "💡", url: `https://www.amazon.com/s?k=scandinavian+pendant+light&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Sheepskin Rug", emoji: "🐑", url: `https://www.amazon.com/s?k=sheepskin+rug+white&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Luxury": [
-    { name: "Velvet chaise lounge", emoji: "🛋️" },
-    { name: "Crystal chandelier", emoji: "✨" },
-    { name: "Marble console", emoji: "🏛️" },
-    { name: "Gold mirror", emoji: "🪞" },
-    { name: "Silk curtains", emoji: "🎭" },
+    { name: "Velvet Sofa", emoji: "🛋️", url: `https://www.amazon.com/s?k=luxury+velvet+sofa&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Gold Mirror", emoji: "🪞", url: `https://www.amazon.com/s?k=gold+ornate+mirror&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Crystal Chandelier", emoji: "✨", url: `https://www.amazon.com/s?k=crystal+chandelier+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Marble Side Table", emoji: "🏛️", url: `https://www.amazon.com/s?k=marble+side+table+gold&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
-  "Bohemian": [
-    { name: "Macrame wall hanging", emoji: "🧶" },
-    { name: "Floor cushions", emoji: "🛋️" },
-    { name: "Hanging plants", emoji: "🌿" },
-    { name: "Moroccan pouf", emoji: "🟤" },
-    { name: "Woven basket", emoji: "🧺" },
-  ],
-  "Japanese": [
-    { name: "Tatami mat", emoji: "🟫" },
-    { name: "Shoji screen divider", emoji: "🚪" },
-    { name: "Bonsai tree", emoji: "🌳" },
-    { name: "Low tea table", emoji: "🍵" },
-    { name: "Zabuton cushion", emoji: "🧘" },
+  "Vintage": [
+    { name: "Retro Armchair", emoji: "💺", url: `https://www.amazon.com/s?k=vintage+retro+armchair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Antique Clock", emoji: "🕰️", url: `https://www.amazon.com/s?k=antique+wall+clock+vintage&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Brass Lamp", emoji: "🔔", url: `https://www.amazon.com/s?k=vintage+brass+table+lamp&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Persian Rug", emoji: "🟤", url: `https://www.amazon.com/s?k=persian+rug+vintage&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Mid-Century Modern": [
-    { name: "Eames lounge chair", emoji: "🪑" },
-    { name: "Sunburst clock", emoji: "🕐" },
-    { name: "Teak sideboard", emoji: "🪵" },
-    { name: "Arc floor lamp", emoji: "💡" },
-    { name: "Tulip dining table", emoji: "🌷" },
+    { name: "Eames Chair", emoji: "🪑", url: `https://www.amazon.com/s?k=mid+century+modern+lounge+chair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Walnut Sideboard", emoji: "🪵", url: `https://www.amazon.com/s?k=mid+century+walnut+sideboard&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Arc Floor Lamp", emoji: "💡", url: `https://www.amazon.com/s?k=mid+century+arc+floor+lamp&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Sunburst Mirror", emoji: "☀️", url: `https://www.amazon.com/s?k=sunburst+mirror+gold&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+  ],
+  "Bohemian": [
+    { name: "Macrame Wall Art", emoji: "🧵", url: `https://www.amazon.com/s?k=macrame+wall+hanging&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Rattan Chair", emoji: "🪑", url: `https://www.amazon.com/s?k=rattan+peacock+chair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Boho Pillows", emoji: "🛋️", url: `https://www.amazon.com/s?k=bohemian+throw+pillows&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Plant Pots", emoji: "🪴", url: `https://www.amazon.com/s?k=boho+ceramic+plant+pots&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+  ],
+  "Japanese": [
+    { name: "Tatami Mat", emoji: "🟫", url: `https://www.amazon.com/s?k=tatami+floor+mat&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Shoji Screen", emoji: "🚪", url: `https://www.amazon.com/s?k=shoji+room+divider&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Tea Set", emoji: "🍵", url: `https://www.amazon.com/s?k=japanese+tea+set+ceramic&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Bonsai Tree", emoji: "🌳", url: `https://www.amazon.com/s?k=bonsai+tree+indoor&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Coastal": [
-    { name: "Rope swing chair", emoji: "🪑" },
-    { name: "Driftwood coffee table", emoji: "🪵" },
-    { name: "Coral decor", emoji: "🪸" },
-    { name: "Linen sofa", emoji: "🛋️" },
-    { name: "Nautical lantern", emoji: "🏮" },
+    { name: "Rope Basket", emoji: "🧺", url: `https://www.amazon.com/s?k=coastal+rope+basket&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Blue Throw Pillows", emoji: "🛋️", url: `https://www.amazon.com/s?k=coastal+blue+throw+pillows&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Driftwood Decor", emoji: "🪵", url: `https://www.amazon.com/s?k=driftwood+home+decor&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Jute Rug", emoji: "🟤", url: `https://www.amazon.com/s?k=jute+area+rug+natural&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
   "Farmhouse": [
-    { name: "Barn door", emoji: "🚪" },
-    { name: "Mason jar lights", emoji: "💡" },
-    { name: "Farmhouse dining table", emoji: "🪵" },
-    { name: "Vintage ladder shelf", emoji: "🪜" },
-    { name: "Wicker basket set", emoji: "🧺" },
-  ],
-  "Contemporary": [
-    { name: "Sculptural chair", emoji: "🪑" },
-    { name: "Oversized art piece", emoji: "🖼️" },
-    { name: "Geometric rug", emoji: "🔷" },
-    { name: "Statement pendant", emoji: "💡" },
-    { name: "Lacquer side table", emoji: "🔲" },
-  ],
-  "Rustic": [
-    { name: "Log coffee table", emoji: "🪵" },
-    { name: "Antler chandelier", emoji: "🦌" },
-    { name: "Stone fireplace", emoji: "🔥" },
-    { name: "Plaid wool throw", emoji: "🧶" },
-    { name: "Iron candle holders", emoji: "🕯️" },
-  ],
-  "Tropical": [
-    { name: "Banana leaf chair", emoji: "🌴" },
-    { name: "Bamboo bed frame", emoji: "🎋" },
-    { name: "Monstera plant", emoji: "🌿" },
-    { name: "Tiki torch lamp", emoji: "🔥" },
-    { name: "Rattan daybed", emoji: "🛋️" },
-  ],
-  "Art Deco": [
-    { name: "Velvet tufted sofa", emoji: "🛋️" },
-    { name: "Geometric mirror", emoji: "🪞" },
-    { name: "Gold bar cart", emoji: "🍸" },
-    { name: "Fan-shaped chair", emoji: "🪑" },
-    { name: "Fringed table lamp", emoji: "💡" },
-  ],
-  "Futuristic": [
-    { name: "Egg pod chair", emoji: "🥚" },
-    { name: "LED strip lighting", emoji: "💡" },
-    { name: "Floating desk", emoji: "🖥️" },
-    { name: "Transparent ghost chair", emoji: "🪑" },
-    { name: "Smart mirror", emoji: "🪞" },
+    { name: "Shiplap Panels", emoji: "🪵", url: `https://www.amazon.com/s?k=shiplap+wall+panels&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Mason Jar Lights", emoji: "🫙", url: `https://www.amazon.com/s?k=mason+jar+pendant+light&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Barn Door", emoji: "🚪", url: `https://www.amazon.com/s?k=sliding+barn+door+hardware&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "Farmhouse Sign", emoji: "🪧", url: `https://www.amazon.com/s?k=farmhouse+wall+sign+rustic&tag=${AFFILIATE_TAG}`, store: "Amazon" },
   ],
 };
 
-const FREE_STYLES = ["Modern", "Minimalist", "Luxury", "Industrial", "Mid-Century Modern"];
+const EXAMPLES = [{ before: "/original-room.jpg", after: "/after-room.jpg", style: "Modern" }];
+
+
+const FREE_STYLES = ["Modern", "Minimalist", "Luxury", "Vintage", "Mid-Century Modern"];
 
 const PLANS = [
-  { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "5 styles", "720p resolution"], cta: "Current Plan", highlight: false },
-  { key: "starter", name: "Starter", price: "$5", period: "/month", features: ["15 redesigns/month", "No watermark", "15 styles", "HD resolution"], cta: "Get Starter", highlight: false },
-  { key: "pro", name: "Pro", price: "$9", period: "/month", features: ["50 redesigns/month", "No watermark", "15 styles", "HD resolution", "Priority generation", "Add specific furniture"], cta: "Start Pro", highlight: true },
-  { key: "unlimited", name: "Unlimited", price: "$29", period: "/month", features: ["Unlimited redesigns", "No watermark", "15 styles", "4K resolution", "Priority generation", "Add specific furniture", "API access", "Commercial use"], cta: "Go Unlimited", highlight: false },
+  { key: "free", name: "Free", price: "$0", period: "", features: ["3 redesigns total", "Watermark on images", "5 styles", "1K resolution"], cta: "Current Plan", highlight: false },
+  { key: "starter", name: "Starter", price: "$5", period: "/month", features: ["20 redesigns/month", "No watermark", "15 styles", "2K resolution"], cta: "Get Starter", highlight: false },
+  { key: "pro", name: "Pro", price: "$9", period: "/month", features: ["50 redesigns/month", "No watermark", "15 styles", "4K resolution", "Priority generation", "Add specific furniture", "Generation history"], cta: "Start Pro", highlight: true },
+
 ];
 
 export default function Home() {
   const { data: session } = useSession();
   const [image, setImage] = useState<string | null>(null);
-  const [room, setRoom] = useState(ROOMS[0]);
   const [style, setStyle] = useState("Modern");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -154,7 +110,8 @@ export default function Home() {
   const [credits, setCredits] = useState<number | null>(null);
   const [plan, setPlan] = useState("free");
   const fileRef = useRef<HTMLInputElement>(null);
-  const [selectedFurniture, setSelectedFurniture] = useState<string[]>([]);
+  const [furnitureImage, setFurnitureImage] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (session?.user) {
@@ -171,7 +128,7 @@ export default function Home() {
     if (!session?.user) { signIn("google"); return; }
     setLoading(true); setError(null); setResult(null);
     try {
-      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, room, furniture: selectedFurniture }) });
+      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, room: "Room", furnitureImage: furnitureImage }) });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
       setResult(typeof data.output === "string" ? data.output : null);
@@ -202,12 +159,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-base font-bold shadow-lg shadow-indigo-500/30">R</div>
-            <span className="text-xl font-bold tracking-tight">RoomAI</span>
+            <span className="text-xl font-bold tracking-tight">RoomFlip</span>
           </div>
           <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full px-1 py-1">
             <a href="#examples" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Examples</a>
             <a href="#pricing" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Pricing</a>
-            {session?.user && <a href="/history" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">My Designs</a>}
+            
           </div>
           <div className="flex items-center gap-3">
             {session?.user ? (
@@ -218,9 +175,16 @@ export default function Home() {
                     <span className="text-xs font-semibold text-indigo-300">{credits === 999999 ? "Unlimited" : credits}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2 bg-white/5 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-all cursor-pointer group" onClick={() => signOut()}>
-                  {session.user.image ? <img src={session.user.image} alt="" className="w-7 h-7 rounded-full ring-2 ring-white/10" /> : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold">{session.user.name?.[0] || "?"}</div>}
-                  <span className="text-sm text-slate-400 group-hover:text-white transition-colors">{session.user.name?.split(" ")[0] || "Account"}</span>
+                <div className="relative">
+                  <div className="flex items-center gap-2 bg-white/5 rounded-full pl-1 pr-3 py-1 hover:bg-white/10 transition-all cursor-pointer" onClick={() => setMenuOpen(!menuOpen)}>
+                    {session.user.image ? <img src={session.user.image} alt="" className="w-7 h-7 rounded-full ring-2 ring-white/10" /> : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-xs font-bold">{session.user.name?.[0] || "?"}</div>}
+                    <span className="text-sm text-slate-400 group-hover:text-white transition-colors">{session.user.name?.split(" ")[0] || "Account"}</span>
+                  </div>
+                  <div className={"absolute right-0 top-full mt-2 w-48 bg-slate-900 border border-white/10 rounded-xl shadow-2xl transition-all z-50 py-1 " + (menuOpen ? "opacity-100 visible" : "opacity-0 invisible")}>
+                    {plan !== "free" && <a href="/history" className="block px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors">📁 My Designs</a>}
+                    {plan !== "free" && <button onClick={async () => { const r = await fetch("/api/stripe/portal", { method: "POST" }); const d = await r.json(); if (d.url) window.location.href = d.url; }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors">⚙️ Manage Subscription</button>}
+                    <button onClick={() => { setMenuOpen(false); signOut(); }} className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 hover:text-red-300 transition-colors border-t border-white/5">🚪 Sign Out</button>
+                  </div>
                 </div>
               </>
             ) : (
@@ -286,12 +250,22 @@ export default function Home() {
       <section id="generator" className="py-20 px-6">
         <div className="max-w-3xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-            <div className="bg-white/[0.03] backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/10 shadow-2xl">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-3xl font-bold">Transform your room</h2>
-                {credits !== null && session?.user && <span className="text-sm text-slate-400">{credits === 999999 ? "Unlimited" : credits + " credits left"}</span>}
+            <div className="relative bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/[0.08] shadow-2xl overflow-hidden">
+              
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative flex items-center justify-between mb-3">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">Transform your room</h2>
+                </div>
+                {credits !== null && session?.user && (
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/10">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-sm font-medium text-slate-300">{credits === 999999 ? "∞" : credits} <span className="text-slate-500">credits</span></span>
+                  </div>
+                )}
               </div>
-              <p className="text-slate-400 mb-8">Upload a photo and choose your dream style</p>
+              <p className="relative text-slate-400 mb-8 text-lg">Upload a photo and choose your dream style ✨</p>
               <div onDragOver={(e) => { e.preventDefault(); setDragActive(true); }} onDragLeave={() => setDragActive(false)} onDrop={handleDrop} onClick={() => fileRef.current?.click()}
                 className={"relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all mb-6 " + (dragActive ? "border-indigo-500 bg-indigo-500/10" : image ? "border-green-500/50 bg-green-500/5" : "border-white/10 hover:border-white/30 hover:bg-white/5")}>
                 <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
@@ -308,42 +282,39 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Room Type</label>
-                  <select value={room} onChange={(e) => setRoom(e.target.value)} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
-                    {ROOMS.map((r) => <option key={r} value={r} className="bg-slate-900">{r}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Design Style</label>
-                  <select value={style} onChange={(e) => { setStyle(e.target.value); setSelectedFurniture([]); }} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
-                    {(plan === "free" ? STYLES.filter(s => FREE_STYLES.includes(s.name)) : STYLES).map((s) => <option key={s.name} value={s.name} className="bg-slate-900">{s.emoji} {s.name}</option>)}
-                  </select>
-                </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-slate-400 mb-2">Design Style</label>
+                <select value={style} onChange={(e) => { setStyle(e.target.value); }} className="w-full bg-white/5 rounded-xl px-4 py-3 text-white border border-white/10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                  {(plan === "free" ? STYLES.filter(s => FREE_STYLES.includes(s.name)) : STYLES).map((s) => <option key={s.name} value={s.name} className="bg-slate-900">{s.emoji} {s.name}</option>)}
+                </select>
               </div>
 
-              {/* Furniture Picker - Pro+ only */}
-              {(plan !== "free" && plan !== "starter") && FURNITURE[style] && (
+              {/* Furniture Image Upload - Pro+ only */}
+              {(plan !== "free" && plan !== "starter") ? (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-slate-400 mb-2">Add Furniture <span className="text-indigo-400 text-xs">(Pro+)</span></label>
-                  <div className="flex flex-wrap gap-2">
-                    {FURNITURE[style]?.map((f) => {
-                      const selected = selectedFurniture.includes(f.name);
-                      return (
-                        <button key={f.name} type="button"
-                          onClick={() => setSelectedFurniture(prev => selected ? prev.filter(x => x !== f.name) : [...prev, f.name])}
-                          className={"px-3 py-1.5 rounded-lg text-sm border transition-all " + (selected ? "border-indigo-500 bg-indigo-500/20 text-indigo-300" : "border-white/10 bg-white/5 text-slate-400 hover:border-white/20")}>
-                          {f.emoji} {f.name}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <label className="block text-sm font-medium text-slate-400 mb-2">Add Furniture Photo <span className="text-indigo-400 text-xs">(Pro+)</span></label>
+                  {furnitureImage ? (
+                    <div className="relative w-24 h-24 rounded-xl overflow-hidden border border-white/10 group">
+                      <img src={furnitureImage} alt="Furniture" className="w-full h-full object-cover" />
+                      <button type="button" onClick={() => setFurnitureImage(null)} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs">✕ Remove</button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-dashed border-white/10 bg-white/[0.02] hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all cursor-pointer">
+                      <span className="text-2xl">🪑</span>
+                      <div>
+                        <p className="text-sm text-slate-300">Upload a furniture photo</p>
+                        <p className="text-xs text-slate-500">AI will incorporate it into your redesign</p>
+                      </div>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) { const reader = new FileReader(); reader.onload = (ev) => setFurnitureImage(ev.target?.result as string); reader.readAsDataURL(file); }
+                      }} />
+                    </label>
+                  )}
                 </div>
-              )}
-              {(plan === "free" || plan === "starter") && (
+              ) : (
                 <div className="mb-6 p-3 bg-white/[0.02] border border-white/5 rounded-xl">
-                  <p className="text-xs text-slate-500">🪑 <span className="text-slate-400">Add specific furniture</span> — available from <a href="#pricing" className="text-indigo-400 hover:text-indigo-300">Pro plan ($9/mo)</a></p>
+                  <p className="text-xs text-slate-500">🪑 <span className="text-slate-400">Upload furniture photo to include</span> — available from <a href="#pricing" className="text-indigo-400 hover:text-indigo-300">Pro plan ($9/mo)</a></p>
                 </div>
               )}
               <motion.button onClick={handleGenerate} disabled={!image || loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
@@ -355,12 +326,33 @@ export default function Home() {
               <AnimatePresence>
                 {result && image && (
                   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="mt-8">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="mb-4">
                       <h3 className="text-xl font-bold">Your Redesigned Room</h3>
-                      <a href={result} download="roomai-redesign.png" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition-colors">⬇️ Download</a>
                     </div>
                     <div className="rounded-2xl overflow-hidden border border-white/10"><CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} /></div>
                     {plan === "free" && <p className="text-center text-sm text-slate-500 mt-3">🔒 Free version includes watermark. <a href="#pricing" className="text-indigo-400 hover:text-indigo-300">Upgrade for clean images →</a></p>}
+                    <div className="flex justify-center mt-4">
+                      <a href={result} download={"roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg"} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Download
+                      </a>
+                    </div>
+                    {/* Shop This Look - Affiliate */}
+                    <div className="mt-6 p-5 bg-white/[0.03] border border-white/10 rounded-2xl">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="text-sm font-semibold text-slate-300">🛒 Shop This Look</h4>
+                        <span className="text-[10px] text-slate-600">Sponsored</span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        {SHOP_ITEMS[style]?.map((item, i) => (
+                          <a key={i} href={item.url} target="_blank" rel="noopener noreferrer" className="group block p-3 bg-white/[0.03] border border-white/5 rounded-xl hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all text-center">
+                            <span className="text-2xl block mb-1">{item.emoji}</span>
+                            <span className="text-xs text-slate-400 group-hover:text-slate-300 block">{item.name}</span>
+                            <span className="text-[10px] text-indigo-400 mt-1 block">{item.store}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -368,13 +360,26 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      {/* AdSense for free users */}
+      {plan === "free" && session?.user && (
+        <section className="py-6 px-6">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-center">
+              <div id="roomflip-ad-banner" className="min-h-[90px] flex items-center justify-center">
+                <ins className="adsbygoogle" style={{display:"block"}} data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+              </div>
+              <p className="text-[10px] text-slate-700 mt-2">Ad-free experience with <a href="#pricing" className="text-indigo-500">Starter plan</a></p>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section id="pricing" className="py-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Simple pricing</h2><p className="text-slate-400 mb-12">Start free, upgrade when you need more</p>
           </motion.div>
-          <div className="grid md:grid-cols-4 gap-5 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {PLANS.map((p, i) => (
               <motion.div key={p.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className={p.highlight ? "rounded-2xl p-6 text-left bg-gradient-to-b from-indigo-500/20 to-purple-500/10 border-2 border-indigo-500/50 shadow-lg shadow-indigo-500/20 relative" : "rounded-2xl p-6 text-left bg-white/[0.03] border border-white/10"}>
@@ -408,8 +413,8 @@ export default function Home() {
 
       <footer className="border-t border-white/5 py-12 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <div className="flex items-center gap-2"><div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold">R</div><span>RoomAI</span></div>
-          <p>© 2026 RoomAI. Powered by Google AI.</p>
+          <div className="flex items-center gap-2"><div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold">R</div><span>RoomFlip</span></div>
+          <p>© 2026 RoomFlip.io. Powered by Google AI.</p>
           <div className="flex gap-6"><a href="#" className="hover:text-white transition-colors">Privacy</a><a href="#" className="hover:text-white transition-colors">Terms</a><a href="#" className="hover:text-white transition-colors">Contact</a></div>
         </div>
       </footer>

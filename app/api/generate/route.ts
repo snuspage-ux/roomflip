@@ -1,3 +1,6 @@
+export const maxDuration = 120;
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import Replicate from "replicate";
 import { auth } from "@/lib/auth";
@@ -11,7 +14,7 @@ const stylePrompts: Record<string, string> = {
   "Modern": "modern minimalist style with clean lines, neutral tones, minimal furniture, sleek surfaces, oak hardwood flooring",
   "Minimalist": "ultra minimalist style with white walls, very few carefully chosen pieces, zen-like spacious feeling, natural materials",
   "Scandinavian": "scandinavian style with light wood floors, white and soft gray palette, cozy wool textiles, hygge atmosphere",
-  "Industrial": "industrial loft style with exposed brick walls, black metal fixtures, concrete accents, Edison bulb lighting",
+  "Vintage": "vintage retro style with antique furniture, warm patina finishes, classic floral patterns, ornate picture frames, distressed wood, nostalgic charm",
   "Luxury": "luxury high-end style with marble accents, gold fixtures, plush velvet furniture, crystal chandelier, premium materials",
   "Bohemian": "bohemian boho style with colorful layered textiles, many green plants, macrame wall art, eclectic mix of patterns",
   "Japanese": "japanese zen style with tatami elements, shoji screens, natural wood, minimal decoration, peaceful wabi-sabi aesthetic, floor cushions",
@@ -34,7 +37,7 @@ async function addWatermark(imageUrl: string): Promise<string> {
 
   const svgText = `<svg width="${w}" height="${h}">
     <style>.t { fill: rgba(255,255,255,0.4); font-size: ${Math.floor(w / 10)}px; font-family: Arial, sans-serif; font-weight: bold; }</style>
-    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="t" transform="rotate(-30, ${w / 2}, ${h / 2})">RoomAI.com</text>
+    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="t" transform="rotate(-30, ${w / 2}, ${h / 2})">RoomFlip.io</text>
   </svg>`;
 
   const watermarked = await sharp(buffer)
@@ -56,19 +59,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "No credits remaining. Upgrade your plan!" }, { status: 403 });
   }
 
-  const { imageUrl, theme, room, furniture } = await request.json();
+  const { imageUrl, theme, room, furnitureImage } = await request.json();
   if (!imageUrl || !theme || !room) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  const furnitureDesc = furniture && furniture.length > 0 ? ` Include these specific furniture pieces: ${furniture.join(", ")}.` : "";
-  const prompt = `Edit this ${room.toLowerCase()} photo: redesign the interior in ${styleDesc}. Keep the exact same room layout, walls, windows, ceiling and dimensions. Only change the furniture, flooring, colors, materials and decorations.${furnitureDesc} Professional interior design photography, photorealistic, 8k quality.`;
+  let prompt: string;
+  if (furnitureImage) {
+    prompt = `IMAGE 1 is a ${room.toLowerCase()} that must be redesigned. IMAGE 2 is a reference photo of a specific furniture piece. `
+      + `TASK: Edit IMAGE 1 — redesign it as a ${room.toLowerCase()} in ${styleDesc}. CRITICAL: Keep the EXACT same walls, windows, ceiling, doors, floor shape, camera angle and room dimensions from IMAGE 1 — do NOT change the room structure. Keep the EXACT same room from IMAGE 1 — same layout, walls, windows, ceiling, camera angle and dimensions. `
+      + `Only replace furniture and decorations with ${room.toLowerCase()} appropriate items. `
+      + `IMPORTANT: Include the exact furniture piece from IMAGE 2 — same design, color, material and shape — placed naturally in the redesigned room. `
+      + `Professional interior design photography, photorealistic, 8k quality.`;
+  } else {
+    prompt = `Edit this photo of a room: redesign it as a ${room.toLowerCase()} in ${styleDesc}. CRITICAL: Keep the EXACT same walls, windows, ceiling, doors, floor shape, camera angle and room dimensions — do NOT change the room structure at all. Only replace the furniture and decorations with ${room.toLowerCase()} appropriate items in ${styleDesc}. The room shell must be identical to the input photo. Professional interior design photography, photorealistic, 8k quality.`;
+  }
 
   try {
     const prediction = await replicate.predictions.create({
       version: NANO_BANANA_PRO,
-      input: { prompt, image_input: [imageUrl] },
+      input: { prompt, image_input: furnitureImage ? [imageUrl, furnitureImage] : [imageUrl], resolution: user.plan === 'pro' ? '4K' : user.plan === 'starter' ? '2K' : '1K' },
     });
 
     let result = await replicate.predictions.get(prediction.id);
@@ -83,8 +94,11 @@ export async function POST(request: Request) {
 
     const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
-    // Decrement credits
-    await prisma.user.update({ where: { id: session.user.id }, data: { credits: { decrement: 1 } } });
+    // Atomic credit decrement (prevents race condition)
+    const updated = await prisma.user.update({ where: { id: session.user.id }, data: { credits: { decrement: 1 } } });
+    if (updated.credits < 0) {
+      await prisma.user.update({ where: { id: session.user.id }, data: { credits: 0 } });
+    }
 
     // Save generation
     await prisma.generation.create({
@@ -106,6 +120,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ output: finalOutput, creditsRemaining: user.credits - 1 });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Generation error:", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
