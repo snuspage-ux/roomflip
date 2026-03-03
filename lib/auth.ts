@@ -6,11 +6,12 @@ import { prisma } from "./prisma";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   trustHost: true,
-  useSecureCookies: false,
+  useSecureCookies: process.env.NODE_ENV === "production",
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      authorization: { params: { prompt: "select_account" } },
     }),
   ],
   callbacks: {

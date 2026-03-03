@@ -49,34 +49,34 @@ async function addWatermark(imageUrl: string): Promise<string> {
 }
 
 export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Sign in to generate designs" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({ where: { id: session.user.id } });
-  if (!user || user.credits <= 0) {
-    return NextResponse.json({ error: "No credits remaining. Upgrade your plan!" }, { status: 403 });
-  }
-
-  const { imageUrl, theme, room, furnitureImage } = await request.json();
-  if (!imageUrl || !theme || !room) {
-    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
-  }
-
-  const styleDesc = stylePrompts[theme] || theme.toLowerCase();
-  let prompt: string;
-  if (furnitureImage) {
-    prompt = `IMAGE 1 is a ${room.toLowerCase()} that must be redesigned. IMAGE 2 is a reference photo of a specific furniture piece. `
-      + `TASK: Edit IMAGE 1 — redesign it as a ${room.toLowerCase()} in ${styleDesc}. CRITICAL: Keep the EXACT same walls, windows, ceiling, doors, floor shape, camera angle and room dimensions from IMAGE 1 — do NOT change the room structure. Keep the EXACT same room from IMAGE 1 — same layout, walls, windows, ceiling, camera angle and dimensions. `
-      + `Only replace furniture and decorations with ${room.toLowerCase()} appropriate items. `
-      + `IMPORTANT: Include the exact furniture piece from IMAGE 2 — same design, color, material and shape — placed naturally in the redesigned room. `
-      + `Professional interior design photography, photorealistic, 8k quality.`;
-  } else {
-    prompt = `Edit this photo of a room: redesign it as a ${room.toLowerCase()} in ${styleDesc}. CRITICAL: Keep the EXACT same walls, windows, ceiling, doors, floor shape, camera angle and room dimensions — do NOT change the room structure at all. Only replace the furniture and decorations with ${room.toLowerCase()} appropriate items in ${styleDesc}. The room shell must be identical to the input photo. Professional interior design photography, photorealistic, 8k quality.`;
-  }
-
   try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Sign in to generate designs" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+    if (!user || user.credits <= 0) {
+      return NextResponse.json({ error: "No credits remaining. Upgrade your plan!" }, { status: 403 });
+    }
+
+    const { imageUrl, theme, furnitureImage } = await request.json();
+    if (!imageUrl || !theme) {
+      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    const styleDesc = stylePrompts[theme] || theme.toLowerCase();
+    let prompt: string;
+    if (furnitureImage) {
+      prompt = `IMAGE 1 is a room that must be redesigned. IMAGE 2 is a reference photo of a specific furniture piece. `
+        + `TASK: Edit IMAGE 1 — redesign it in ${styleDesc}. CRITICAL: Keep the EXACT same room type, purpose, walls, windows, ceiling, doors, floor shape, camera angle and room dimensions from IMAGE 1 — do NOT change the room structure or purpose. If it's a gym, keep it as a gym. If it's a bedroom, keep it as a bedroom. `
+        + `Only update the style, materials, colors, and decorative elements to match ${styleDesc}. Keep all functional equipment and furniture appropriate for the original room type. `
+        + `IMPORTANT: Include the exact furniture piece from IMAGE 2 — same design, color, material and shape — placed naturally in the redesigned room. `
+        + `Professional interior design photography, photorealistic, 8k quality.`;
+    } else {
+      prompt = `Edit this photo: redesign the room in ${styleDesc}. CRITICAL RULES: 1) Keep the EXACT same room type and purpose — if it's a gym keep it as a gym, if it's a kitchen keep it as a kitchen, if it's an office keep it as an office. 2) Keep the EXACT same walls, windows, ceiling, doors, floor shape, camera angle and room dimensions — do NOT change the room structure at all. 3) Only change the style, materials, colors, finishes, and decorative elements to match ${styleDesc}. 4) Keep all functional equipment appropriate for the room type (gym equipment stays, kitchen appliances stay, etc). The room shell and purpose must be identical to the input photo. Professional interior design photography, photorealistic, 8k quality.`;
+    }
+
     const prediction = await replicate.predictions.create({
       version: NANO_BANANA_PRO,
       input: { prompt, image_input: furnitureImage ? [imageUrl, furnitureImage] : [imageUrl], resolution: user.plan === 'pro' ? '4K' : user.plan === 'starter' ? '2K' : '1K' },
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
 
     const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output;
 
-    // Atomic credit decrement (prevents race condition)
+    // Atomic credit decrement
     const updated = await prisma.user.update({ where: { id: session.user.id }, data: { credits: { decrement: 1 } } });
     if (updated.credits < 0) {
       await prisma.user.update({ where: { id: session.user.id }, data: { credits: 0 } });
@@ -104,20 +104,25 @@ export async function POST(request: Request) {
     await prisma.generation.create({
       data: {
         userId: session.user.id,
-        inputUrl: imageUrl.substring(0, 200), // truncate base64 for DB
+        inputUrl: imageUrl.substring(0, 200),
         outputUrl: outputUrl as string,
         style: theme,
-        room,
+        room: "auto",
       },
     });
 
     // Watermark for free users
     let finalOutput = outputUrl as string;
     if (user.plan === "free") {
-      finalOutput = await addWatermark(finalOutput);
+      try {
+        finalOutput = await addWatermark(finalOutput);
+      } catch (wmErr) {
+        console.error("Watermark failed:", wmErr);
+        // Return output with watermark flag so frontend can overlay
+      }
     }
 
-    return NextResponse.json({ output: finalOutput, creditsRemaining: user.credits - 1 });
+    return NextResponse.json({ output: finalOutput, creditsRemaining: user.credits - 1, watermarked: user.plan === "free" });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Generation error:", message);

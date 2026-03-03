@@ -36,10 +36,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <meta name="google-adsense-account" content="ca-pub-1599056171664080" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>{children}</SessionProvider>
         <Script id="json-ld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RoomFlip.io","applicationCategory":"DesignApplication","url":"https://roomflip.io","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free"},{"@type":"Offer","price":"5","priceCurrency":"USD","name":"Starter"},{"@type":"Offer","price":"9","priceCurrency":"USD","name":"Pro"}]}`}} />
-        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" strategy="lazyOnload" crossOrigin="anonymous" />
+        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1599056171664080" strategy="beforeInteractive" crossOrigin="anonymous" />
       </body>
     </html>
   );

@@ -23,71 +23,72 @@ const STYLES = [
   { name: "Futuristic", emoji: "🚀", color: "from-blue-400 to-indigo-500" },
 ];
 
-const AFFILIATE_TAG = "roomflip-20"; // Amazon affiliate tag
+// IKEA affiliate links (Awin tracking will be added after approval)
+const IKEA_BASE = "https://www.ikea.com/cz/en/search/?q=";
 const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; store: string }[]> = {
   "Modern": [
-    { name: "Minimalist Sofa", emoji: "🛋️", url: `https://www.amazon.com/s?k=modern+minimalist+sofa&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Glass Coffee Table", emoji: "☕", url: `https://www.amazon.com/s?k=glass+coffee+table+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Floor Lamp", emoji: "💡", url: `https://www.amazon.com/s?k=modern+floor+lamp+minimalist&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Wall Art Set", emoji: "🖼️", url: `https://www.amazon.com/s?k=abstract+wall+art+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "KIVIK Sofa", emoji: "🛋️", url: `${IKEA_BASE}kivik+sofa`, store: "IKEA" },
+    { name: "LACK Coffee Table", emoji: "☕", url: `${IKEA_BASE}lack+coffee+table`, store: "IKEA" },
+    { name: "HEKTAR Floor Lamp", emoji: "💡", url: `${IKEA_BASE}hektar+floor+lamp`, store: "IKEA" },
+    { name: "BJÖRKSTA Wall Art", emoji: "🖼️", url: `${IKEA_BASE}björksta+picture`, store: "IKEA" },
   ],
   "Minimalist": [
-    { name: "Platform Bed", emoji: "🛏️", url: `https://www.amazon.com/s?k=minimalist+platform+bed&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "White Shelves", emoji: "📚", url: `https://www.amazon.com/s?k=floating+white+shelves&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Linen Curtains", emoji: "🪟", url: `https://www.amazon.com/s?k=white+linen+curtains&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Ceramic Vase", emoji: "🏺", url: `https://www.amazon.com/s?k=minimalist+ceramic+vase&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "MALM Bed Frame", emoji: "🛏️", url: `${IKEA_BASE}malm+bed`, store: "IKEA" },
+    { name: "KALLAX Shelf", emoji: "📚", url: `${IKEA_BASE}kallax+shelf`, store: "IKEA" },
+    { name: "GUNRID Curtains", emoji: "🪟", url: `${IKEA_BASE}gunrid+curtains`, store: "IKEA" },
+    { name: "GRADVIS Vase", emoji: "🏺", url: `${IKEA_BASE}gradvis+vase`, store: "IKEA" },
   ],
   "Scandinavian": [
-    { name: "Wood Dining Table", emoji: "🪵", url: `https://www.amazon.com/s?k=scandinavian+dining+table+wood&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Wool Throw", emoji: "🧶", url: `https://www.amazon.com/s?k=scandinavian+wool+throw+blanket&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Pendant Light", emoji: "💡", url: `https://www.amazon.com/s?k=scandinavian+pendant+light&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Sheepskin Rug", emoji: "🐑", url: `https://www.amazon.com/s?k=sheepskin+rug+white&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "MÖRBYLÅNGA Table", emoji: "🪵", url: `${IKEA_BASE}mörbylånga+dining+table`, store: "IKEA" },
+    { name: "INGABRITTA Throw", emoji: "🧶", url: `${IKEA_BASE}ingabritta+throw`, store: "IKEA" },
+    { name: "RANARP Pendant", emoji: "💡", url: `${IKEA_BASE}ranarp+pendant+lamp`, store: "IKEA" },
+    { name: "LUDDE Sheepskin", emoji: "🐑", url: `${IKEA_BASE}ludde+sheepskin`, store: "IKEA" },
   ],
   "Luxury": [
-    { name: "Velvet Sofa", emoji: "🛋️", url: `https://www.amazon.com/s?k=luxury+velvet+sofa&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Gold Mirror", emoji: "🪞", url: `https://www.amazon.com/s?k=gold+ornate+mirror&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Crystal Chandelier", emoji: "✨", url: `https://www.amazon.com/s?k=crystal+chandelier+modern&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Marble Side Table", emoji: "🏛️", url: `https://www.amazon.com/s?k=marble+side+table+gold&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "STOCKHOLM Sofa", emoji: "🛋️", url: `${IKEA_BASE}stockholm+sofa`, store: "IKEA" },
+    { name: "STOCKHOLM Mirror", emoji: "🪞", url: `${IKEA_BASE}stockholm+mirror`, store: "IKEA" },
+    { name: "SJÖPENNA Pendant", emoji: "✨", url: `${IKEA_BASE}sjöpenna+pendant+lamp`, store: "IKEA" },
+    { name: "GLADOM Side Table", emoji: "🏛️", url: `${IKEA_BASE}gladom+tray+table`, store: "IKEA" },
   ],
   "Vintage": [
-    { name: "Retro Armchair", emoji: "💺", url: `https://www.amazon.com/s?k=vintage+retro+armchair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Antique Clock", emoji: "🕰️", url: `https://www.amazon.com/s?k=antique+wall+clock+vintage&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Brass Lamp", emoji: "🔔", url: `https://www.amazon.com/s?k=vintage+brass+table+lamp&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Persian Rug", emoji: "🟤", url: `https://www.amazon.com/s?k=persian+rug+vintage&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "STRANDMON Armchair", emoji: "💺", url: `${IKEA_BASE}strandmon+armchair`, store: "IKEA" },
+    { name: "PUGG Wall Clock", emoji: "🕰️", url: `${IKEA_BASE}pugg+wall+clock`, store: "IKEA" },
+    { name: "ÅRSTID Table Lamp", emoji: "🔔", url: `${IKEA_BASE}årstid+table+lamp`, store: "IKEA" },
+    { name: "PERSISK Rug", emoji: "🟤", url: `${IKEA_BASE}persisk+rug`, store: "IKEA" },
   ],
   "Mid-Century Modern": [
-    { name: "Eames Chair", emoji: "🪑", url: `https://www.amazon.com/s?k=mid+century+modern+lounge+chair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Walnut Sideboard", emoji: "🪵", url: `https://www.amazon.com/s?k=mid+century+walnut+sideboard&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Arc Floor Lamp", emoji: "💡", url: `https://www.amazon.com/s?k=mid+century+arc+floor+lamp&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Sunburst Mirror", emoji: "☀️", url: `https://www.amazon.com/s?k=sunburst+mirror+gold&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "EKENÄSET Armchair", emoji: "🪑", url: `${IKEA_BASE}ekenäset+armchair`, store: "IKEA" },
+    { name: "STOCKHOLM Sideboard", emoji: "🪵", url: `${IKEA_BASE}stockholm+sideboard`, store: "IKEA" },
+    { name: "SKAFTET Floor Lamp", emoji: "💡", url: `${IKEA_BASE}skaftet+floor+lamp`, store: "IKEA" },
+    { name: "STOCKHOLM Mirror", emoji: "☀️", url: `${IKEA_BASE}stockholm+mirror+round`, store: "IKEA" },
   ],
   "Bohemian": [
-    { name: "Macrame Wall Art", emoji: "🧵", url: `https://www.amazon.com/s?k=macrame+wall+hanging&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Rattan Chair", emoji: "🪑", url: `https://www.amazon.com/s?k=rattan+peacock+chair&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Boho Pillows", emoji: "🛋️", url: `https://www.amazon.com/s?k=bohemian+throw+pillows&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Plant Pots", emoji: "🪴", url: `https://www.amazon.com/s?k=boho+ceramic+plant+pots&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "JASSA Collection", emoji: "🧵", url: `${IKEA_BASE}jassa+decoration`, store: "IKEA" },
+    { name: "BUSKBO Armchair", emoji: "🪑", url: `${IKEA_BASE}buskbo+armchair`, store: "IKEA" },
+    { name: "SVARTHO Cushion", emoji: "🛋️", url: `${IKEA_BASE}boho+cushion+cover`, store: "IKEA" },
+    { name: "FEJKA Plant Pots", emoji: "🪴", url: `${IKEA_BASE}fejka+plant+pot`, store: "IKEA" },
   ],
   "Japanese": [
-    { name: "Tatami Mat", emoji: "🟫", url: `https://www.amazon.com/s?k=tatami+floor+mat&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Shoji Screen", emoji: "🚪", url: `https://www.amazon.com/s?k=shoji+room+divider&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Tea Set", emoji: "🍵", url: `https://www.amazon.com/s?k=japanese+tea+set+ceramic&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Bonsai Tree", emoji: "🌳", url: `https://www.amazon.com/s?k=bonsai+tree+indoor&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "TATAMI Mat", emoji: "🟫", url: `${IKEA_BASE}floor+mat+natural`, store: "IKEA" },
+    { name: "RISÖR Room Divider", emoji: "🚪", url: `${IKEA_BASE}risör+room+divider`, store: "IKEA" },
+    { name: "BACKIG Tea Set", emoji: "🍵", url: `${IKEA_BASE}backig+tea+set`, store: "IKEA" },
+    { name: "FEJKA Bonsai", emoji: "🌳", url: `${IKEA_BASE}fejka+bonsai`, store: "IKEA" },
   ],
   "Coastal": [
-    { name: "Rope Basket", emoji: "🧺", url: `https://www.amazon.com/s?k=coastal+rope+basket&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Blue Throw Pillows", emoji: "🛋️", url: `https://www.amazon.com/s?k=coastal+blue+throw+pillows&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Driftwood Decor", emoji: "🪵", url: `https://www.amazon.com/s?k=driftwood+home+decor&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Jute Rug", emoji: "🟤", url: `https://www.amazon.com/s?k=jute+area+rug+natural&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "FLADIS Basket", emoji: "🧺", url: `${IKEA_BASE}fladis+basket`, store: "IKEA" },
+    { name: "GURLI Cushion Blue", emoji: "🛋️", url: `${IKEA_BASE}gurli+cushion+blue`, store: "IKEA" },
+    { name: "DRIFTWOOD Decor", emoji: "🪵", url: `${IKEA_BASE}decorative+driftwood`, store: "IKEA" },
+    { name: "LOHALS Jute Rug", emoji: "🟤", url: `${IKEA_BASE}lohals+rug+jute`, store: "IKEA" },
   ],
   "Farmhouse": [
-    { name: "Shiplap Panels", emoji: "🪵", url: `https://www.amazon.com/s?k=shiplap+wall+panels&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Mason Jar Lights", emoji: "🫙", url: `https://www.amazon.com/s?k=mason+jar+pendant+light&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Barn Door", emoji: "🚪", url: `https://www.amazon.com/s?k=sliding+barn+door+hardware&tag=${AFFILIATE_TAG}`, store: "Amazon" },
-    { name: "Farmhouse Sign", emoji: "🪧", url: `https://www.amazon.com/s?k=farmhouse+wall+sign+rustic&tag=${AFFILIATE_TAG}`, store: "Amazon" },
+    { name: "VÄGGIS Board", emoji: "🪵", url: `${IKEA_BASE}väggis+noticeboard`, store: "IKEA" },
+    { name: "MASON Jar Lamp", emoji: "🫙", url: `${IKEA_BASE}rustic+pendant+lamp`, store: "IKEA" },
+    { name: "HEMNES Storage", emoji: "🚪", url: `${IKEA_BASE}hemnes+storage`, store: "IKEA" },
+    { name: "RUNNEN Decor", emoji: "🪧", url: `${IKEA_BASE}farmhouse+decoration`, store: "IKEA" },
   ],
 };
 
-const EXAMPLES = [{ before: "/original-room.jpg", after: "/after-room.jpg", style: "Modern" }];
+const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=2", style: "Modern" }];
 
 
 const FREE_STYLES = ["Modern", "Minimalist", "Luxury", "Vintage", "Mid-Century Modern"];
@@ -110,8 +111,49 @@ export default function Home() {
   const [credits, setCredits] = useState<number | null>(null);
   const [plan, setPlan] = useState("free");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const downloadWithWatermark = async (url: string, filename: string) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0);
+      ctx.save();
+      const fontSize = Math.floor(canvas.width / 12);
+      ctx.font = `bold ${fontSize}px Arial`;
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const text = "RoomFlip.io";
+      const spacingX = fontSize * 8;
+      const spacingY = fontSize * 4;
+      ctx.rotate(-30 * Math.PI / 180);
+      for (let y = -canvas.height; y < canvas.height * 2; y += spacingY) {
+        for (let x = -canvas.width; x < canvas.width * 2; x += spacingX) {
+          ctx.fillText(text, x, y);
+        }
+      }
+      ctx.restore();
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = canvas.toDataURL("image/jpeg", 0.9);
+      link.click();
+    };
+    img.src = url;
+  };
   const [furnitureImage, setFurnitureImage] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("switch") === "1") {
+      window.history.replaceState({}, "", "/");
+      signIn("google");
+      return;
+    }
+  }, []);
 
   useEffect(() => {
     if (session?.user) {
@@ -128,7 +170,7 @@ export default function Home() {
     if (!session?.user) { signIn("google"); return; }
     setLoading(true); setError(null); setResult(null);
     try {
-      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, room: "Room", furnitureImage: furnitureImage }) });
+      const resp = await fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ imageUrl: image, theme: style, furnitureImage: furnitureImage }) });
       const data = await resp.json();
       if (data.error) throw new Error(data.error);
       setResult(typeof data.output === "string" ? data.output : null);
@@ -183,6 +225,7 @@ export default function Home() {
                   <div className={"absolute right-0 top-full mt-2 w-48 bg-slate-900 border border-white/10 rounded-xl shadow-2xl transition-all z-50 py-1 " + (menuOpen ? "opacity-100 visible" : "opacity-0 invisible")}>
                     {plan !== "free" && <a href="/history" className="block px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors">📁 My Designs</a>}
                     {plan !== "free" && <button onClick={async () => { const r = await fetch("/api/stripe/portal", { method: "POST" }); const d = await r.json(); if (d.url) window.location.href = d.url; }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors">⚙️ Manage Subscription</button>}
+                    <button onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/?switch=1" }); }} className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-white/5 hover:text-white transition-colors">🔄 Switch Account</button>
                     <button onClick={() => { setMenuOpen(false); signOut(); }} className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 hover:text-red-300 transition-colors border-t border-white/5">🚪 Sign Out</button>
                   </div>
                 </div>
@@ -329,13 +372,16 @@ export default function Home() {
                     <div className="mb-4">
                       <h3 className="text-xl font-bold">Your Redesigned Room</h3>
                     </div>
-                    <div className="rounded-2xl overflow-hidden border border-white/10"><CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} /></div>
+                    <div className="rounded-2xl overflow-hidden border border-white/10 relative">{plan === "free" && <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden" style={{ transform: "rotate(-30deg)", transformOrigin: "center center" }}>{Array.from({length: 8}).map((_, i) => <div key={i} className="flex gap-24 justify-center mb-16"><span className="text-white/25 text-3xl md:text-5xl font-bold select-none whitespace-nowrap">RoomFlip.io</span><span className="text-white/25 text-3xl md:text-5xl font-bold select-none whitespace-nowrap">RoomFlip.io</span><span className="text-white/25 text-3xl md:text-5xl font-bold select-none whitespace-nowrap">RoomFlip.io</span></div>)}</div>}<CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} /></div>
                     {plan === "free" && <p className="text-center text-sm text-slate-500 mt-3">🔒 Free version includes watermark. <a href="#pricing" className="text-indigo-400 hover:text-indigo-300">Upgrade for clean images →</a></p>}
                     <div className="flex justify-center mt-4">
-                      <a href={result} download={"roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg"} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
+                      {plan === "free" ? <button onClick={() => downloadWithWatermark(result, "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg")} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        Download
-                      </a>
+                        Download (with watermark)
+                      </button> : <a href={result} download={"roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg"} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        Download HD
+                      </a>}
                     </div>
                     {/* Shop This Look - Affiliate */}
                     <div className="mt-6 p-5 bg-white/[0.03] border border-white/10 rounded-2xl">
@@ -381,7 +427,7 @@ export default function Home() {
           </motion.div>
           <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {PLANS.map((p, i) => (
-              <motion.div key={p.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              <motion.div key={p.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} onClick={() => { if (p.key !== "free" && p.key !== plan) handleCheckout(p.key); }} style={{ cursor: p.key !== "free" && p.key !== plan ? "pointer" : "default" }}
                 className={p.highlight ? "rounded-2xl p-6 text-left bg-gradient-to-b from-indigo-500/20 to-purple-500/10 border-2 border-indigo-500/50 shadow-lg shadow-indigo-500/20 relative" : "rounded-2xl p-6 text-left bg-white/[0.03] border border-white/10"}>
                 {p.highlight && <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-500 to-purple-500 text-xs font-bold px-3 py-1 rounded-full">BEST VALUE</div>}
                 <h3 className="text-lg font-bold mb-2">{p.name}</h3>
@@ -390,7 +436,7 @@ export default function Home() {
                   {p.features.map((f) => (<li key={f} className="flex items-center gap-2 text-sm text-slate-300"><svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>{f}</li>))}
                 </ul>
                 <button onClick={() => handleCheckout(p.key)} disabled={p.key === "free" || p.key === plan}
-                  className={p.key === plan ? "w-full py-2.5 rounded-xl font-medium text-sm bg-white/5 text-slate-500 cursor-default" : p.highlight ? "w-full py-2.5 rounded-xl font-medium text-sm bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/25 transition-all" : "w-full py-2.5 rounded-xl font-medium text-sm bg-white/10 hover:bg-white/20 transition-all"}>
+                  className={p.key === plan ? "w-full py-2.5 rounded-xl font-medium text-sm bg-white/5 text-slate-500 cursor-default" : p.highlight ? "w-full py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-lg shadow-indigo-500/25 transition-all" : "w-full py-3 rounded-xl font-semibold text-sm bg-white/15 border border-white/20 hover:bg-white/25 hover:border-white/30 transition-all shadow-md"}>
                   {p.key === plan ? "Current Plan" : p.cta}
                 </button>
               </motion.div>
