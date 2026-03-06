@@ -6,8 +6,7 @@ import { headers } from "next/headers";
 import Replicate from "replicate";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
-const FLUX_KONTEXT_PRO = "897a70f5a7dbd8a0611413b3b98cf417b45f266bd595c571a22947619d9ae462";
-const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374"; // fallback
+const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374";
 
 const stylePrompts: Record<string, string> = {
   "Modern": "modern minimalist with clean lines, neutral tones, sleek surfaces, oak flooring",
@@ -97,10 +96,10 @@ export async function POST(request: Request) {
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const prediction = await replicate.predictions.create({
-          version: FLUX_KONTEXT_PRO,
+          version: NANO_BANANA_PRO,
           input: {
             prompt,
-            image: imageInputs[0],
+            image_input: imageInputs,
             aspect_ratio: aspectRatio || "match_input_image",
           },
         });
