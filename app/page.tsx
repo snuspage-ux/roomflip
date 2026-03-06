@@ -135,7 +135,7 @@ const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=
 
 function AdBanner({ slot, format = "auto", className = "" }: { slot: string; format?: string; className?: string }) {
   const adRef = useRef<HTMLModElement>(null);
-  useEffect(() => {
+  useEffect(() => { setFingerprint();
     try {
       if (adRef.current && typeof window !== "undefined" && (window as any).adsbygoogle) {
         (window as any).adsbygoogle.push({});
@@ -147,6 +147,27 @@ function AdBanner({ slot, format = "auto", className = "" }: { slot: string; for
       <ins ref={adRef} className="adsbygoogle" style={{ display: "block" }} data-ad-client="ca-pub-1599056171664080" data-ad-slot={slot} data-ad-format={format} data-full-width-responsive="true" />
     </div>
   );
+}
+
+
+// Set device fingerprint cookie for rate limiting
+function setFingerprint() {
+  if (typeof document === "undefined") return;
+  if (document.cookie.includes("rf_fp=")) return;
+  // Simple fingerprint: screen + timezone + language + platform
+  const raw = [
+    screen.width, screen.height, screen.colorDepth,
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+    navigator.language, navigator.platform,
+    new Date().getTimezoneOffset(),
+  ].join("|");
+  // Simple hash
+  let h = 0;
+  for (let i = 0; i < raw.length; i++) {
+    h = ((h << 5) - h + raw.charCodeAt(i)) | 0;
+  }
+  const fp = Math.abs(h).toString(36);
+  document.cookie = `rf_fp=${fp};path=/;max-age=31536000;SameSite=Lax`;
 }
 
 export default function Home() {

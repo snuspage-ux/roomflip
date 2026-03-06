@@ -41,18 +41,29 @@ async function tursoExec(sql: string, args: Array<{type: string; value: string}>
   return (await resp.json()).results?.[0]?.response?.result;
 }
 
-async function checkDailyLimit(ip: string): Promise<boolean> {
+async function checkAndIncrement(id: string): Promise<boolean> {
   const today = new Date().toISOString().split("T")[0];
-  const result = await tursoExec("SELECT count, date FROM RateLimit WHERE id = ?", [{ type: "text", value: ip }]);
+  const result = await tursoExec("SELECT count, date FROM RateLimit WHERE id = ?", [{ type: "text", value: id }]);
   const row = result?.rows?.[0];
   if (!row || row[1]?.value !== today) {
     await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?) ON CONFLICT(id) DO UPDATE SET count = 1, date = ?",
-      [{ type: "text", value: ip }, { type: "text", value: today }, { type: "text", value: today }]);
+      [{ type: "text", value: id }, { type: "text", value: today }, { type: "text", value: today }]);
     return true;
   }
   const count = parseInt(row[0]?.value || "0");
   if (count >= DAILY_LIMIT) return false;
-  await tursoExec("UPDATE RateLimit SET count = count + 1 WHERE id = ?", [{ type: "text", value: ip }]);
+  await tursoExec("UPDATE RateLimit SET count = count + 1 WHERE id = ?", [{ type: "text", value: id }]);
+  return true;
+}
+
+// Check BOTH IP and device fingerprint — if EITHER is over limit, block.
+async function checkDailyLimit(ip: string, fingerprint: string | null): Promise<boolean> {
+  const ipOk = await checkAndIncrement(`ip:${ip}`);
+  if (!ipOk) return false;
+  if (fingerprint) {
+    const fpOk = await checkAndIncrement(`fp:${fingerprint}`);
+    if (!fpOk) return false;
+  }
   return true;
 }
 
@@ -61,7 +72,11 @@ export async function POST(request: Request) {
     const hdrs = await headers();
     const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || hdrs.get("x-real-ip") || "unknown";
 
-    if (!(await checkDailyLimit(ip))) {
+    const cookies = request.headers.get("cookie") || "";
+    const fpMatch = cookies.match(/rf_fp=([^;]+)/);
+    const fingerprint = fpMatch ? fpMatch[1] : null;
+
+    if (!(await checkDailyLimit(ip, fingerprint))) {
       return NextResponse.json({ error: "Daily limit reached (5/day). Come back tomorrow!" }, { status: 429 });
     }
 
