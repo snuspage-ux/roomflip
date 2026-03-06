@@ -29,20 +29,6 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // Rate limit auth: 20 req/min
-  if (path.startsWith("/api/auth")) {
-    if (isRateLimited(`auth:${ip}`, 20, 60_000)) {
-      return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-    }
-  }
-
-  // Rate limit stripe: 10 req/min
-  if (path.startsWith("/api/stripe")) {
-    if (isRateLimited(`stripe:${ip}`, 10, 60_000)) {
-      return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-    }
-  }
-
   return NextResponse.next();
 }
 
