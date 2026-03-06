@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CompareSlider } from "@/components/ui/compare-slider";
+import Link from "next/link";
 
 const STYLES = [
   { name: "Modern", emoji: "🏢", color: "from-slate-500 to-gray-600" },
@@ -371,6 +372,28 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How It Works */}
+      <section className="py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-3xl font-bold text-center mb-4">How It Works</motion.h2>
+          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Redesign any room in three simple steps — no account, no payment, no design skills needed.</p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { step: "1", icon: "📸", title: "Upload Your Photo", desc: "Take a photo of any room in your home and upload it. Works with living rooms, bedrooms, kitchens, bathrooms — any space." },
+              { step: "2", icon: "🎨", title: "Choose a Style", desc: "Pick from 17 stunning design styles — Modern, Scandinavian, Japanese, Bohemian, Luxury, and more." },
+              { step: "3", icon: "✨", title: "Download Your Redesign", desc: "AI generates a photorealistic redesign in ~30 seconds. Download the HD result completely free." },
+            ].map((item) => (
+              <motion.div key={item.step} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center p-6 bg-white/[0.03] border border-white/10 rounded-2xl">
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 text-sm font-bold mb-3">{item.step}</div>
+                <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-slate-400">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Ad Banner */}
       <section className="py-4 px-6">
         <div className="max-w-4xl mx-auto">
@@ -538,9 +561,9 @@ export default function Home() {
               { name: "Farmhouse", slug: "farmhouse", emoji: "🏡" },
               { name: "Gothic", slug: "gothic", emoji: "🖤" },
             ].map((s) => (
-              <a key={s.slug} href={`/styles/${s.slug}`} className="flex items-center gap-2 p-3 bg-white/[0.03] border border-white/10 rounded-xl hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all text-sm">
+              <Link key={s.slug} href={`/styles/${s.slug}`} className="flex items-center gap-2 p-3 bg-white/[0.03] border border-white/10 rounded-xl hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all text-sm">
                 <span>{s.emoji}</span><span>{s.name}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
@@ -576,10 +599,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-slate-500">
             <div className="flex items-center gap-2"><div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold">R</div><span>RoomFlip</span></div>
             <div className="flex flex-wrap justify-center gap-6">
-              <a href="/about" className="hover:text-white transition-colors">About</a>
-              <a href="/blog" className="hover:text-white transition-colors">Blog</a>
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+              <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
               <a href="mailto:hello@roomflip.io" className="hover:text-white transition-colors">Contact</a>
             </div>
           </div>

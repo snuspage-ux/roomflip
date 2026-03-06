@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About RoomFlip - AI Interior Design Tool",
@@ -98,9 +99,9 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/10 text-center">
-          <a href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all">
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all">
             Try RoomFlip Now
-          </a>
+          </Link>
         </div>
       </div>
     </main>

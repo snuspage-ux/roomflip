@@ -53,12 +53,12 @@ export default function BlogPage() {
         </div>
 
         <div className="mt-16 text-center">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all"
           >
             Try RoomFlip Free
-          </a>
+          </Link>
         </div>
       </div>
     </main>
