@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
+  title: "Privacy Policy | RoomFlip.io",
   description: "RoomFlip.io privacy policy. Learn how we handle your data, photos, cookies, and third-party services like Google AdSense.",
+  alternates: { canonical: "https://roomflip.io/privacy" },
+  robots: { index: false },
 };
 
 export default function PrivacyPage() {

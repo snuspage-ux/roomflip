@@ -5,6 +5,7 @@ import { blogPosts } from "@/data/blog-posts";
 export const metadata: Metadata = {
   title: "Blog - Interior Design Tips & AI Room Design Guides",
   description: "Expert interior design tips, AI room redesign guides, and the latest design trends. Learn how to transform your living spaces with RoomFlip.",
+  alternates: { canonical: "https://roomflip.io/blog" },
 };
 
 export default function BlogPage() {
