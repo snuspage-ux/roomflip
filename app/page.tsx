@@ -134,20 +134,10 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 
 const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=2", style: "Modern" }];
 
-function AdBanner({ slot, format = "auto", className = "" }: { slot: string; format?: string; className?: string }) {
-  const adRef = useRef<HTMLModElement>(null);
-  useEffect(() => { setFingerprint();
-    try {
-      if (adRef.current && typeof window !== "undefined" && (window as any).adsbygoogle) {
-        (window as any).adsbygoogle.push({});
-      }
-    } catch {}
-  }, []);
-  return (
-    <div className={className}>
-      <ins ref={adRef} className="adsbygoogle" style={{ display: "block" }} data-ad-client="ca-pub-1599056171664080" data-ad-slot={slot} data-ad-format={format} data-full-width-responsive="true" />
-    </div>
-  );
+// Auto Ads — Google places ads automatically (no slot ID needed)
+// Manual placements can be added once AdSense account is approved and real slot IDs are created
+function AdBanner({ className = "" }: { slot?: string; format?: string; className?: string }) {
+  return <div className={className} />;
 }
 
 
