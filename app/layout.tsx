@@ -37,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <head>
         <meta name="google-adsense-account" content="ca-pub-1599056171664080" />
+        {/* AdSense script directly in head — required for Auto Ads to work */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1599056171664080" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://www.ikea.com" />
@@ -57,7 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }`}} />
         <Script id="json-ld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{"@context":"https://schema.org","@type":"WebApplication","name":"RoomFlip.io","applicationCategory":"DesignApplication","url":"https://roomflip.io","operatingSystem":"Any","browserRequirements":"Requires a modern web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free"}}`}} />
         <Script id="org-schema" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{"@context":"https://schema.org","@type":"Organization","name":"RoomFlip","url":"https://roomflip.io","logo":"https://roomflip.io/og-image.jpg","contactPoint":{"@type":"ContactPoint","email":"hello@roomflip.io","contactType":"customer support"}}`}} />
-        <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1599056171664080" strategy="afterInteractive" crossOrigin="anonymous" data-overlays="bottom" />
+        {/* AdSense script is in <head> above — Auto Ads will place automatically */}
       </body>
     </html>
   );
