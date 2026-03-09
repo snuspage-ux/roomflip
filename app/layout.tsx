@@ -15,6 +15,13 @@ export const metadata: Metadata = {
   keywords: ["AI interior design", "room redesign", "AI room makeover", "interior design AI", "room decorator", "AI home staging", "virtual room designer", "room transformation AI", "interior design tool", "room style changer", "AI furniture", "home redesign app"],
   metadataBase: new URL("https://roomflip.io"),
   alternates: { canonical: "https://roomflip.io" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   openGraph: {
     title: "RoomFlip.io - Redesign Any Room with AI",
     description: "Upload a photo. Pick a style. Get a stunning redesign in seconds. 15+ design styles, completely free.",
