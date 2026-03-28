@@ -73,9 +73,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {"@type": "Question", "name": "What design styles are available?", "acceptedAnswer": {"@type": "Answer", "text": "We offer 17 styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, and Vintage."}},
             {"@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "No account needed. Just upload your photo and start redesigning instantly."}}
           ]
-        }`}} />
-        <Script id="json-ld" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{"@context":"https://schema.org","@type":"WebApplication","name":"RoomFlip.io","applicationCategory":"DesignApplication","url":"https://roomflip.io","operatingSystem":"Any","browserRequirements":"Requires a modern web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free"}}`}} />
-        <Script id="org-schema" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{"@context":"https://schema.org","@type":"Organization","name":"RoomFlip","url":"https://roomflip.io","logo":"https://roomflip.io/og-image.jpg","contactPoint":{"@type":"ContactPoint","email":"hello@roomflip.io","contactType":"customer support"}}`}} />
+        })}} />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );
