@@ -132,23 +132,79 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
   ],
 };
 
-const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=2", style: "Modern" }];
 
-function AdBanner({ slot, format = "auto", className = "" }: { slot: string; format?: string; className?: string }) {
-  const adRef = useRef<HTMLModElement>(null);
-  useEffect(() => { setFingerprint();
-    try {
-      if (adRef.current && typeof window !== "undefined" && (window as any).adsbygoogle) {
-        (window as any).adsbygoogle.push({});
-      }
-    } catch {}
-  }, []);
+const INTERSTITIAL_ADS = [
+  {
+    type: 'tubevoice' as const,
+    title: '🎙️ TubeVoice.io',
+    subtitle: 'Watch YouTube videos in YOUR language',
+    description: 'AI dubs any YouTube video into 50+ languages. Paste a link, pick your language, done.',
+    cta: 'Try Free',
+    ctaUrl: 'https://tubevoice.io?ref=roomflip',
+    gradient: 'from-violet-600 to-indigo-600',
+    bgGlow: 'bg-violet-600/20',
+  },
+  {
+    type: 'adnetwork' as const,
+    title: '🔧 FileTools.eu',
+    subtitle: 'Free Online File Tools',
+    description: 'Convert images, compress PDFs, remove backgrounds, upscale with AI. No upload to server — 100% private.',
+    cta: 'Try Free',
+    ctaUrl: 'https://filetools.eu?ref=roomflip',
+    gradient: 'from-blue-600 to-cyan-600',
+    bgGlow: 'bg-blue-600/20',
+  },
+  {
+    type: 'tubevoice' as const,
+    title: '🛒 KupSledujici.cz',
+    subtitle: 'Boost Your Social Media',
+    description: 'Get real Instagram followers, likes, and views. Fast delivery, affordable prices. Czech #1 SMM panel.',
+    cta: 'Od 29 Kč',
+    ctaUrl: 'https://kupsledujici.cz?ref=roomflip',
+    gradient: 'from-purple-600 to-pink-600',
+    bgGlow: 'bg-purple-600/20',
+  },
+];
+
+function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTITIAL_ADS[number]; onContinue: () => void; onClose: () => void }) {
+  const [countdown, setCountdown] = useState(5);
+  const ready = countdown <= 0;
+
+  useEffect(() => {
+    if (ready) return;
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [countdown, ready]);
+
   return (
-    <div className={className}>
-      <ins ref={adRef} className="adsbygoogle" style={{ display: "block" }} data-ad-client="ca-pub-1599056171664080" data-ad-slot={slot} data-ad-format={format} data-full-width-responsive="true" />
-    </div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0a0a1a] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
+        <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
+        <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${ad.gradient} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
+          {ad.title.split(' ')[0]}
+        </div>
+        <h3 className={`text-2xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
+        <p className="text-sm text-slate-400 text-center mb-3">{ad.subtitle}</p>
+        <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">{ad.description}</p>
+        <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
+          {ad.cta} &rarr;
+        </a>
+        {ready ? (
+          <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} onClick={onContinue}
+            className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all text-white">
+            Continue ▶
+          </motion.button>
+        ) : (
+          <p className="text-center text-sm text-slate-600">Continue in {countdown}s...</p>
+        )}
+      </motion.div>
+    </motion.div>
   );
 }
+
+const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=2", style: "Modern" }];
+
 
 
 // Set device fingerprint cookie for rate limiting
@@ -183,13 +239,8 @@ export default function Home() {
   const [imageAspect, setImageAspect] = useState<string>('match_input_image');
 
   // Interstitial ad state
-  const [showInterstitial, setShowInterstitial] = useState(false);
-  const [showInterstitial2, setShowInterstitial2] = useState(false);
-  const [pendingGenerate, setPendingGenerate] = useState(false);
-  const [adKey, setAdKey] = useState(0);
-  const [adKey2, setAdKey2] = useState(100);
-  const [countdown, setCountdown] = useState(5);
-  const [downloadReady, setDownloadReady] = useState(false);
+  const [activeInterstitial, setActiveInterstitial] = useState<number | null>(null);
+  const [interstitialCallback, setInterstitialCallback] = useState<(() => void) | null>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -242,58 +293,34 @@ export default function Home() {
 
   const handleGenerate = () => {
     if (!image) return;
-    setPendingGenerate(true);
-    setAdKey(k => k + 1);
-    setShowInterstitial(true);
-    setCountdown(8);
-    setDownloadReady(false);
+    setActiveInterstitial(0);
+    setInterstitialCallback(() => () => {
+      setActiveInterstitial(null);
+      setInterstitialCallback(null);
+      doGenerate();
+    });
   };
 
   const handleDownloadClick = () => {
-    setPendingGenerate(false);
-    setAdKey(k => k + 1);
-    setShowInterstitial(true);
-    setCountdown(8);
-    setDownloadReady(false);
+    setActiveInterstitial(1);
+    setInterstitialCallback(() => () => {
+      // First interstitial done, show second
+      setActiveInterstitial(2);
+      setInterstitialCallback(() => () => {
+        setActiveInterstitial(null);
+        setInterstitialCallback(null);
+        if (!result) return;
+        const link = document.createElement("a");
+        link.href = result;
+        link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
+        link.click();
+      });
+    });
   };
 
-  useEffect(() => {
-    if (!(showInterstitial || showInterstitial2) || downloadReady) return;
-    if (countdown <= 0) {
-      setDownloadReady(true);
-      return;
-    }
-    const timer = setTimeout(() => setCountdown(c => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [showInterstitial, countdown, downloadReady]);
 
-  const handleActualDownload = () => {
-    if (pendingGenerate) {
-      setShowInterstitial(false);
-      setDownloadReady(false);
-      setPendingGenerate(false);
-      doGenerate();
-      return;
-    }
-    // First interstitial done -> show second
-    if (!showInterstitial2 && showInterstitial) {
-      setShowInterstitial(false);
-      setDownloadReady(false);
-      setAdKey2(k => k + 1);
-      setShowInterstitial2(true);
-      setCountdown(8);
-      return;
-    }
-    // Second done -> actual download
-    if (!result) return;
-    const link = document.createElement("a");
-    link.href = result;
-    link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
-    link.click();
-    setShowInterstitial(false);
-    setShowInterstitial2(false);
-    setDownloadReady(false);
-  };
+
+
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white overflow-hidden">
@@ -394,17 +421,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Ad Banner */}
-      <section className="py-4 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-center min-h-[1px]">
-            <AdBanner slot="1234567890" />
-          </div>
-        </div>
-      </section>
 
       <section id="generator" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col lg:flex-row gap-6">
+        <div className="max-w-4xl mx-auto flex flex-col gap-6">
           <div className="flex-1">
             <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <div className="relative bg-gradient-to-br from-white/[0.05] to-white/[0.02] backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/[0.08] shadow-2xl overflow-hidden">
@@ -481,9 +500,6 @@ export default function Home() {
                           Download HD
                         </button>
                       </div>
-                      <div className="mt-4 bg-white/[0.02] border border-white/5 rounded-xl p-3 min-h-[90px]">
-                        <AdBanner slot="2233445566" />
-                      </div>
                       {/* Shop This Look - Affiliate */}
                       <div className="mt-6 p-5 bg-white/[0.03] border border-white/10 rounded-2xl">
                         <div className="flex items-center justify-between mb-3">
@@ -507,25 +523,10 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Sidebar Ad */}
-          <div className="hidden lg:block w-[300px] flex-shrink-0">
-            <div className="sticky top-24">
-              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-3 min-h-[1px]">
-                <AdBanner slot="0987654321" format="rectangle" />
-              </div>
-            </div>
-          </div>
+
         </div>
       </section>
 
-      {/* Bottom Ad Banner */}
-      <section className="py-6 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 text-center min-h-[1px]">
-            <AdBanner slot="1122334455" />
-          </div>
-        </div>
-      </section>
 
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
@@ -610,62 +611,15 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Interstitial Ad Overlay on Download */}
-      <AnimatePresence>
-        {showInterstitial && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-slate-900 border border-white/10 rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
-              <button onClick={() => { setShowInterstitial(false); setDownloadReady(false); }} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors text-sm">Close</button>
-              <h3 className="text-xl font-bold mb-2">{pendingGenerate ? "Almost there!" : "Your design is ready!"}</h3>
-              <p className="text-slate-400 text-sm mb-6">
-                {downloadReady ? (pendingGenerate ? "Click below to start AI redesign." : "Click below to download your HD redesign.") : `Your download will be ready in ${countdown}s...`}
-              </p>
-              {/* Ad unit inside interstitial */}
-              <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4 mb-6 min-h-[1px] flex items-center justify-center">
-                <AdBanner key={adKey} slot="5566778899" format="rectangle" />
-              </div>
-              {downloadReady ? (
-                <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} onClick={handleActualDownload}
-                  className="px-8 py-3 rounded-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all shadow-lg shadow-green-500/25 text-white">
-                  {pendingGenerate ? "Start Redesign" : "Download Now"}
-                </motion.button>
-              ) : (
-                <div className="flex items-center justify-center gap-2 text-slate-500">
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-4 h-4 border-2 border-slate-700 border-t-indigo-400 rounded-full" />
-                  <span className="text-sm">Preparing download...</span>
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Second Interstitial Ad on Download */}
+      {/* Interstitial Overlay */}
       <AnimatePresence>
-        {showInterstitial2 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-slate-900 border border-white/10 rounded-3xl p-8 max-w-lg w-full text-center shadow-2xl">
-              <button onClick={() => { setShowInterstitial2(false); setDownloadReady(false); }} className="absolute top-6 right-6 text-slate-500 hover:text-white transition-colors text-sm">Close</button>
-              <h3 className="text-xl font-bold mb-2">Almost there!</h3>
-              <p className="text-slate-400 text-sm mb-6">
-                {downloadReady ? "Your HD image is ready!" : `Download starts in ${countdown}s...`}
-              </p>
-              <div className="bg-white/[0.03] border border-white/5 rounded-xl p-4 mb-6 min-h-[1px] flex items-center justify-center">
-                <AdBanner key={adKey2} slot="6677889900" format="rectangle" />
-              </div>
-              {downloadReady ? (
-                <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} onClick={handleActualDownload}
-                  className="px-8 py-3 rounded-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all shadow-lg shadow-green-500/25 text-white">
-                  Download Now
-                </motion.button>
-              ) : (
-                <div className="flex items-center justify-center gap-2 text-slate-500">
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-4 h-4 border-2 border-slate-700 border-t-indigo-400 rounded-full" />
-                  <span className="text-sm">Preparing download...</span>
-                </div>
-              )}
-            </motion.div>
-          </motion.div>
+        {activeInterstitial !== null && (
+          <InterstitialOverlay
+            ad={INTERSTITIAL_ADS[activeInterstitial]}
+            onContinue={() => interstitialCallback?.()}
+            onClose={() => { setActiveInterstitial(null); setInterstitialCallback(null); }}
+          />
         )}
       </AnimatePresence>
     </main>
