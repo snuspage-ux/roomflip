@@ -137,6 +137,7 @@ const INTERSTITIAL_ADS = [
   {
     type: 'tubevoice' as const,
     icon: '🎙️',
+    logo: '/tubevoice-logo.jpg',
     title: 'TubeVoice.io',
     subtitle: 'Watch YouTube videos in YOUR language',
     description: 'AI dubs any YouTube video into 50+ languages. Paste a link, pick your language, done.',
@@ -148,6 +149,7 @@ const INTERSTITIAL_ADS = [
   {
     type: 'adnetwork' as const,
     icon: '🔧',
+    logo: undefined,
     title: 'FileTools.eu',
     subtitle: 'Free Online File Tools',
     description: 'Convert images, compress PDFs, remove backgrounds, upscale with AI. No upload to server — 100% private.',
@@ -159,6 +161,7 @@ const INTERSTITIAL_ADS = [
   {
     type: 'tubevoice' as const,
     icon: '🛒',
+    logo: undefined,
     title: 'KupSledujici.cz',
     subtitle: 'Boost Your Social Media',
     description: 'Get real Instagram followers, likes, and views. Fast delivery, affordable prices. Czech #1 SMM panel.',
@@ -184,9 +187,13 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0a0a1a] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl">
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
         <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
-        <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${ad.gradient} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
-          {ad.icon}
-        </div>
+        {ad.logo ? (
+          <img src={ad.logo} alt={ad.title} className="mx-auto w-20 h-20 rounded-2xl object-contain mb-4 shadow-lg" />
+        ) : (
+          <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${ad.gradient} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
+            {ad.icon}
+          </div>
+        )}
         <h3 className={`text-2xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
         <p className="text-sm text-slate-400 text-center mb-3">{ad.subtitle}</p>
         <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">{ad.description}</p>
