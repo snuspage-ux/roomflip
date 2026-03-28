@@ -135,45 +135,65 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 
 const INTERSTITIAL_ADS = [
   {
+    type: 'adnetwork' as const,
+    adScript: 'ADSTERRA_NATIVE', // placeholder - rendered as native banner div
+    icon: '📢',
+    logo: undefined,
+    promo: undefined,
+    title: 'Sponsored',
+    subtitle: '',
+    description: '',
+    cta: '',
+    ctaUrl: '',
+    gradient: 'from-slate-600 to-slate-700',
+    bgGlow: 'bg-slate-600/20',
+  },
+  {
+    type: 'adnetwork' as const,
+    adScript: 'ADSTERRA_NATIVE', // placeholder - rendered as native banner div
+    icon: '📢',
+    logo: undefined,
+    promo: undefined,
+    title: 'Sponsored',
+    subtitle: '',
+    description: '',
+    cta: '',
+    ctaUrl: '',
+    gradient: 'from-slate-600 to-slate-700',
+    bgGlow: 'bg-slate-600/20',
+  },
+  {
     type: 'tubevoice' as const,
+    adScript: undefined,
     icon: '🎙️',
     logo: '/tubevoice-logo.jpg',
     promo: '/tubevoice-promo.jpg',
     title: 'TubeVoice.io',
     subtitle: 'Watch YouTube videos in YOUR language',
-    description: 'AI dubs any YouTube video into 50+ languages. Paste a link, pick your language, done.',
+    description: 'AI dubs any YouTube video into 50+ languages. Just paste a link, pick your language, and hit play. Works with any video — tutorials, podcasts, news, entertainment.',
     cta: 'Try Free',
     ctaUrl: 'https://tubevoice.io?ref=roomflip',
     gradient: 'from-violet-600 to-indigo-600',
     bgGlow: 'bg-violet-600/20',
   },
-  {
-    type: 'adnetwork' as const,
-    icon: '🔧',
-    logo: undefined,
-    promo: undefined,
-    title: 'FileTools.eu',
-    subtitle: 'Free Online File Tools',
-    description: 'Convert images, compress PDFs, remove backgrounds, upscale with AI. No upload to server — 100% private.',
-    cta: 'Try Free',
-    ctaUrl: 'https://filetools.eu?ref=roomflip',
-    gradient: 'from-blue-600 to-cyan-600',
-    bgGlow: 'bg-blue-600/20',
-  },
-  {
-    type: 'tubevoice' as const,
-    icon: '🛒',
-    logo: undefined,
-    promo: undefined,
-    title: 'KupSledujici.cz',
-    subtitle: 'Boost Your Social Media',
-    description: 'Get real Instagram followers, likes, and views. Fast delivery, affordable prices. Czech #1 SMM panel.',
-    cta: 'Od 29 Kč',
-    ctaUrl: 'https://kupsledujici.cz?ref=roomflip',
-    gradient: 'from-purple-600 to-pink-600',
-    bgGlow: 'bg-purple-600/20',
-  },
 ];
+
+function AdsterraNativeBanner() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current) return;
+    const container = document.createElement('div');
+    container.id = 'container-daf40194c79018ddbd9fd6f2ba3ca011';
+    ref.current.appendChild(container);
+    const script = document.createElement('script');
+    script.async = true;
+    script.setAttribute('data-cfasync', 'false');
+    script.src = 'https://pl29004994.profitablecpmratenetwork.com/daf40194c79018ddbd9fd6f2ba3ca011/invoke.js';
+    ref.current.appendChild(script);
+    return () => { if(ref.current) ref.current.innerHTML = ''; };
+  }, []);
+  return <div ref={ref} className="min-h-[250px] flex items-center justify-center"><p className="text-slate-500 text-xs animate-pulse">Loading...</p></div>;
+}
 
 function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTITIAL_ADS[number]; onContinue: () => void; onClose: () => void }) {
   const [countdown, setCountdown] = useState(5);
@@ -190,10 +210,22 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0a0a1a] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl">
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
         <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
-        {ad.promo ? (
-          <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className="block mb-4">
-            <img src={ad.promo} alt={ad.title} className="w-full rounded-2xl shadow-lg hover:scale-[1.02] transition-transform" />
-          </a>
+        {ad.adScript === 'ADSTERRA_NATIVE' ? (
+          <div className="mb-4">
+            <AdsterraNativeBanner />
+          </div>
+        ) : ad.promo ? (
+          <>
+            <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className="block mb-3">
+              <img src={ad.promo} alt={ad.title} className="w-full rounded-2xl shadow-lg hover:scale-[1.02] transition-transform" />
+            </a>
+            <h3 className={`text-xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
+            <p className="text-sm text-slate-400 text-center mb-2">{ad.subtitle}</p>
+            <p className="text-xs text-slate-500 text-center mb-4 leading-relaxed">{ad.description}</p>
+            <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
+              {ad.cta} &rarr;
+            </a>
+          </>
         ) : (
           <>
             {ad.logo ? (
@@ -206,11 +238,11 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
             <h3 className={`text-2xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
             <p className="text-sm text-slate-400 text-center mb-3">{ad.subtitle}</p>
             <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">{ad.description}</p>
+            {ad.cta && <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
+              {ad.cta} &rarr;
+            </a>}
           </>
         )}
-        <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
-          {ad.cta} &rarr;
-        </a>
         {ready ? (
           <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} onClick={onContinue}
             className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all text-white">
