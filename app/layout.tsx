@@ -1,4 +1,3 @@
-import Script from "next/script";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -14,7 +13,14 @@ export const metadata: Metadata = {
   description: "Upload a photo of your room and AI redesigns it in 15+ stunning styles. Modern, Scandinavian, Japanese, Luxury and more. Professional interior design — completely free.",
   keywords: ["AI interior design", "room redesign", "AI room makeover", "interior design AI", "room decorator", "AI home staging", "virtual room designer", "room transformation AI", "interior design tool", "room style changer", "AI furniture", "home redesign app"],
   metadataBase: new URL("https://roomflip.io"),
-  alternates: { canonical: "/" },
+  alternates: { canonical: "https://roomflip.io" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/png" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
   openGraph: {
     title: "RoomFlip.io - Redesign Any Room with AI",
     description: "Upload a photo. Pick a style. Get a stunning redesign in seconds. 15+ design styles, completely free.",
@@ -37,11 +43,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <head>
         <link rel="dns-prefetch" href="https://www.ikea.com" />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-        
-        <Script id="faq-schema" type="application/ld+json" strategy="afterInteractive" dangerouslySetInnerHTML={{__html: `{
+        {/* JSON-LD structured data — inline for Google to read in initial HTML */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "RoomFlip.io",
+          "description": "Upload a photo of your room and AI redesigns it in 17+ stunning styles. Modern, Scandinavian, Japanese, Luxury and more. Completely free.",
+          "url": "https://roomflip.io",
+          "applicationCategory": "DesignApplication",
+          "operatingSystem": "Any",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": ["AI room redesign", "17 design styles", "Free to use", "No signup required"],
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "RoomFlip",
+          "url": "https://roomflip.io",
+          "logo": "https://roomflip.io/icon-512.png",
+          "sameAs": ["https://roomflip.io"],
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": [

@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About RoomFlip - AI Interior Design Tool",
   description: "Learn about RoomFlip.io, our mission, and how we use AI to help anyone redesign their living spaces in seconds.",
+  alternates: { canonical: "https://roomflip.io/about" },
 };
 
 export default function AboutPage() {

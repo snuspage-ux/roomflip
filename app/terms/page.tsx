@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
+  title: "Terms of Service | RoomFlip.io",
   description: "RoomFlip.io terms of service. Understand the rules and guidelines for using our free AI interior design tool.",
+  alternates: { canonical: "https://roomflip.io/terms" },
+  robots: { index: false },
 };
 
 export default function TermsPage() {
