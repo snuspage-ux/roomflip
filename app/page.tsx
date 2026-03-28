@@ -135,32 +135,32 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 
 const INTERSTITIAL_ADS = [
   {
-    type: 'adnetwork' as const,
-    adScript: 'ADSTERRA_NATIVE', // placeholder - rendered as native banner div
-    icon: '📢',
+    type: 'own' as const,
+    adScript: undefined,
+    icon: '🔧',
     logo: undefined,
     promo: undefined,
-    title: 'Sponsored',
-    subtitle: '',
-    description: '',
-    cta: '',
-    ctaUrl: '',
-    gradient: 'from-slate-600 to-slate-700',
-    bgGlow: 'bg-slate-600/20',
+    title: 'FileTools.eu',
+    subtitle: 'Free Online File & Image Tools',
+    description: 'Convert images, compress PDFs, remove backgrounds, upscale photos with AI. 100% private — files never leave your browser.',
+    cta: 'Try Free',
+    ctaUrl: 'https://filetools.eu?ref=roomflip',
+    gradient: 'from-blue-600 to-cyan-600',
+    bgGlow: 'bg-blue-600/20',
   },
   {
-    type: 'adnetwork' as const,
-    adScript: 'ADSTERRA_NATIVE', // placeholder - rendered as native banner div
-    icon: '📢',
+    type: 'own' as const,
+    adScript: undefined,
+    icon: '🛒',
     logo: undefined,
     promo: undefined,
-    title: 'Sponsored',
-    subtitle: '',
-    description: '',
-    cta: '',
-    ctaUrl: '',
-    gradient: 'from-slate-600 to-slate-700',
-    bgGlow: 'bg-slate-600/20',
+    title: 'KupSledujici.cz',
+    subtitle: 'Grow Your Instagram & TikTok',
+    description: 'Real followers, likes, and views delivered fast. Trusted by 1000+ Czech creators. Prices from 29 Kč.',
+    cta: 'Get Started',
+    ctaUrl: 'https://kupsledujici.cz?ref=roomflip',
+    gradient: 'from-purple-600 to-pink-600',
+    bgGlow: 'bg-purple-600/20',
   },
   {
     type: 'tubevoice' as const,
@@ -178,23 +178,6 @@ const INTERSTITIAL_ADS = [
   },
 ];
 
-function AdsterraNativeBanner() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!ref.current) return;
-    const container = document.createElement('div');
-    container.id = 'container-daf40194c79018ddbd9fd6f2ba3ca011';
-    ref.current.appendChild(container);
-    const script = document.createElement('script');
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    script.src = 'https://pl29004994.profitablecpmratenetwork.com/daf40194c79018ddbd9fd6f2ba3ca011/invoke.js';
-    ref.current.appendChild(script);
-    return () => { if(ref.current) ref.current.innerHTML = ''; };
-  }, []);
-  return <div ref={ref} className="min-h-[250px] flex items-center justify-center"><p className="text-slate-500 text-xs animate-pulse">Loading...</p></div>;
-}
-
 function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTITIAL_ADS[number]; onContinue: () => void; onClose: () => void }) {
   const [countdown, setCountdown] = useState(5);
   const ready = countdown <= 0;
@@ -210,11 +193,7 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0a0a1a] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl">
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
         <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
-        {ad.adScript === 'ADSTERRA_NATIVE' ? (
-          <div className="mb-4">
-            <AdsterraNativeBanner />
-          </div>
-        ) : ad.promo ? (
+        {ad.promo ? (
           <>
             <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className="block mb-3">
               <img src={ad.promo} alt={ad.title} className="w-full rounded-2xl shadow-lg hover:scale-[1.02] transition-transform" />
