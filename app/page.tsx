@@ -136,7 +136,8 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 const INTERSTITIAL_ADS = [
   {
     type: 'tubevoice' as const,
-    title: '🎙️ TubeVoice.io',
+    icon: '🎙️',
+    title: 'TubeVoice.io',
     subtitle: 'Watch YouTube videos in YOUR language',
     description: 'AI dubs any YouTube video into 50+ languages. Paste a link, pick your language, done.',
     cta: 'Try Free',
@@ -146,7 +147,8 @@ const INTERSTITIAL_ADS = [
   },
   {
     type: 'adnetwork' as const,
-    title: '🔧 FileTools.eu',
+    icon: '🔧',
+    title: 'FileTools.eu',
     subtitle: 'Free Online File Tools',
     description: 'Convert images, compress PDFs, remove backgrounds, upscale with AI. No upload to server — 100% private.',
     cta: 'Try Free',
@@ -156,7 +158,8 @@ const INTERSTITIAL_ADS = [
   },
   {
     type: 'tubevoice' as const,
-    title: '🛒 KupSledujici.cz',
+    icon: '🛒',
+    title: 'KupSledujici.cz',
     subtitle: 'Boost Your Social Media',
     description: 'Get real Instagram followers, likes, and views. Fast delivery, affordable prices. Czech #1 SMM panel.',
     cta: 'Od 29 Kč',
@@ -182,7 +185,7 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
         <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
         <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
         <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${ad.gradient} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
-          {ad.title.split(' ')[0]}
+          {ad.icon}
         </div>
         <h3 className={`text-2xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
         <p className="text-sm text-slate-400 text-center mb-3">{ad.subtitle}</p>
