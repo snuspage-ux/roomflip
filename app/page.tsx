@@ -133,34 +133,38 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 };
 
 
+const ADSTERRA_SMARTLINK = "https://www.profitablecpmratenetwork.com/a1xgh78rg?key=c9073470f5533e480f89270fd7709983";
+
 const INTERSTITIAL_ADS = [
   {
-    type: 'own' as const,
+    type: 'paid' as const,
     adScript: undefined,
-    icon: '🔧',
+    icon: '📢',
     logo: undefined,
     promo: undefined,
-    title: 'FileTools.eu',
-    subtitle: 'Free Online File & Image Tools',
-    description: 'Convert images, compress PDFs, remove backgrounds, upscale photos with AI. 100% private — files never leave your browser.',
-    cta: 'Try Free',
-    ctaUrl: 'https://filetools.eu?ref=roomflip',
-    gradient: 'from-blue-600 to-cyan-600',
-    bgGlow: 'bg-blue-600/20',
+    title: 'Sponsored',
+    subtitle: 'Check out this offer',
+    description: 'Opening sponsored content in a new tab...',
+    cta: '',
+    ctaUrl: '',
+    gradient: 'from-amber-500 to-orange-600',
+    bgGlow: 'bg-amber-600/20',
+    openSmartlink: true,
   },
   {
-    type: 'own' as const,
+    type: 'paid' as const,
     adScript: undefined,
-    icon: '🛒',
+    icon: '📢',
     logo: undefined,
     promo: undefined,
-    title: 'KupSledujici.cz',
-    subtitle: 'Grow Your Instagram & TikTok',
-    description: 'Real followers, likes, and views delivered fast. Trusted by 1000+ Czech creators. Prices from 29 Kč.',
-    cta: 'Get Started',
-    ctaUrl: 'https://kupsledujici.cz?ref=roomflip',
-    gradient: 'from-purple-600 to-pink-600',
-    bgGlow: 'bg-purple-600/20',
+    title: 'Sponsored',
+    subtitle: 'Check out this offer',
+    description: 'Opening sponsored content in a new tab...',
+    cta: '',
+    ctaUrl: '',
+    gradient: 'from-amber-500 to-orange-600',
+    bgGlow: 'bg-amber-600/20',
+    openSmartlink: true,
   },
   {
     type: 'tubevoice' as const,
@@ -175,11 +179,18 @@ const INTERSTITIAL_ADS = [
     ctaUrl: 'https://tubevoice.io?ref=roomflip',
     gradient: 'from-violet-600 to-indigo-600',
     bgGlow: 'bg-violet-600/20',
+    openSmartlink: false,
   },
 ];
 
 function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTITIAL_ADS[number]; onContinue: () => void; onClose: () => void }) {
   const [countdown, setCountdown] = useState(5);
+
+  useEffect(() => {
+    if ((ad as any).openSmartlink) {
+      window.open(ADSTERRA_SMARTLINK, '_blank');
+    }
+  }, [ad]);
   const ready = countdown <= 0;
 
   useEffect(() => {
