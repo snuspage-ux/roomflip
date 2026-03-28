@@ -43,6 +43,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className="dark">
       <head>
         <link rel="dns-prefetch" href="https://www.ikea.com" />
+        {/* Adsterra Popunder - before </head> */}
+        <script async src="https://pl29004924.profitablecpmratenetwork.com/78/43/9b/78439b72b6471a18f0bc13b5b5f3f4b0.js"></script>
         {/* JSON-LD structured data — inline for Google to read in initial HTML */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
           "@context": "https://schema.org",
@@ -77,6 +79,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        {/* Adsterra Social Bar - before </body> */}
+        <script async src="https://pl29004925.profitablecpmratenetwork.com/62/e6/d9/62e6d96d1936cdf73b1449c645894d14.js"></script>
       </body>
     </html>
   );
