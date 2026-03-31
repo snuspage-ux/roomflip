@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About RoomFlip - AI Interior Design Tool",
-  description: "Learn about RoomFlip.io, our mission, and how we use AI to help anyone redesign their living spaces in seconds.",
+  title: "About RoomFlip - Free AI Interior Design Tool | How It Works",
+  description: "RoomFlip.io is a free AI interior design tool. Upload a room photo, pick from 17 styles, get a photorealistic redesign in 30 seconds. No account needed. Powered by Google AI.",
   alternates: { canonical: "https://roomflip.io/about" },
+  openGraph: {
+    title: "About RoomFlip - Free AI Interior Design Tool",
+    description: "Learn how RoomFlip uses AI to redesign any room in 30 seconds. 17 design styles, completely free, no account required.",
+    url: "https://roomflip.io/about",
+  },
 };
 
 export default function AboutPage() {
@@ -88,6 +93,22 @@ export default function AboutPage() {
             <p>
               We believe in making design tools accessible. RoomFlip is supported by advertisements, which allows us to offer the service completely free. Every user gets 5 room redesigns per day — no account required, no credit card needed, no hidden fees. We want as many people as possible to experience the joy of seeing their rooms transformed.
             </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-white mb-4">Key Facts</h2>
+            <ul className="list-disc list-inside space-y-2 mt-4 ml-2">
+              <li>17 interior design styles available</li>
+              <li>AI-generated photorealistic results in approximately 30 seconds</li>
+              <li>5 free redesigns per day, no account required</li>
+              <li>Works with any room type: bedrooms, living rooms, kitchens, bathrooms, offices</li>
+              <li>Powered by Google AI image generation technology</li>
+              <li>Over 10,000 rooms redesigned</li>
+              <li>No watermarks on downloaded images</li>
+              <li>Custom furniture upload feature included for free</li>
+              <li>Before/after comparison slider for easy visualization</li>
+              <li>Mobile-friendly — works on any device with a browser</li>
+            </ul>
           </section>
 
           <section>

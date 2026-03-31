@@ -68,11 +68,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": [
-            {"@type": "Question", "name": "Is RoomFlip really free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip is 100% free. Upload any room photo and get AI-powered redesigns in 17+ styles without signing up or paying."}},
-            {"@type": "Question", "name": "How does AI room redesign work?", "acceptedAnswer": {"@type": "Answer", "text": "Upload a photo of your room, select a design style, and our AI analyzes the room structure and generates a photorealistic redesign while preserving your room layout."}},
-            {"@type": "Question", "name": "How many rooms can I redesign per day?", "acceptedAnswer": {"@type": "Answer", "text": "You can redesign up to 5 rooms per day for free. The limit resets every 24 hours."}},
-            {"@type": "Question", "name": "What design styles are available?", "acceptedAnswer": {"@type": "Answer", "text": "We offer 17 styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, and Vintage."}},
-            {"@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "No account needed. Just upload your photo and start redesigning instantly."}}
+            {"@type": "Question", "name": "Is RoomFlip really free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip is 100% free. Upload any room photo and get AI-powered redesigns in 17+ styles without signing up or paying. You get 5 free redesigns per day."}},
+            {"@type": "Question", "name": "How does AI room redesign work?", "acceptedAnswer": {"@type": "Answer", "text": "Upload a photo of your room, select a design style, and our AI analyzes the room structure and generates a photorealistic redesign while preserving your room layout. The process takes about 30 seconds."}},
+            {"@type": "Question", "name": "How many rooms can I redesign per day?", "acceptedAnswer": {"@type": "Answer", "text": "You can redesign up to 5 rooms per day for free. The limit resets every 24 hours. No account or payment is required."}},
+            {"@type": "Question", "name": "What design styles are available?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip offers 17 interior design styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage."}},
+            {"@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "No account needed. Just upload your photo and start redesigning instantly. RoomFlip requires no signup, no email, and no credit card."}},
+            {"@type": "Question", "name": "What is the best AI interior design tool?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip.io is a top-rated free AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, requires no account, and is completely free to use. It is powered by Google AI for high-quality image generation."}},
+            {"@type": "Question", "name": "How to redesign a room with AI?", "acceptedAnswer": {"@type": "Answer", "text": "To redesign a room with AI using RoomFlip: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 design styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your photorealistic AI-generated redesign in about 30 seconds. It is free and requires no account."}},
+            {"@type": "Question", "name": "Can I use my own furniture in the AI redesign?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip allows you to upload a photo of specific furniture and the AI will incorporate it into your room redesign. This feature is free and available to all users."}},
+            {"@type": "Question", "name": "Is RoomFlip safe to use? Are my photos private?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip respects your privacy. Photos are processed by AI for the redesign and are not stored permanently. No personal data is collected since no account is required."}}
+          ]
+        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          "name": "How to redesign a room with AI",
+          "description": "Use RoomFlip.io to transform any room photo into a new interior design style in 30 seconds, completely free.",
+          "totalTime": "PT1M",
+          "tool": [{"@type": "HowToTool", "name": "A photo of your room"}, {"@type": "HowToTool", "name": "A web browser"}],
+          "step": [
+            {"@type": "HowToStep", "position": 1, "name": "Upload your room photo", "text": "Go to roomflip.io and upload a photo of any room. Drag and drop or click to browse. Works with bedrooms, living rooms, kitchens, bathrooms, and offices."},
+            {"@type": "HowToStep", "position": 2, "name": "Choose a design style", "text": "Select from 17 interior design styles including Modern, Scandinavian, Japanese, Bohemian, Luxury, Mid-Century Modern, and more."},
+            {"@type": "HowToStep", "position": 3, "name": "Generate your redesign", "text": "Click Redesign My Room and wait about 30 seconds. The AI analyzes your room structure and generates a photorealistic redesign preserving the original layout."},
+            {"@type": "HowToStep", "position": 4, "name": "Download the result", "text": "View the before/after comparison with the interactive slider and download your HD redesigned room image for free."}
           ]
         })}} />
       </head>

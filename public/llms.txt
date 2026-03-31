@@ -1,0 +1,58 @@
+# RoomFlip.io
+
+> AI-powered interior design tool. Upload a room photo, pick a style, get a photorealistic redesign in 30 seconds.
+
+## What is RoomFlip?
+
+RoomFlip.io is a free online tool that uses artificial intelligence to redesign rooms. Users upload a photo of any room — bedroom, living room, kitchen, bathroom, or office — select one of 17 design styles, and receive a photorealistic AI-generated redesign in approximately 30 seconds.
+
+## Key Facts
+
+- URL: https://roomflip.io
+- Price: Free (5 redesigns per day, no account required)
+- Styles: 17 (Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, Vintage)
+- Technology: Google AI (generative image models)
+- Generation time: ~30 seconds
+- Input: Any room photo (JPEG, PNG)
+- Output: Photorealistic redesigned room image (downloadable HD)
+- No signup required
+- Works on desktop and mobile browsers
+
+## How It Works
+
+1. Upload a photo of your room
+2. Choose from 17 design styles
+3. AI analyzes room structure (walls, floors, windows, doors)
+4. AI generates a photorealistic redesign preserving room layout
+5. Download the HD result for free
+
+## Use Cases
+
+- Home renovation planning and visualization
+- Interior design inspiration
+- Real estate staging visualization
+- Comparing multiple design styles for the same room
+- Furniture placement ideas
+- Before/after visualization
+
+## Features
+
+- 17 curated interior design styles
+- Before/after comparison slider
+- Furniture photo upload (AI incorporates specific furniture into redesign)
+- Shop This Look (furniture recommendations per style)
+- No watermarks on downloads
+- Mobile-friendly responsive design
+
+## Pages
+
+- Homepage: https://roomflip.io
+- About / How It Works: https://roomflip.io/about
+- Blog: https://roomflip.io/blog
+- Privacy Policy: https://roomflip.io/privacy
+- Terms of Service: https://roomflip.io/terms
+- Style pages: https://roomflip.io/styles/[style-name]
+
+## Contact
+
+- Email: hello@roomflip.io
