@@ -135,63 +135,13 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 
 const ADSTERRA_SMARTLINK = "https://www.profitablecpmratenetwork.com/a1xgh78rg?key=c9073470f5533e480f89270fd7709983";
 
-const INTERSTITIAL_ADS = [
-  {
-    type: 'paid' as const,
-    adScript: undefined,
-    icon: '📢',
-    logo: undefined,
-    promo: undefined,
-    title: 'Sponsored',
-    subtitle: 'Check out this offer',
-    description: 'Opening sponsored content in a new tab...',
-    cta: '',
-    ctaUrl: '',
-    gradient: 'from-amber-500 to-orange-600',
-    bgGlow: 'bg-amber-600/20',
-    openSmartlink: true,
-  },
-  {
-    type: 'paid' as const,
-    adScript: undefined,
-    icon: '📢',
-    logo: undefined,
-    promo: undefined,
-    title: 'Sponsored',
-    subtitle: 'Check out this offer',
-    description: 'Opening sponsored content in a new tab...',
-    cta: '',
-    ctaUrl: '',
-    gradient: 'from-amber-500 to-orange-600',
-    bgGlow: 'bg-amber-600/20',
-    openSmartlink: true,
-  },
-  {
-    type: 'tubevoice' as const,
-    adScript: undefined,
-    icon: '🎙️',
-    logo: '/tubevoice-logo.jpg',
-    promo: '/tubevoice-promo.jpg',
-    title: 'TubeVoice.io',
-    subtitle: 'Watch YouTube videos in YOUR language',
-    description: 'AI dubs any YouTube video into 50+ languages. Just paste a link, pick your language, and hit play. Works with any video — tutorials, podcasts, news, entertainment.',
-    cta: 'Try Free',
-    ctaUrl: 'https://tubevoice.io?ref=roomflip',
-    gradient: 'from-violet-600 to-indigo-600',
-    bgGlow: 'bg-violet-600/20',
-    openSmartlink: false,
-  },
-];
-
-function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTITIAL_ADS[number]; onContinue: () => void; onClose: () => void }) {
+function InterstitialOverlay({ step, totalSteps, onContinue, onClose }: { step: number; totalSteps: number; onContinue: () => void; onClose: () => void }) {
   const [countdown, setCountdown] = useState(5);
+  const ready = countdown <= 0;
 
   useEffect(() => {
-    if ((ad as any).openSmartlink) {
-      window.open(ADSTERRA_SMARTLINK, '_blank');
-    }
-  }, [ad]);
-  const ready = countdown <= 0;
+    setCountdown(5);
+  }, [step]);
 
   useEffect(() => {
     if (ready) return;
@@ -200,47 +150,63 @@ function InterstitialOverlay({ ad, onContinue, onClose }: { ad: typeof INTERSTIT
   }, [countdown, ready]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-6">
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-[#0a0a1a] border border-white/10 rounded-3xl p-8 max-w-md w-full relative shadow-2xl">
-        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg">&times;</button>
-        <p className="text-[10px] uppercase tracking-widest text-slate-600 mb-6 text-center">Sponsored</p>
-        {ad.promo ? (
-          <>
-            <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className="block mb-3">
-              <img src={ad.promo} alt={ad.title} className="w-full rounded-2xl shadow-lg hover:scale-[1.02] transition-transform" />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+      <motion.div key={step} initial={{ scale: 0.92, opacity: 0, y: 16 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.92, opacity: 0, y: 16 }}
+        transition={{ type: "spring", stiffness: 320, damping: 28 }}
+        className="bg-[#0a0a1a] border border-violet-500/20 rounded-3xl max-w-md w-full relative shadow-2xl">
+        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg z-10">&times;</button>
+
+        <div className="p-6">
+          {/* Step progress */}
+          <div className="flex items-center gap-2 mb-5">
+            {Array.from({ length: totalSteps }).map((_, i) => (
+              <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${i <= step ? "bg-violet-500" : "bg-white/10"}`} />
+            ))}
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 shrink-0">
+              <svg className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            </div>
+            <div>
+              <h3 className="font-bold text-white text-sm">One moment…</h3>
+              <p className="text-xs text-slate-500">Advertisement</p>
+            </div>
+          </div>
+
+          {/* Info */}
+          <p className="text-xs text-slate-400 mb-4 leading-relaxed px-3 py-2.5 rounded-lg bg-white/5 border border-white/10">
+            📢 RoomFlip.io is free. Please support us by viewing this short ad ({step + 1}/{totalSteps}).
+          </p>
+
+          {/* TubeVoice promo */}
+          <div className="mb-5 rounded-xl overflow-hidden">
+            <a href="https://tubevoice.io?ref=roomflip" target="_blank" rel="noopener noreferrer" className="block hover:scale-[1.02] transition-transform">
+              <img src="/tubevoice-promo.jpg" alt="TubeVoice — Dub YouTube videos" className="w-full rounded-xl" />
             </a>
-            <h3 className={`text-xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
-            <p className="text-sm text-slate-400 text-center mb-2">{ad.subtitle}</p>
-            <p className="text-xs text-slate-500 text-center mb-4 leading-relaxed">{ad.description}</p>
-            <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
-              {ad.cta} &rarr;
-            </a>
-          </>
-        ) : (
-          <>
-            {ad.logo ? (
-              <img src={ad.logo} alt={ad.title} className="mx-auto w-20 h-20 rounded-2xl object-contain mb-4 shadow-lg" />
-            ) : (
-              <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${ad.gradient} flex items-center justify-center text-3xl mb-4 shadow-lg`}>
-                {ad.icon}
-              </div>
-            )}
-            <h3 className={`text-2xl font-bold text-center mb-1 bg-gradient-to-r ${ad.gradient} bg-clip-text text-transparent`}>{ad.title}</h3>
-            <p className="text-sm text-slate-400 text-center mb-3">{ad.subtitle}</p>
-            <p className="text-sm text-slate-500 text-center mb-6 leading-relaxed">{ad.description}</p>
-            {ad.cta && <a href={ad.ctaUrl} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 rounded-xl font-semibold text-center bg-gradient-to-r ${ad.gradient} hover:opacity-90 transition-opacity text-white mb-4`}>
-              {ad.cta} &rarr;
-            </a>}
-          </>
-        )}
-        {ready ? (
-          <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} onClick={onContinue}
-            className="w-full py-3 rounded-xl font-semibold bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all text-white">
-            Continue ▶
-          </motion.button>
-        ) : (
-          <p className="text-center text-sm text-slate-600">Continue in {countdown}s...</p>
-        )}
+            <div className="mt-3 text-center">
+              <p className="text-sm font-bold text-violet-400">TubeVoice.io</p>
+              <p className="text-xs text-slate-500 mt-1">Dub any YouTube video into 50+ languages. 100% automatic & free to try.</p>
+            </div>
+          </div>
+
+          {/* CTA */}
+          {ready ? (
+            <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} onClick={onContinue}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all text-white shadow-lg shadow-green-500/25">
+              Continue ▶
+            </motion.button>
+          ) : (
+            <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold bg-white/5 text-slate-600 cursor-not-allowed">
+              Continue in {countdown}s…
+            </div>
+          )}
+
+          <p className="text-center text-[10px] text-slate-600 mt-2">
+            <button onClick={onClose} className="underline hover:text-slate-400">Cancel</button>
+          </p>
+        </div>
       </motion.div>
     </motion.div>
   );
@@ -336,6 +302,7 @@ export default function Home() {
 
   const handleGenerate = () => {
     if (!image) return;
+    window.open(ADSTERRA_SMARTLINK, "_blank");
     setActiveInterstitial(0);
     setInterstitialCallback(() => () => {
       setActiveInterstitial(null);
@@ -345,6 +312,7 @@ export default function Home() {
   };
 
   const handleDownloadClick = () => {
+    window.open(ADSTERRA_SMARTLINK, "_blank");
     setActiveInterstitial(1);
     setInterstitialCallback(() => () => {
       // First interstitial done, show second
@@ -676,8 +644,9 @@ export default function Home() {
       <AnimatePresence>
         {activeInterstitial !== null && (
           <InterstitialOverlay
-            ad={INTERSTITIAL_ADS[activeInterstitial]}
-            onContinue={() => interstitialCallback?.()}
+            step={activeInterstitial}
+            totalSteps={3}
+            onContinue={() => { window.open(ADSTERRA_SMARTLINK, "_blank"); interstitialCallback?.(); }}
             onClose={() => { setActiveInterstitial(null); setInterstitialCallback(null); }}
           />
         )}
