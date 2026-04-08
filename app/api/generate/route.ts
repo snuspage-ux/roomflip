@@ -6,6 +6,9 @@ import { headers } from "next/headers";
 import Replicate from "replicate";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
+
+// PAUSED — set to false to re-enable generations
+const GENERATIONS_PAUSED = true;
 const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374";
 
 const stylePrompts: Record<string, string> = {
@@ -71,6 +74,9 @@ async function checkDailyLimit(ip: string, fingerprint: string | null): Promise<
 
 export async function POST(request: Request) {
   try {
+    if (GENERATIONS_PAUSED) {
+      return NextResponse.json({ error: "Generation is temporarily unavailable. Please check back soon!" }, { status: 503 });
+    }
     const hdrs = await headers();
     const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || hdrs.get("x-real-ip") || "unknown";
 
