@@ -28,7 +28,9 @@ const stylePrompts: Record<string, string> = {
   "Mediterranean": "mediterranean with terracotta tiles, arched doorways, wrought iron, warm earth tones, textured stucco walls",
 };
 
-const DAILY_LIMIT = 5;
+const DAILY_LIMIT = 3;
+const GLOBAL_DAILY_CAP = 71; // ~$10/day at $0.14/gen
+const GLOBAL_CAP_KEY = "global:daily_cap";
 const TURSO_URL = (process.env.TURSO_DATABASE_URL || "").replace("libsql://", "https://");
 const TURSO_TOKEN = process.env.TURSO_AUTH_TOKEN || "";
 
@@ -76,9 +78,22 @@ export async function POST(request: Request) {
     const fpMatch = cookies.match(/rf_fp=([^;]+)/);
     const fingerprint = fpMatch ? fpMatch[1] : null;
 
-    if (!(await checkDailyLimit(ip, fingerprint))) {
-      return NextResponse.json({ error: "Daily limit reached (5/day). Come back tomorrow!" }, { status: 429 });
-    }
+    // Global daily cost cap
+  const globalOk = await checkAndIncrement(GLOBAL_CAP_KEY + ":" + new Date().toISOString().split("T")[0]);
+  // checkAndIncrement uses DAILY_LIMIT — override for global cap check
+  const todayKey = GLOBAL_CAP_KEY + ":" + new Date().toISOString().split("T")[0];
+  const globalResult = await tursoExec("SELECT count FROM RateLimit WHERE id = ?", [{ type: "text", value: todayKey }]);
+  const globalCount = parseInt(globalResult?.rows?.[0]?.[0]?.value || "0");
+  if (globalCount > GLOBAL_DAILY_CAP) {
+    return NextResponse.json({ error: "Service temporarily unavailable. Try again tomorrow!" }, { status: 503 });
+  }
+  // Increment global counter
+  await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?) ON CONFLICT(id) DO UPDATE SET count = count + 1, date = ?",
+    [{ type: "text", value: todayKey }, { type: "text", value: new Date().toISOString().split("T")[0] }, { type: "text", value: new Date().toISOString().split("T")[0] }]);
+
+  if (!(await checkDailyLimit(ip, fingerprint))) {
+    return NextResponse.json({ error: "Daily limit reached (3/day). Come back tomorrow!" }, { status: 429 });
+  }
 
     const { imageUrl, theme, furnitureImage, aspectRatio } = await request.json();
     if (!imageUrl || !theme) {
