@@ -211,13 +211,13 @@ export default async function StylePage({ params }: { params: Promise<{ style: s
             <li className="flex gap-3"><span className="text-indigo-400 font-bold">1.</span> Upload a photo of your room</li>
             <li className="flex gap-3"><span className="text-indigo-400 font-bold">2.</span> Select &quot;{styleName(style)}&quot; style</li>
             <li className="flex gap-3"><span className="text-indigo-400 font-bold">3.</span> AI generates your redesigned room in ~30 seconds</li>
-            <li className="flex gap-3"><span className="text-indigo-400 font-bold">4.</span> Download your HD result — completely free</li>
+            <li className="flex gap-3"><span className="text-indigo-400 font-bold">4.</span> Download your HD result</li>
           </ol>
         </div>
 
         <div className="text-center">
           <Link href="/#generator" className="inline-flex px-8 py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all shadow-lg shadow-indigo-500/25">
-            Try {styleName(style)} Style — Free
+            Try {styleName(style)} Style Now
           </Link>
         </div>
 

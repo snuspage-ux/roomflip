@@ -162,13 +162,13 @@ export default async function BlogPostPage({
         <div className="mt-16 p-8 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 rounded-2xl text-center">
           <h3 className="text-2xl font-bold mb-3">Ready to transform your room?</h3>
           <p className="text-slate-400 mb-6">
-            Upload a photo and see your room redesigned in seconds. Free, no signup required.
+            Upload a photo and see your room redesigned in seconds. No signup required.
           </p>
           <Link
             href="/"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all"
           >
-            Try RoomFlip Free
+            Try RoomFlip Now
           </Link>
         </div>
 

@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "https://roomflip.io/blog", lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: "https://roomflip.io/privacy", lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: "https://roomflip.io/terms", lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: "https://roomflip.io/contact", lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     ...getAllSlugs().map((slug) => ({
       url: `https://roomflip.io/blog/${slug}`,
       lastModified: now,

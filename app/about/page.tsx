@@ -88,12 +88,7 @@ export default function AboutPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="text-2xl font-semibold text-white mb-4">Why Free?</h2>
-            <p>
-              We believe in making design tools accessible. RoomFlip is supported by advertisements, which allows us to offer the service completely free. Every user gets 5 room redesigns per day — no account required, no credit card needed, no hidden fees. We want as many people as possible to experience the joy of seeing their rooms transformed.
-            </p>
-          </section>
+
 
           <section>
             <h2 className="text-2xl font-semibold text-white mb-4">Key Facts</h2>

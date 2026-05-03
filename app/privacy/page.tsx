@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | RoomFlip.io",
-  description: "RoomFlip.io privacy policy. Learn how we handle your data, photos, cookies, and third-party services like Google AdSense.",
+  description: "RoomFlip.io privacy policy. Learn how we handle your data, photos, cookies, and third-party services.",
   alternates: { canonical: "https://roomflip.io/privacy" },
   robots: { index: false },
 };
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li><strong className="text-white">Uploaded Images:</strong> When you upload a room photo, the image is sent to our AI processing service to generate your redesign. We do not permanently store your uploaded images on our servers. Images are processed in real-time and discarded after the redesign is generated.</li>
               <li><strong className="text-white">Usage Data:</strong> We automatically collect certain information about your device and how you interact with our website, including your IP address (anonymized for rate limiting), browser type, pages visited, and time spent on the site.</li>
-              <li><strong className="text-white">Cookies &amp; Similar Technologies:</strong> We use cookies and similar tracking technologies for analytics and advertising purposes. See section 5 for more details.</li>
+              <li><strong className="text-white">Cookies &amp; Similar Technologies:</strong> We use cookies and similar tracking technologies for analytics purposes. See section 5 for more details.</li>
             </ul>
           </section>
 
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
               <li>To provide and maintain our AI room redesign service</li>
               <li>To enforce usage limits (5 redesigns per day per user)</li>
               <li>To improve our website and user experience</li>
-              <li>To display relevant advertisements through Google AdSense</li>
+
               <li>To analyze website traffic and usage patterns</li>
               <li>To detect and prevent abuse or unauthorized use</li>
             </ul>
@@ -49,7 +49,6 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-white mb-3">4. Third-Party Services</h2>
             <p className="mb-3">We use the following third-party services that may collect data:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li><strong className="text-white">Google AdSense:</strong> We use Google AdSense to display advertisements. Google may use cookies to serve ads based on your prior visits to our website or other websites. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" className="text-indigo-400 hover:underline" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>.</li>
               <li><strong className="text-white">AI Processing Services:</strong> Your uploaded images are processed by third-party AI services (Google AI) to generate room redesigns. These services process images transiently and do not retain them.</li>
             </ul>
           </section>
@@ -60,7 +59,7 @@ export default function PrivacyPage() {
             <ul className="list-disc list-inside space-y-2 ml-2">
               <li><strong className="text-white">Essential Cookies:</strong> Required for the website to function properly, such as rate limiting and session management.</li>
               <li><strong className="text-white">Analytics Cookies:</strong> Help us understand how visitors interact with our website by collecting and reporting information anonymously.</li>
-              <li><strong className="text-white">Advertising Cookies:</strong> Used by Google AdSense to display relevant advertisements. These cookies may track your browsing activity across multiple websites.</li>
+
             </ul>
             <p className="mt-3">You can control cookies through your browser settings. Disabling certain cookies may affect the functionality of our website.</p>
           </section>

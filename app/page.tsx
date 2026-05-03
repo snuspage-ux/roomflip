@@ -133,85 +133,6 @@ const SHOP_ITEMS: Record<string, { name: string; emoji: string; url: string; sto
 };
 
 
-const ADSTERRA_SMARTLINK = "https://www.profitablecpmratenetwork.com/a1xgh78rg?key=c9073470f5533e480f89270fd7709983";
-
-function InterstitialOverlay({ step, totalSteps, onContinue, onClose }: { step: number; totalSteps: number; onContinue: () => void; onClose: () => void }) {
-  const [countdown, setCountdown] = useState(5);
-  const ready = countdown <= 0;
-
-  useEffect(() => {
-    setCountdown(5);
-  }, [step]);
-
-  useEffect(() => {
-    if (ready) return;
-    const t = setTimeout(() => setCountdown(c => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [countdown, ready]);
-
-  return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-      <motion.div key={step} initial={{ scale: 0.92, opacity: 0, y: 16 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.92, opacity: 0, y: 16 }}
-        transition={{ type: "spring", stiffness: 320, damping: 28 }}
-        className="bg-[#0a0a1a] border border-violet-500/20 rounded-3xl max-w-md w-full relative shadow-2xl">
-        <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-slate-500 hover:text-white transition-colors text-lg z-10">&times;</button>
-
-        <div className="p-6">
-          {/* Step progress */}
-          <div className="flex items-center gap-2 mb-5">
-            {Array.from({ length: totalSteps }).map((_, i) => (
-              <div key={i} className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${i <= step ? "bg-violet-500" : "bg-white/10"}`} />
-            ))}
-          </div>
-
-          {/* Header */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 shrink-0">
-              <svg className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            </div>
-            <div>
-              <h3 className="font-bold text-white text-sm">One moment…</h3>
-              <p className="text-xs text-slate-500">Advertisement</p>
-            </div>
-          </div>
-
-          {/* Info */}
-          <p className="text-xs text-slate-400 mb-4 leading-relaxed px-3 py-2.5 rounded-lg bg-white/5 border border-white/10">
-            📢 RoomFlip.io is free. Please support us by viewing this short ad ({step + 1}/{totalSteps}).
-          </p>
-
-          {/* TubeVoice promo */}
-          <div className="mb-5 rounded-xl overflow-hidden">
-            <a href="https://tubevoice.io?ref=roomflip" target="_blank" rel="noopener noreferrer" className="block hover:scale-[1.02] transition-transform">
-              <img src="/tubevoice-promo.jpg" alt="TubeVoice — Dub YouTube videos" className="w-full rounded-xl" />
-            </a>
-            <div className="mt-3 text-center">
-              <p className="text-sm font-bold text-violet-400">TubeVoice.io</p>
-              <p className="text-xs text-slate-500 mt-1">Dub any YouTube video into 50+ languages. 100% automatic & free to try.</p>
-            </div>
-          </div>
-
-          {/* CTA */}
-          {ready ? (
-            <motion.button initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} onClick={onContinue}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 transition-all text-white shadow-lg shadow-green-500/25">
-              Continue ▶
-            </motion.button>
-          ) : (
-            <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold bg-white/5 text-slate-600 cursor-not-allowed">
-              Continue in {countdown}s…
-            </div>
-          )}
-
-          <p className="text-center text-[10px] text-slate-600 mt-2">
-            <button onClick={onClose} className="underline hover:text-slate-400">Cancel</button>
-          </p>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
 const EXAMPLES = [{ before: "/original-room.jpg?v=2", after: "/after-room.jpg?v=2", style: "Modern" }];
 
 
@@ -246,10 +167,6 @@ export default function Home() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [furnitureImage, setFurnitureImage] = useState<string | null>(null);
   const [imageAspect, setImageAspect] = useState<string>('match_input_image');
-
-  // Interstitial ad state
-  const [activeInterstitial, setActiveInterstitial] = useState<number | null>(null);
-  const [interstitialCallback, setInterstitialCallback] = useState<(() => void) | null>(null);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -302,31 +219,15 @@ export default function Home() {
 
   const handleGenerate = () => {
     if (!image) return;
-    window.open(ADSTERRA_SMARTLINK, "_blank");
-    setActiveInterstitial(0);
-    setInterstitialCallback(() => () => {
-      setActiveInterstitial(null);
-      setInterstitialCallback(null);
-      doGenerate();
-    });
+    doGenerate();
   };
 
   const handleDownloadClick = () => {
-    window.open(ADSTERRA_SMARTLINK, "_blank");
-    setActiveInterstitial(1);
-    setInterstitialCallback(() => () => {
-      // First interstitial done, show second
-      setActiveInterstitial(2);
-      setInterstitialCallback(() => () => {
-        setActiveInterstitial(null);
-        setInterstitialCallback(null);
-        if (!result) return;
-        const link = document.createElement("a");
-        link.href = result;
-        link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
-        link.click();
-      });
-    });
+    if (!result) return;
+    const link = document.createElement("a");
+    link.href = result;
+    link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
+    link.click();
   };
 
 
@@ -352,9 +253,8 @@ export default function Home() {
             <a href="#examples" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Examples</a>
             <a href="#generator" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Generate</a>
           </div>
-          <div className="flex items-center gap-2 bg-green-500/15 border border-green-500/20 px-3 py-1.5 rounded-full">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-semibold text-green-300">100% Free</span>
+          <div className="flex items-center gap-2 bg-indigo-500/15 border border-indigo-500/20 px-3 py-1.5 rounded-full">
+            <span className="text-xs font-semibold text-indigo-300">Powered by Google AI</span>
           </div>
         </div>
       </motion.nav>
@@ -371,11 +271,11 @@ export default function Home() {
             Redesign any room with <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">AI in seconds</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12">
-            Upload a photo of your room and watch AI transform it into 17 stunning design styles. Professional interior design — completely free.
+            Upload a photo of your room and watch AI transform it into 17 stunning design styles. Professional AI interior design, instant results.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={() => document.getElementById("generator")?.scrollIntoView({ behavior: "smooth" })} className="group relative px-8 py-4 rounded-xl font-semibold text-lg overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all group-hover:scale-105" /><span className="relative">Try it free</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 transition-all group-hover:scale-105" /><span className="relative">Redesign a room</span>
             </button>
             <a href="#examples" className="px-8 py-4 rounded-xl font-semibold text-lg border border-white/10 hover:bg-white/5 transition-colors">See examples</a>
           </motion.div>
@@ -414,12 +314,12 @@ export default function Home() {
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.h2 initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-3xl font-bold text-center mb-4">How It Works</motion.h2>
-          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Redesign any room in three simple steps — no account, no payment, no design skills needed.</p>
+          <p className="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Redesign any room in three simple steps — no account needed, no design skills required.</p>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { step: "1", icon: "📸", title: "Upload Your Photo", desc: "Take a photo of any room in your home and upload it. Works with living rooms, bedrooms, kitchens, bathrooms — any space." },
               { step: "2", icon: "🎨", title: "Choose a Style", desc: "Pick from 17 stunning design styles — Modern, Scandinavian, Japanese, Bohemian, Luxury, and more." },
-              { step: "3", icon: "✨", title: "Download Your Redesign", desc: "AI generates a photorealistic redesign in ~30 seconds. Download the HD result completely free." },
+              { step: "3", icon: "✨", title: "Download Your Redesign", desc: "AI generates a photorealistic redesign in ~30 seconds. Download the HD result and share it with friends." },
             ].map((item) => (
               <motion.div key={item.step} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center p-6 bg-white/[0.03] border border-white/10 rounded-2xl">
                 <div className="text-4xl mb-4">{item.icon}</div>
@@ -587,13 +487,13 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "Is RoomFlip really free?", a: "Yes, RoomFlip is 100% free. Upload any room photo and get AI-powered redesigns in 17+ styles without signing up or paying. You get 5 free redesigns per day with no account required." },
+              { q: "Is RoomFlip really free?", a: "RoomFlip offers a free plan with 5 redesigns per day, and paid subscription plans (Starter $5/mo, Pro $9/mo) for higher usage limits and additional features. No account is required to get started." },
               { q: "How does AI room redesign work?", a: "Upload a photo of your room, select a design style, and our AI analyzes the room structure — walls, floors, windows, doors — and generates a photorealistic redesign while preserving your room layout. The entire process takes about 30 seconds." },
-              { q: "What is the best AI interior design tool?", a: "RoomFlip.io is one of the best free AI interior design tools available. It offers 17 design styles, generates photorealistic results in 30 seconds, requires no account, and is powered by Google AI. Unlike many competitors, RoomFlip is completely free with no watermarks." },
-              { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result. It takes about 30 seconds and is completely free." },
+              { q: "What is the best AI interior design tool?", a: "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI. RoomFlip offers both free and paid subscription plans." },
+              { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result. It takes about 30 seconds." },
               { q: "How many rooms can I redesign per day?", a: "You can redesign up to 5 rooms per day for free. The limit resets every 24 hours. No signup or payment is needed." },
               { q: "What design styles are available?", a: "RoomFlip offers 17 interior design styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage." },
-              { q: "Can I use my own furniture in the redesign?", a: "Yes! RoomFlip lets you upload a photo of specific furniture and the AI will incorporate it into your room redesign. This feature is free for all users." },
+              { q: "Can I use my own furniture in the redesign?", a: "Yes! RoomFlip lets you upload a photo of specific furniture and the AI will incorporate it into your room redesign." },
               { q: "Do I need to create an account?", a: "No account needed. Just upload your photo and start redesigning instantly. No email, no signup, no credit card." },
               { q: "Is my photo safe?", a: "Your photos are processed by AI and not stored permanently. We respect your privacy. No personal data is collected since no account is required." },
               { q: "What rooms can I redesign?", a: "RoomFlip works with any room type — bedrooms, living rooms, kitchens, bathrooms, offices, dining rooms, and more. Any clear, well-lit photo of an indoor space will work." },
@@ -615,7 +515,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-6">What is RoomFlip?</h2>
           <div className="space-y-4 text-slate-400 text-sm leading-relaxed">
-            <p>RoomFlip.io is a free AI-powered interior design tool that transforms room photos into photorealistic redesigns. Users upload a photo of any room, choose from 17 design styles, and receive an AI-generated redesign in approximately 30 seconds. No account, signup, or payment is required.</p>
+            <p>RoomFlip.io is an AI-powered interior design tool that transforms room photos into photorealistic redesigns. Users upload a photo of any room, choose from 17 design styles, and receive an AI-generated redesign in approximately 30 seconds. RoomFlip offers both free and paid subscription plans.</p>
             <p>RoomFlip uses Google AI technology to analyze room structure — including walls, floors, windows, and doors — and apply the selected design style while preserving the original room layout. The tool supports bedrooms, living rooms, kitchens, bathrooms, offices, and any other indoor space.</p>
             <p>Available design styles include Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage. Users can also upload a photo of specific furniture to incorporate into the redesign.</p>
             <p>RoomFlip is used for home renovation planning, interior design inspiration, real estate staging visualization, and comparing multiple design styles for the same space. Over 10,000 rooms have been redesigned using the platform.</p>
@@ -630,9 +530,9 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-6">
               <Link href="/about" className="hover:text-white transition-colors">About</Link>
               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-              <a href="mailto:hello@roomflip.io" className="hover:text-white transition-colors">Contact</a>
             </div>
           </div>
           <p className="text-center text-slate-600 text-xs mt-6">&copy; 2026 RoomFlip.io. Powered by Google AI.</p>
@@ -640,17 +540,7 @@ export default function Home() {
       </footer>
 
 
-      {/* Interstitial Overlay */}
-      <AnimatePresence>
-        {activeInterstitial !== null && (
-          <InterstitialOverlay
-            step={activeInterstitial}
-            totalSteps={3}
-            onContinue={() => { window.open(ADSTERRA_SMARTLINK, "_blank"); interstitialCallback?.(); }}
-            onClose={() => { setActiveInterstitial(null); setInterstitialCallback(null); }}
-          />
-        )}
-      </AnimatePresence>
+
     </main>
   );
 }
