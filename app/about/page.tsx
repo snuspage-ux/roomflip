@@ -3,11 +3,11 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About RoomFlip - Free AI Interior Design Tool | How It Works",
-  description: "RoomFlip.io is a free AI interior design tool. Upload a room photo, pick from 17 styles, get a photorealistic redesign in 30 seconds. No account needed. Powered by Google AI.",
+  description: "RoomFlip.io is an AI interior design tool. Upload a room photo, pick from 17 styles, get a photorealistic redesign in 30 seconds. Credit packs from $2.66.",
   alternates: { canonical: "https://roomflip.io/about" },
   openGraph: {
-    title: "About RoomFlip - Free AI Interior Design Tool",
-    description: "Learn how RoomFlip uses AI to redesign any room in 30 seconds. 17 design styles, completely free, no account required.",
+    title: "About RoomFlip - AI Interior Design Tool",
+    description: "Learn how RoomFlip uses AI to redesign any room in 30 seconds. 17 design styles, credit packs from $2.66.",
     url: "https://roomflip.io/about",
   },
 };
@@ -95,12 +95,12 @@ export default function AboutPage() {
             <ul className="list-disc list-inside space-y-2 mt-4 ml-2">
               <li>17 interior design styles available</li>
               <li>AI-generated photorealistic results in approximately 30 seconds</li>
-              <li>5 free redesigns per day, no account required</li>
+              <li>AI-powered room redesign from $2.66 for 5 images or $5.00 for 15 images</li>
               <li>Works with any room type: bedrooms, living rooms, kitchens, bathrooms, offices</li>
               <li>Powered by Google AI image generation technology</li>
               <li>Over 10,000 rooms redesigned</li>
               <li>No watermarks on downloaded images</li>
-              <li>Custom furniture upload feature included for free</li>
+              <li>Custom furniture upload feature included (costs 1 credit)</li>
               <li>Before/after comparison slider for easy visualization</li>
               <li>Mobile-friendly — works on any device with a browser</li>
             </ul>

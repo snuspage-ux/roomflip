@@ -487,14 +487,15 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "Is RoomFlip really free?", a: "RoomFlip offers a free plan with 5 redesigns per day, and paid subscription plans (Starter $5/mo, Pro $9/mo) for higher usage limits and additional features. No account is required to get started." },
+              { q: "How much does RoomFlip cost?", a: "RoomFlip works on a credit system. Generate and download a redesigned room costs 1 credit. Buy a Starter Pack ($2.66 for 5 credits) or Pro Pack ($5.00 for 15 credits). No account or subscription required." },
               { q: "How does AI room redesign work?", a: "Upload a photo of your room, select a design style, and our AI analyzes the room structure — walls, floors, windows, doors — and generates a photorealistic redesign while preserving your room layout. The entire process takes about 30 seconds." },
-              { q: "What is the best AI interior design tool?", a: "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI. RoomFlip offers both free and paid subscription plans." },
-              { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result. It takes about 30 seconds." },
-              { q: "How many rooms can I redesign per day?", a: "You can redesign up to 5 rooms per day for free. The limit resets every 24 hours. No signup or payment is needed." },
+              { q: "What is the best AI interior design tool?", a: "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI." },
+              { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result after purchasing a credit pack." },
+
+              { q: "How much does a room redesign cost?", a: "Each AI room redesign costs 1 credit. You can buy a Starter Pack ($2.66 for 5 credits, ~$0.53 per redesign) or a Pro Pack ($5.00 for 15 credits, ~$0.33 per redesign). Credits never expire." },
               { q: "What design styles are available?", a: "RoomFlip offers 17 interior design styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage." },
               { q: "Can I use my own furniture in the redesign?", a: "Yes! RoomFlip lets you upload a photo of specific furniture and the AI will incorporate it into your room redesign." },
-              { q: "Do I need to create an account?", a: "No account needed. Just upload your photo and start redesigning instantly. No email, no signup, no credit card." },
+              { q: "Do I need to create an account?", a: "No account needed. Your device is automatically recognized, and any credits you purchase are tied to your device. No email, no signup, no hassle." },
               { q: "Is my photo safe?", a: "Your photos are processed by AI and not stored permanently. We respect your privacy. No personal data is collected since no account is required." },
               { q: "What rooms can I redesign?", a: "RoomFlip works with any room type — bedrooms, living rooms, kitchens, bathrooms, offices, dining rooms, and more. Any clear, well-lit photo of an indoor space will work." },
             ].map((faq, i) => (
@@ -515,7 +516,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-6">What is RoomFlip?</h2>
           <div className="space-y-4 text-slate-400 text-sm leading-relaxed">
-            <p>RoomFlip.io is an AI-powered interior design tool that transforms room photos into photorealistic redesigns. Users upload a photo of any room, choose from 17 design styles, and receive an AI-generated redesign in approximately 30 seconds. RoomFlip offers both free and paid subscription plans.</p>
+            <p>RoomFlip.io is an AI-powered interior design tool that transforms room photos into photorealistic redesigns. Users upload a photo of any room, choose from 17 design styles, and receive an AI-generated redesign in approximately 30 seconds. Each redesign costs 1 credit. Credit packs available from $2.66 for 5 credits.</p>
             <p>RoomFlip uses Google AI technology to analyze room structure — including walls, floors, windows, and doors — and apply the selected design style while preserving the original room layout. The tool supports bedrooms, living rooms, kitchens, bathrooms, offices, and any other indoor space.</p>
             <p>Available design styles include Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage. Users can also upload a photo of specific furniture to incorporate into the redesign.</p>
             <p>RoomFlip is used for home renovation planning, interior design inspiration, real estate staging visualization, and comparing multiple design styles for the same space. Over 10,000 rooms have been redesigned using the platform.</p>
@@ -532,10 +533,18 @@ export default function Home() {
               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
               <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/refund-policy" className="hover:text-white transition-colors">Refund Policy</Link>
               <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             </div>
           </div>
-          <p className="text-center text-slate-600 text-xs mt-6">&copy; 2026 RoomFlip.io. Powered by Google AI.</p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-4 mt-4 text-xs text-slate-600">
+            <span>Ondřej Slíva, IČO: 23051256</span>
+            <span className="hidden md:inline">·</span>
+            <span>Pod Křížem 2, Václavovice, 739 34</span>
+            <span className="hidden md:inline">·</span>
+            <a href="mailto:hello@roomflip.io" className="hover:text-slate-400 transition-colors">hello@roomflip.io</a>
+          </div>
+          <p className="text-center text-slate-600 text-xs mt-4">&copy; 2026 RoomFlip.io. Powered by Google AI.</p>
         </div>
       </footer>
 

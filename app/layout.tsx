@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import CookieConsent from "@/components/CookieConsent";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -68,13 +69,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "mainEntity": [
-            {"@type": "Question", "name": "Is RoomFlip really free?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip offers a free plan with 5 redesigns per day, plus paid subscription plans for higher usage. No account required to get started."}},
-            {"@type": "Question", "name": "How does AI room redesign work?", "acceptedAnswer": {"@type": "Answer", "text": "Upload a photo of your room, select a design style, and our AI analyzes the room structure and generates a photorealistic redesign while preserving your room layout. The process takes about 30 seconds."}},
-            {"@type": "Question", "name": "How many rooms can I redesign per day?", "acceptedAnswer": {"@type": "Answer", "text": "You can redesign up to 5 rooms per day for free. The limit resets every 24 hours. No account or payment is required."}},
+            {"@type": "Question", "name": "How much does RoomFlip cost?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip works on a credit system. Each AI room redesign costs 1 credit. Starter Pack: $2.66 for 5 credits. Pro Pack: $5.00 for 15 credits. No account or subscriptions."}},
+            {"@type": "Question", "name": "How does AI room redesign work?", "acceptedAnswer": {"@type": "Answer", "text": "Upload a photo of your room, select a design style, and our AI analyzes the room structure and generates a photorealistic redesign while preserving your room layout. The process takes about 30 seconds. Each redesign costs 1 credit."}},
+
             {"@type": "Question", "name": "What design styles are available?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip offers 17 interior design styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage."}},
-            {"@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "No account needed. Just upload your photo and start redesigning instantly. RoomFlip requires no signup, no email, and no credit card."}},
-            {"@type": "Question", "name": "What is the best AI interior design tool?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI. RoomFlip offers both free and paid subscription plans."}},
-            {"@type": "Question", "name": "How to redesign a room with AI?", "acceptedAnswer": {"@type": "Answer", "text": "To redesign a room with AI using RoomFlip: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 design styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your photorealistic AI-generated redesign in about 30 seconds."}},
+            {"@type": "Question", "name": "Do I need to create an account?", "acceptedAnswer": {"@type": "Answer", "text": "No account needed. Your device is automatically recognized, and any credits you purchase are tied to your device. No email, no signup, no hassle."}},
+            {"@type": "Question", "name": "What is the best AI interior design tool?", "acceptedAnswer": {"@type": "Answer", "text": "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI."}},
+            {"@type": "Question", "name": "How to redesign a room with AI?", "acceptedAnswer": {"@type": "Answer", "text": "To redesign a room with AI using RoomFlip: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 design styles, 4) Purchase a credit pack, 5) Click Redesign My Room, 6) Download your HD result. Each redesign costs 1 credit."}},
             {"@type": "Question", "name": "Can I use my own furniture in the AI redesign?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip allows you to upload a photo of specific furniture and the AI will incorporate it into your room redesign."}},
             {"@type": "Question", "name": "Is RoomFlip safe to use? Are my photos private?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, RoomFlip respects your privacy. Photos are processed by AI for the redesign and are not stored permanently. No personal data is collected since no account is required."}}
           ]
@@ -96,6 +97,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
+        <CookieConsent />
       </body>
     </html>
   );
