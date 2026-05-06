@@ -294,6 +294,11 @@ export default function PricingPage() {
             )}
           </AnimatePresence>
 
+          {/* PayPal coming soon */}
+          <div className="mt-12 max-w-md mx-auto text-center">
+            <p className="text-xs text-slate-500">PayPal payments coming soon.</p>
+          </div>
+
           {/* Features list */}
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
             className="mt-16 max-w-3xl mx-auto"
@@ -326,7 +331,7 @@ export default function PricingPage() {
             <h2 className="text-2xl font-bold text-center mb-8">Payment FAQ</h2>
             <div className="space-y-3">
               {[
-                { q: "What payment methods do you accept?", a: "We accept PayPal (credit/debit cards + PayPal balance) and cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies)." },
+                { q: "What payment methods do you accept?", a: "We accept cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies). PayPal coming soon." },
                 { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately. Each generation consumes 1 credit, and you skip the daily free limit." },
                 { q: "Do credits expire?", a: "No! Credits never expire. Buy once and use them whenever you want." },
                 { q: "Is crypto payment safe?", a: "Yes. All crypto payments are processed through NowPayments, a trusted payment gateway. You can pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies." },
