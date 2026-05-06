@@ -252,6 +252,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full px-1 py-1">
             <a href="#examples" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Examples</a>
             <a href="#generator" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Generate</a>
+            <Link href="/pricing" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Pricing</Link>
           </div>
           <div className="flex items-center gap-2 bg-indigo-500/15 border border-indigo-500/20 px-3 py-1.5 rounded-full">
             <span className="text-xs font-semibold text-indigo-300">Powered by Google AI</span>

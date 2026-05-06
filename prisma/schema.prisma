@@ -21,3 +21,36 @@ model RateLimit {
   count     Int      @default(0)
   date      String
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  credits   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions  Session[]
+  purchases Purchase[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Purchase {
+  id         String   @id @default(cuid())
+  userId     String
+  email      String
+  amount     Float
+  credits    Int
+  method     String
+  status     String
+  paypalOrderId String?
+  nowpaymentsInvoiceId String?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}

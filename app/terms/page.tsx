@@ -17,7 +17,7 @@ export default function TermsPage() {
 
         <div className="mb-8 p-4 bg-white/[0.03] border border-white/10 rounded-xl text-sm text-slate-400">
           <p className="font-semibold text-white mb-1">Service Provider:</p>
-          <p>Ondřej Slíva, IČO: 23051256, Pod Křížem 2, Václavovice, 739 34, Czech Republic</p>
+          <p>RoomFlip.io — AI Interior Design Tool</p>
           <p className="mt-2">Contact: <a href="mailto:hello@roomflip.io" className="text-indigo-400 hover:underline">hello@roomflip.io</a></p>
         </div>
 
@@ -171,9 +171,6 @@ export default function TermsPage() {
               If you have any questions about these Terms of Service, please contact us:
             </p>
             <div className="mt-3 p-4 bg-white/[0.03] border border-white/10 rounded-xl text-sm">
-              <p><strong className="text-white">Service Provider:</strong> Ondřej Slíva</p>
-              <p><strong className="text-white">IČO:</strong> 23051256</p>
-              <p><strong className="text-white">Address:</strong> Pod Křížem 2, Václavovice, 739 34, Czech Republic</p>
               <p><strong className="text-white">Email:</strong> <a href="mailto:hello@roomflip.io" className="text-indigo-400 hover:underline">hello@roomflip.io</a></p>
             </div>
           </section>

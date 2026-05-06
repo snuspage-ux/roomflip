@@ -4,6 +4,8 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Replicate from "replicate";
+import { getCurrentUser } from "@/lib/auth";
+import { checkCredits, deductCredits } from "@/lib/credits";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
 
@@ -97,8 +99,20 @@ export async function POST(request: Request) {
   await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?) ON CONFLICT(id) DO UPDATE SET count = count + 1, date = ?",
     [{ type: "text", value: todayKey }, { type: "text", value: new Date().toISOString().split("T")[0] }, { type: "text", value: new Date().toISOString().split("T")[0] }]);
 
-  if (!(await checkDailyLimit(ip, fingerprint))) {
-    return NextResponse.json({ error: "Daily limit reached (3/day). Come back tomorrow!" }, { status: 429 });
+  // Check if user has credits — they skip the daily limit
+  const user = await getCurrentUser();
+  const hasCredits = user ? await checkCredits(user.id, 1) : false;
+
+  if (!hasCredits) {
+    // Non-credit users: enforce daily limit
+    if (!(await checkDailyLimit(ip, fingerprint))) {
+      return NextResponse.json({ error: "Daily limit reached (3/day). Come back tomorrow!" }, { status: 429 });
+    }
+  }
+
+  // Deduct credit if user has them and used one
+  if (hasCredits && user) {
+    await deductCredits(user.id, 1);
   }
 
     const { imageUrl, theme, furnitureImage, aspectRatio } = await request.json();
