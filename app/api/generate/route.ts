@@ -33,7 +33,6 @@ const stylePrompts: Record<string, string> = {
   "Mediterranean": "mediterranean with terracotta tiles, arched doorways, wrought iron, warm earth tones, textured stucco walls",
 };
 
-const DAILY_LIMIT = 1;
 const GLOBAL_DAILY_CAP = 71; // ~$10/day at $0.14/gen
 const GLOBAL_CAP_KEY = "global:daily_cap";
 const TURSO_URL = (process.env.TURSO_DATABASE_URL || "").replace("libsql://", "https://");
@@ -48,27 +47,21 @@ async function tursoExec(sql: string, args: Array<{type: string; value: string}>
   return (await resp.json()).results?.[0]?.response?.result;
 }
 
-async function checkAndIncrement(id: string): Promise<boolean> {
-  const today = new Date().toISOString().split("T")[0];
-  const result = await tursoExec("SELECT count, date FROM RateLimit WHERE id = ?", [{ type: "text", value: id }]);
+async function checkOneTime(id: string): Promise<boolean> {
+  const result = await tursoExec("SELECT count FROM RateLimit WHERE id = ?", [{ type: "text", value: id }]);
   const row = result?.rows?.[0];
-  if (!row || row[1]?.value !== today) {
-    await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?) ON CONFLICT(id) DO UPDATE SET count = 1, date = ?",
-      [{ type: "text", value: id }, { type: "text", value: today }, { type: "text", value: today }]);
-    return true;
-  }
-  const count = parseInt(row[0]?.value || "0");
-  if (count >= DAILY_LIMIT) return false;
-  await tursoExec("UPDATE RateLimit SET count = count + 1 WHERE id = ?", [{ type: "text", value: id }]);
+  if (row) return false; // Already used their one free generation
+  await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?)",
+    [{ type: "text", value: id }, { type: "text", value: new Date().toISOString().split("T")[0] }]);
   return true;
 }
 
-// Check BOTH IP and device fingerprint — if EITHER is over limit, block.
-async function checkDailyLimit(ip: string, fingerprint: string | null): Promise<boolean> {
-  const ipOk = await checkAndIncrement(`ip:${ip}`);
+// Check BOTH IP and device fingerprint — if EITHER already used, block.
+async function checkFreeAllowed(ip: string, fingerprint: string | null): Promise<boolean> {
+  const ipOk = await checkOneTime(`free:${ip}`);
   if (!ipOk) return false;
   if (fingerprint) {
-    const fpOk = await checkAndIncrement(`fp:${fingerprint}`);
+    const fpOk = await checkOneTime(`free:fp:${fingerprint}`);
     if (!fpOk) return false;
   }
   return true;
@@ -87,8 +80,6 @@ export async function POST(request: Request) {
     const fingerprint = fpMatch ? fpMatch[1] : null;
 
     // Global daily cost cap
-  const globalOk = await checkAndIncrement(GLOBAL_CAP_KEY + ":" + new Date().toISOString().split("T")[0]);
-  // checkAndIncrement uses DAILY_LIMIT — override for global cap check
   const todayKey = GLOBAL_CAP_KEY + ":" + new Date().toISOString().split("T")[0];
   const globalResult = await tursoExec("SELECT count FROM RateLimit WHERE id = ?", [{ type: "text", value: todayKey }]);
   const globalCount = parseInt(globalResult?.rows?.[0]?.[0]?.value || "0");
@@ -99,14 +90,14 @@ export async function POST(request: Request) {
   await tursoExec("INSERT INTO RateLimit (id, count, date) VALUES (?, 1, ?) ON CONFLICT(id) DO UPDATE SET count = count + 1, date = ?",
     [{ type: "text", value: todayKey }, { type: "text", value: new Date().toISOString().split("T")[0] }, { type: "text", value: new Date().toISOString().split("T")[0] }]);
 
-  // Check if user has credits — they skip the daily limit
+  // Check if user has credits
   const user = await getCurrentUser();
   const hasCredits = user ? await checkCredits(user.id, 1) : false;
 
   if (!hasCredits) {
-    // Non-credit users: enforce daily limit
-    if (!(await checkDailyLimit(ip, fingerprint))) {
-      return NextResponse.json({ error: "Daily limit reached (1/day). Come back tomorrow!" }, { status: 429 });
+    // Non-credit users: one free generation per IP ever
+    if (!(await checkFreeAllowed(ip, fingerprint))) {
+      return NextResponse.json({ error: "Free generation already used. Buy credits for more." }, { status: 429 });
     }
   }
 

@@ -121,7 +121,7 @@ export default function PricingPage() {
               Get more <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">redesigns</span>
             </h1>
             <p className="text-lg text-slate-400 max-w-xl mx-auto">
-              Buy credits to redesign rooms beyond the daily free limit. 1 credit = 1 room redesign.
+              Get 1 free room redesign (one-time). Buy credits for more — 1 credit = 1 room redesign.
             </p>
           </motion.div>
 
@@ -307,7 +307,7 @@ export default function PricingPage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {[
                 { icon: "🎨", title: "All styles unlocked", desc: "Access all 17 interior design styles with every generation." },
-                { icon: "🔓", title: "Skip the daily limit", desc: "Credit users bypass the 1/day free limit. Generate as much as you want." },
+                { icon: "🔓", title: "Skip the daily limit", desc: "Credit users get unlimited generations. No watermark, no limits." },
                 { icon: "💾", title: "HD downloads", desc: "Download your redesigned rooms in high resolution." },
                 { icon: "♾️", title: "Never expire", desc: "Credits never expire. Buy now, use whenever you want." },
                 { icon: "🪑", title: "Furniture upload", desc: "Upload your own furniture photos to include in redesigns." },

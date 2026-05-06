@@ -39,7 +39,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">3. Free Usage &amp; Watermarks</h2>
             <p className="mb-3">
-              RoomFlip.io offers 1 free room redesign per day. Free redesigns include a &quot;RoomFlip.io&quot; watermark overlay on downloaded images. The watermark is automatically applied to the downloaded file.
+              RoomFlip.io offers 1 free room redesign per IP address (one-time). Free redesigns include a &quot;RoomFlip.io&quot; watermark overlay on downloaded images. The watermark is automatically applied to the downloaded file.
             </p>
             <p className="mb-3">
               RoomFlip.io uses a device fingerprint stored in your browser to track your free redesigns and manage your credit purchases. No account or email is required to use the Service.
@@ -103,7 +103,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">7. Usage Limits &amp; Fair Use</h2>
             <p className="mb-3">To ensure fair access for all users, the following limits apply:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>Free users: 1 AI room redesign per day with watermark on download</li>
+              <li>Free users: 1 AI room redesign per IP address (one-time) with watermark on download</li>
               <li>Paid users: each credit consumed generates 1 room redesign without watermark</li>
               <li>Automated or programmatic access to the Service is prohibited</li>
               <li>Attempting to bypass usage or credit limits is a violation of these terms</li>
