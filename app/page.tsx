@@ -161,6 +161,7 @@ export default function Home() {
   const [image, setImage] = useState<string | null>(null);
   const [style, setStyle] = useState("Modern");
   const [result, setResult] = useState<string | null>(null);
+  const [isWatermarked, setIsWatermarked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -208,6 +209,7 @@ export default function Home() {
           throw new Error(data.error);
         }
         setResult(typeof data.output === "string" ? data.output : null);
+        setIsWatermarked(data.isWatermarked === true);
         setLoading(false);
         return;
       } catch (err: unknown) {
@@ -224,6 +226,44 @@ export default function Home() {
 
   const handleDownloadClick = () => {
     if (!result) return;
+
+    if (isWatermarked) {
+      // Apply watermark via canvas
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0);
+
+        // Watermark overlay
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        const barHeight = 50;
+        ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
+
+        ctx.fillStyle = "white";
+        ctx.font = `${Math.max(14, Math.round(canvas.width / 40))}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("RoomFlip.io", canvas.width / 2, canvas.height - barHeight / 2);
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
+          link.click();
+          URL.revokeObjectURL(url);
+        }, "image/jpeg", 0.92);
+      };
+      img.src = result;
+      return;
+    }
+
+    // Paid users: direct download
     const link = document.createElement("a");
     link.href = result;
     link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";

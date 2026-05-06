@@ -33,7 +33,7 @@ const stylePrompts: Record<string, string> = {
   "Mediterranean": "mediterranean with terracotta tiles, arched doorways, wrought iron, warm earth tones, textured stucco walls",
 };
 
-const DAILY_LIMIT = 3;
+const DAILY_LIMIT = 1;
 const GLOBAL_DAILY_CAP = 71; // ~$10/day at $0.14/gen
 const GLOBAL_CAP_KEY = "global:daily_cap";
 const TURSO_URL = (process.env.TURSO_DATABASE_URL || "").replace("libsql://", "https://");
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
   if (!hasCredits) {
     // Non-credit users: enforce daily limit
     if (!(await checkDailyLimit(ip, fingerprint))) {
-      return NextResponse.json({ error: "Daily limit reached (3/day). Come back tomorrow!" }, { status: 429 });
+      return NextResponse.json({ error: "Daily limit reached (1/day). Come back tomorrow!" }, { status: 429 });
     }
   }
 
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
 
         if (result.status === "succeeded") {
           const outputUrl = Array.isArray(result.output) ? result.output[0] : result.output;
-          return NextResponse.json({ output: outputUrl });
+          return NextResponse.json({ output: outputUrl, isWatermarked: !hasCredits });
         }
 
         // If failed on first attempt, retry

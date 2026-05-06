@@ -307,7 +307,7 @@ export default function PricingPage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {[
                 { icon: "🎨", title: "All styles unlocked", desc: "Access all 17 interior design styles with every generation." },
-                { icon: "🔓", title: "Skip the daily limit", desc: "Credit users bypass the 3/day free limit. Generate as much as you want." },
+                { icon: "🔓", title: "Skip the daily limit", desc: "Credit users bypass the 1/day free limit. Generate as much as you want." },
                 { icon: "💾", title: "HD downloads", desc: "Download your redesigned rooms in high resolution." },
                 { icon: "♾️", title: "Never expire", desc: "Credits never expire. Buy now, use whenever you want." },
                 { icon: "🪑", title: "Furniture upload", desc: "Upload your own furniture photos to include in redesigns." },

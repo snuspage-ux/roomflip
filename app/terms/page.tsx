@@ -32,25 +32,26 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
             <p>
-              RoomFlip.io is an AI-powered interior design tool that allows users to upload photos of their rooms and receive AI-generated redesigns in various styles. The Service is offered free of charge with limited daily usage, as well as through paid subscription plans with additional features and higher usage limits.
+              RoomFlip.io is an AI-powered interior design tool that allows users to upload photos of their rooms and receive AI-generated redesigns in various styles. The Service is offered free of charge with limited daily usage, as well as through paid credit packs with additional features.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-white mb-3">3. Account &amp; Device Identification</h2>
+            <h2 className="text-xl font-semibold text-white mb-3">3. Free Usage &amp; Watermarks</h2>
             <p className="mb-3">
-              RoomFlip.io uses a device fingerprint stored in your browser to track your free redesigns and manage your credit purchases. No account or email is required to use the Service. By using the Service, you consent to the use of this device-based identification.
+              RoomFlip.io offers 1 free room redesign per day. Free redesigns include a &quot;RoomFlip.io&quot; watermark overlay on downloaded images. The watermark is automatically applied to the downloaded file.
+            </p>
+            <p className="mb-3">
+              RoomFlip.io uses a device fingerprint stored in your browser to track your free redesigns and manage your credit purchases. No account or email is required to use the Service.
             </p>
           </section>
-
-
 
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">4. Credit Packs</h2>
-            <p className="mb-3">To download your redesigned images, you need to purchase a credit pack. Each download consumes one (1) credit. The following packs are available:</p>
+            <p className="mb-3">Purchase a credit pack to download your redesigned images without watermarks. Each download consumes one (1) credit. The following packs are available:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li><strong className="text-white">Starter Pack:</strong> $2.66 USD — 5 credits (5 image downloads)</li>
-              <li><strong className="text-white">Pro Pack:</strong> $5.00 USD — 15 credits (15 image downloads)</li>
+              <li><strong className="text-white">Starter Pack:</strong> $2.50 USD — 6 credits (6 image downloads without watermark)</li>
+              <li><strong className="text-white">Popular Pack:</strong> $5.00 USD — 15 credits (15 image downloads without watermark)</li>
             </ul>
             <p className="mt-3">
               All prices are one-time payments (not subscriptions). Credits never expire. Unused credits remain on your device fingerprint and can be used at any time.
@@ -61,9 +62,8 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">5. Payment Terms</h2>
             <p className="mb-3">Payment processing details:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>Payments are processed securely through GoPay s.r.o., a licensed payment institution regulated by the Czech National Bank</li>
               <li>Payments are one-time charges — no recurring billing</li>
-              <li>Accepted payment methods include credit/debit cards and other methods supported by GoPay</li>
+              <li>Accepted payment methods include cryptocurrencies (Bitcoin, Ethereum, USDT, and 100+ more) via NowPayments</li>
               <li>By making a purchase, you authorize us to charge your chosen payment method</li>
             </ul>
           </section>
@@ -103,7 +103,8 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">7. Usage Limits &amp; Fair Use</h2>
             <p className="mb-3">To ensure fair access for all users, the following limits apply:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>Each AI room redesign consumes 1 credit</li>
+              <li>Free users: 1 AI room redesign per day with watermark on download</li>
+              <li>Paid users: each credit consumed generates 1 room redesign without watermark</li>
               <li>Automated or programmatic access to the Service is prohibited</li>
               <li>Attempting to bypass usage or credit limits is a violation of these terms</li>
               <li>We reserve the right to adjust pricing and limits at any time</li>

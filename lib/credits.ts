@@ -1,9 +1,8 @@
 import { prisma } from "./prisma";
 
 export const CREDIT_PACKAGES = [
-  { id: "starter", credits: 10, usd: 5, label: "Starter", description: "Perfect for trying it out" },
-  { id: "popular", credits: 50, usd: 9, label: "Popular", description: "Best value — most popular" },
-  { id: "pro", credits: 200, usd: 29, label: "Pro", description: "For power users" },
+  { id: "starter", credits: 6, usd: 2.5, label: "Starter", description: "6 room redesigns — just $2.5" },
+  { id: "popular", credits: 15, usd: 5, label: "Popular", description: "15 room redesigns — best value" },
 ] as const;
 
 export function getCreditPackage(packageId: string) {
