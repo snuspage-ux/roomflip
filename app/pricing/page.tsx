@@ -342,7 +342,7 @@ export default function PricingPage() {
             <div className="grid sm:grid-cols-2 gap-4">
               {[
                 { icon: "🎨", title: "All styles unlocked", desc: "Access all 17 interior design styles with every generation." },
-                { icon: "🔓", title: "Skip the daily limit", desc: "Credit users get unlimited generations. No watermark, no limits." },
+                { icon: "🔓", title: "No watermark", desc: "Credit users get watermark-free downloads. Professional results, no branding." },
                 { icon: "💾", title: "HD downloads", desc: "Download your redesigned rooms in high resolution." },
                 { icon: "♾️", title: "Never expire", desc: "Credits never expire. Buy now, use whenever you want." },
                 { icon: "🪑", title: "Furniture upload", desc: "Upload your own furniture photos to include in redesigns." },
@@ -367,7 +367,7 @@ export default function PricingPage() {
             <div className="space-y-3">
               {[
                 { q: "What payment methods do you accept?", a: "We accept credit/debit cards through Stripe (Visa, Mastercard, Apple Pay, Google Pay), PayPal, and cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies)." },
-                { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately and never expire. Each generation consumes 1 credit." },
+                { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately and never expire. Each generation consumes 1 credit, and paid users get watermark-free downloads." },
                 { q: "Do credits expire?", a: "No! Credits never expire. Buy once and use them whenever you want." },
                 { q: "Is crypto payment safe?", a: "Yes. All crypto payments are processed through NowPayments, a trusted payment gateway. You can pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies." },
                 { q: "What is your refund policy?", a: "We offer refunds for unused credits. If you haven't used any credits, we'll refund your purchase. See our <a href='/refund-policy' class='text-indigo-400 hover:underline'>Refund Policy</a> for details." },

@@ -516,7 +516,7 @@ export default function Home() {
                         <CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} />
                         {isWatermarked && (
                           <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-[2px] py-2 px-4 flex items-center justify-between">
-                            <span className="text-white/90 text-xs font-medium tracking-wider">🔒 Free preview with watermark</span>
+                            <span className="text-white/90 text-xs font-medium tracking-wider">🔒 Watermark — buy credits to remove</span>
                             <span className="text-white/70 text-[10px]">RoomFlip.io</span>
                           </div>
                         )}
@@ -603,7 +603,7 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "How much does RoomFlip cost?", a: "RoomFlip offers 1 free room redesign (one-time, with watermark). For more, buy a credit pack — Starter Pack ($2.50 for 6 credits) or Popular Pack ($5.00 for 15 credits). No account or subscription." },
+              { q: "How much does RoomFlip cost?", a: "RoomFlip offers 1 free room redesign (one-time, with watermark). Buy credits from $2.50 for 6 watermark-free redesigns. No account or subscription." },
               { q: "How does AI room redesign work?", a: "Upload a photo of your room, select a design style, and our AI analyzes the room structure — walls, floors, windows, doors — and generates a photorealistic redesign while preserving your room layout. The entire process takes about 30 seconds." },
               { q: "What is the best AI interior design tool?", a: "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI." },
               { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result after purchasing a credit pack." },
