@@ -46,7 +46,7 @@ export async function createCheckoutSession(params: {
         quantity: 1,
       },
     ],
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://roomflip.io"}/pricing?success=true`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://roomflip.io"}/pricing?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || "https://roomflip.io"}/pricing?canceled=true`,
   });
 

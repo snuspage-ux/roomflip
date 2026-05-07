@@ -43,6 +43,31 @@ export default function PricingPage() {
       }
     }
     checkAuth();
+
+    // Handle Stripe return: check for success + session_id
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      const sessionId = params.get("session_id");
+      if (sessionId) {
+        fetch(`/api/stripe/claim-session?session_id=${sessionId}`)
+          .then((r) => r.json())
+          .then((data) => {
+            if (data.claimed) {
+              setSuccessMessage(`Payment successful! You got ${data.credits} credits. Check your email (${data.email}) and log in to start generating.`);
+              // Refresh user data in case they're already logged in
+              if (data.alreadyLoggedIn || data.loggedIn) {
+                fetch("/api/auth/me")
+                  .then((r) => r.json())
+                  .then((d) => {
+                    if (d.user) setUser(d.user);
+                  })
+                  .catch(() => {});
+              }
+            }
+          })
+          .catch(() => {});
+      }
+    }
   }, []);
 
   const pkg = selectedPackage ? CREDIT_PACKAGES.find((p) => p.id === selectedPackage) : null;
@@ -64,7 +89,7 @@ export default function PricingPage() {
   };
 
   const handlePaymentSuccess = (credits: number) => {
-    setSuccessMessage(`You got ${credits} credits! You can now generate ${credits} room redesigns.`);
+    setSuccessMessage(`Payment successful! You got ${credits} credits.`);
     setPaymentMethod(null);
     setSelectedPackage(null);
 
