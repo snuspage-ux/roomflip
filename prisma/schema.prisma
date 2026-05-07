@@ -50,6 +50,7 @@ model Purchase {
   method     String
   status     String
   paypalOrderId String?
+  stripeSessionId String?
   nowpaymentsInvoiceId String?
   createdAt  DateTime @default(now())
   user       User     @relation(fields: [userId], references: [id])

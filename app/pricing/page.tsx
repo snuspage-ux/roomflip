@@ -8,8 +8,9 @@ import PricingCard from "@/components/PricingCard";
 import EmailModal from "@/components/EmailModal";
 import PayPalButton from "@/components/PayPalButton";
 import CryptoCheckout from "@/components/CryptoCheckout";
+import StripeCheckout from "@/components/StripeCheckout";
 
-type PaymentMethod = "paypal" | "crypto" | null;
+type PaymentMethod = "paypal" | "stripe" | "crypto" | null;
 
 interface UserData {
   id: string;
@@ -194,6 +195,21 @@ export default function PricingPage() {
                       </button>
 
                       <button
+                        onClick={() => setPaymentMethod("stripe")}
+                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#635bff]/50 hover:bg-[#635bff]/5 transition-all"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-[#635bff]/20 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-[#635bff]" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.877 4.56 3.15 3.8 4.992 3.8 7.277c0 4.07 5.25 5.576 7.385 6.33 2.91 1.03 3.928 1.798 3.928 2.94 0 1.358-1.103 2.146-2.993 2.146-2.552 0-5.295-1.293-6.883-2.256l-.915 5.644c1.574.835 4.139 1.519 6.715 1.519 3.767 0 6.422-1.362 7.932-2.854 1.563-1.547 2.34-3.676 2.34-6.22 0-4.476-5.548-6.113-7.533-6.777z"/>
+                          </svg>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="text-sm font-medium">Card (Stripe)</p>
+                          <p className="text-xs text-slate-500">Visa, Mastercard, Apple Pay, Google Pay</p>
+                        </div>
+                      </button>
+
+                      <button
                         onClick={() => setPaymentMethod("crypto")}
                         className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
                       >
@@ -214,6 +230,25 @@ export default function PricingPage() {
                   {paymentMethod === "paypal" && (
                     <div>
                       <PayPalButton
+                        packageId={selectedPackage}
+                        amount={pkg.usd}
+                        email={user?.email}
+                        onSuccess={handlePaymentSuccess}
+                        onError={handlePaymentError}
+                      />
+                      <button
+                        onClick={() => setPaymentMethod(null)}
+                        className="mt-3 w-full text-center text-xs text-slate-500 hover:text-slate-400 transition-colors"
+                      >
+                        Choose another method
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Stripe */}
+                  {paymentMethod === "stripe" && (
+                    <div>
+                      <StripeCheckout
                         packageId={selectedPackage}
                         amount={pkg.usd}
                         email={user?.email}
@@ -294,9 +329,9 @@ export default function PricingPage() {
             )}
           </AnimatePresence>
 
-          {/* PayPal coming soon */}
+          {/* Payment methods note */}
           <div className="mt-12 max-w-md mx-auto text-center">
-            <p className="text-xs text-slate-500">PayPal payments coming soon.</p>
+            <p className="text-xs text-slate-500">Secure payments via Stripe, PayPal, or crypto.</p>
           </div>
 
           {/* Features list */}
@@ -331,7 +366,7 @@ export default function PricingPage() {
             <h2 className="text-2xl font-bold text-center mb-8">Payment FAQ</h2>
             <div className="space-y-3">
               {[
-                { q: "What payment methods do you accept?", a: "We accept cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies). PayPal coming soon." },
+                { q: "What payment methods do you accept?", a: "We accept credit/debit cards through Stripe (Visa, Mastercard, Apple Pay, Google Pay), PayPal, and cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies)." },
                 { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately. Each generation consumes 1 credit, and you skip the daily free limit." },
                 { q: "Do credits expire?", a: "No! Credits never expire. Buy once and use them whenever you want." },
                 { q: "Is crypto payment safe?", a: "Yes. All crypto payments are processed through NowPayments, a trusted payment gateway. You can pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies." },
