@@ -558,47 +558,28 @@ export default function Home() {
 
                 {/* Buy Credits Modal */}
                 {showBuyModal && (
-                  <>
-                    {/* Invisible overlay */}
-                    <div className="fixed inset-0 z-[100]" onClick={() => setShowBuyModal(false)} />
-                    {/* Modal dialog */}
-                    <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none">
-                      <motion.div
-                        initial={{ scale: 0.9, y: 20, opacity: 0 }}
-                        animate={{ scale: 1, y: 0, opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                        className="relative bg-[#12121a] border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl pointer-events-auto"
-                      >
-                        <button onClick={() => setShowBuyModal(false)} className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{backgroundColor: 'rgba(0,0,0,0.7)'}}>
+                    <div className="bg-[#12121a] border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                      <div className="text-center mb-6">
+                        <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-7 h-7 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <h3 className="text-xl font-bold mb-2">No credits left</h3>
+                        <p className="text-sm text-slate-400">Buy credits to generate more redesigns.</p>
+                        <p className="text-xs text-slate-500 mt-1">Credits never expire.</p>
+                      </div>
+                      <div className="space-y-3">
+                        <a href="/pricing" className="block w-full text-center px-5 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-500/25">
+                          Get 6 Credits — $2.50
+                        </a>
+                        <button onClick={() => setShowBuyModal(false)} className="block w-full text-center px-5 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-sm transition-all">
+                          Close
                         </button>
-                        <div className="text-center mb-6">
-                          <div className="w-14 h-14 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-7 h-7 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                          </div>
-                          <h3 className="text-xl font-bold mb-2">No credits left</h3>
-                          <p className="text-sm text-slate-400 mb-1">Buy a credit pack to generate more redesigns.</p>
-                          <p className="text-xs text-slate-500">Credits never expire — use them anytime.</p>
-                        </div>
-                        <div className="space-y-3">
-                          <Link
-                            href="/pricing"
-                            className="block w-full text-center px-5 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-500/25"
-                            onClick={() => setShowBuyModal(false)}
-                          >
-                            Get 6 Credits — $2.50
-                          </Link>
-                          <button
-                            onClick={() => setShowBuyModal(false)}
-                            className="block w-full text-center px-5 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-sm transition-all"
-                          >
-                            Close
-                          </button>
-                        </div>
-                      </motion.div>
+                      </div>
                     </div>
-                  </>
+                    <div className="fixed inset-0 -z-10" onClick={() => setShowBuyModal(false)} />
+                  </div>
                 )}
 
                 <AnimatePresence>
