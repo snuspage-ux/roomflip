@@ -272,16 +272,35 @@ export default function Home() {
           const ctx = canvas.getContext("2d")!;
           ctx.drawImage(img, 0, 0);
 
-          // Watermark overlay
-          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-          const barHeight = 50;
-          ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
-
+          // Full watermark overlay
+          // Repeating diagonal watermark
+          ctx.save();
+          ctx.globalAlpha = 0.12;
           ctx.fillStyle = "white";
+          ctx.font = `bold ${Math.max(24, Math.round(canvas.width / 20))}px sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          for (let row = 0; row < 6; row++) {
+            for (let col = 0; col < 4; col++) {
+              const x = (col * canvas.width / 3) + (row % 2) * (canvas.width / 6);
+              const y = row * canvas.height / 6;
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(-0.5);
+              ctx.fillText("ROOMFLIP.IO", 0, 0);
+              ctx.restore();
+            }
+          }
+          ctx.restore();
+
+          // Bottom bar
+          ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+          ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+          ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
           ctx.font = `${Math.max(14, Math.round(canvas.width / 40))}px sans-serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText("RoomFlip.io", canvas.width / 2, canvas.height - barHeight / 2);
+          ctx.fillText("Watermark — buy credits at roomflip.io", canvas.width / 2, canvas.height - 25);
 
           canvas.toBlob((blob) => {
             if (!blob) return;
@@ -581,9 +600,25 @@ export default function Home() {
                       <div className="rounded-2xl overflow-hidden border border-white/10 relative">
                         <CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} />
                         {isWatermarked && (
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-[2px] py-2 px-4 flex items-center justify-between">
-                            <span className="text-white/90 text-xs font-medium tracking-wider">🔒 Watermark — buy credits to remove</span>
-                            <span className="text-white/70 text-[10px]">RoomFlip.io</span>
+                          <div className="absolute inset-0 pointer-events-none select-none">
+                            {/* Diagonal repeating watermark */}
+                            {[0,1,2,3,4,5,6,7].map((i) => (
+                              <div
+                                key={i}
+                                className="absolute text-white/10 font-bold tracking-[0.3em] whitespace-nowrap"
+                                style={{
+                                  left: `${(i * 15) % 100}%`,
+                                  top: `${(i * 12) % 100}%`,
+                                  transform: `rotate(-30deg) translateX(-50%)`,
+                                  fontSize: i % 2 === 0 ? "clamp(24px,4vw,48px)" : "clamp(18px,3vw,36px)",
+                                }}
+                              >
+                                ROOMFLIP.IO
+                              </div>
+                            ))}
+                            <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-[2px] py-2 px-4 z-10">
+                              <span className="text-white/90 text-xs font-medium tracking-wider">🔒 Watermark — buy credits to remove</span>
+                            </div>
                           </div>
                         )}
                       </div>
