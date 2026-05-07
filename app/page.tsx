@@ -240,8 +240,15 @@ export default function Home() {
         return;
       } catch (err: unknown) {
         if (attempt === 1) {
-          setError(err instanceof Error ? err.message : "Generation failed. Please try again.");
-          // Refresh auth — if free gen was used, show modal next time
+          const errMsg = err instanceof Error ? err.message : "";
+          // If free/credit error, show buy modal instead of error text
+          if (errMsg.toLowerCase().includes("free") || errMsg.toLowerCase().includes("credit")) {
+            setShowBuyModal(true);
+            setError(null);
+          } else {
+            setError(errMsg || "Generation failed. Please try again.");
+          }
+          // Refresh auth
           fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
         }
       }
