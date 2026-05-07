@@ -12,7 +12,6 @@ export async function POST(request: Request) {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (webhookSecret && signature) {
-      // Verify signature with webhook secret
       try {
         event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
       } catch (err) {
@@ -20,28 +19,24 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
       }
     } else {
-      // No webhook secret configured — parse raw JSON (less secure, but works for dev)
       console.warn("STRIPE_WEBHOOK_SECRET not configured — skipping signature verification");
       event = JSON.parse(body);
     }
 
-    const eventType = event.type;
-
-    // Handle checkout.session.completed
-    if (eventType === "checkout.session.completed") {
+    if (event.type === "checkout.session.completed") {
       const session = event.data.object;
       const sessionId = session.id;
       const metadata = session.metadata || {};
-      const userId = metadata.userId;
       const credits = parseInt(metadata.credits || "0", 10);
+      const customerEmail = session.customer_details?.email || session.customer_email || metadata.email;
 
-      if (!userId || !credits) {
-        console.error("Missing userId or credits in session metadata", { sessionId, metadata });
+      if (!credits) {
+        console.error("Missing credits in session metadata", { sessionId, metadata });
         return NextResponse.json({ received: true });
       }
 
-      // Update purchase status
-      const purchase = await prisma.purchase.findFirst({
+      // Find the purchase record
+      let purchase = await prisma.purchase.findFirst({
         where: { stripeSessionId: sessionId },
       });
 
@@ -51,7 +46,34 @@ export async function POST(request: Request) {
       }
 
       if (purchase.status === "completed") {
-        // Already processed — idempotent
+        return NextResponse.json({ received: true });
+      }
+
+      // Determine the real user — create account if needed
+      let userId = metadata.userId;
+      const isAnonymous = !userId || userId === "anonymous";
+
+      if (isAnonymous && customerEmail) {
+        // Find or create user by email from Stripe
+        let dbUser = await prisma.user.findUnique({
+          where: { email: customerEmail },
+        });
+        if (!dbUser) {
+          dbUser = await prisma.user.create({
+            data: { email: customerEmail, credits: 0 },
+          });
+        }
+        userId = dbUser.id;
+
+        // Update purchase record with real user ID
+        await prisma.purchase.update({
+          where: { id: purchase.id },
+          data: { userId: dbUser.id, email: dbUser.email },
+        });
+      }
+
+      if (!userId || userId === "anonymous") {
+        console.error("Could not resolve userId for session", sessionId, { customerEmail });
         return NextResponse.json({ received: true });
       }
 
@@ -64,9 +86,7 @@ export async function POST(request: Request) {
         data: { status: "completed" },
       });
 
-      console.log(
-        `Stripe: Credited ${credits} credits to user ${userId} (session ${sessionId})`
-      );
+      console.log(`Stripe: Credited ${credits} credits to user ${userId} (session ${sessionId})`);
     }
 
     return NextResponse.json({ received: true });

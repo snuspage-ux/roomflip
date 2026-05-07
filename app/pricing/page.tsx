@@ -251,7 +251,6 @@ export default function PricingPage() {
                       <StripeCheckout
                         packageId={selectedPackage}
                         amount={pkg.usd}
-                        email={user?.email}
                         onSuccess={handlePaymentSuccess}
                         onError={handlePaymentError}
                       />

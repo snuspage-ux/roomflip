@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getCreditPackage } from "@/lib/credits";
-import { getCurrentUser, findOrCreateUser } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
@@ -13,31 +13,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid package" }, { status: 400 });
     }
 
-    // Get or create user
-    let user = await getCurrentUser();
-    if (!user) {
-      if (!email) {
-        return NextResponse.json({ error: "Email required for new users" }, { status: 400 });
-      }
-      user = await findOrCreateUser(email);
-    }
+    // Try to get current user; if not logged in, use the email from Stripe later
+    const user = await getCurrentUser();
+    const userId = user?.id || "anonymous";
+    const userEmail = user?.email || email || "";
 
-    // Create Stripe checkout session
+    // Create Stripe checkout session (Stripe handles email if not provided)
     const session = await createCheckoutSession({
       packageId: pkg.id,
       name: `${pkg.credits} Room Credits`,
       description: pkg.description,
       amountUsd: pkg.usd,
       credits: pkg.credits,
-      userId: user.id,
-      email: user.email,
+      userId,
+      email: userEmail,
     });
 
     // Save purchase record
     await prisma.purchase.create({
       data: {
-        userId: user.id,
-        email: user.email,
+        userId,
+        email: userEmail,
         amount: pkg.usd,
         credits: pkg.credits,
         method: "stripe",

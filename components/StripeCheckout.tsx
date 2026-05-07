@@ -5,12 +5,11 @@ import { useState } from "react";
 interface StripeCheckoutProps {
   packageId: string;
   amount: number;
-  email?: string;
   onSuccess?: (credits: number) => void;
   onError?: (msg: string) => void;
 }
 
-export default function StripeCheckout({ packageId, amount, email, onSuccess, onError }: StripeCheckoutProps) {
+export default function StripeCheckout({ packageId, amount, onSuccess, onError }: StripeCheckoutProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
@@ -20,7 +19,7 @@ export default function StripeCheckout({ packageId, amount, email, onSuccess, on
       const resp = await fetch("/api/stripe/create-checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ packageId, email: email || undefined }),
+        body: JSON.stringify({ packageId }),
       });
 
       const data = await resp.json();
