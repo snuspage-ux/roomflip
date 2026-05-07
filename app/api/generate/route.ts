@@ -9,8 +9,7 @@ import { checkCredits, deductCredits } from "@/lib/credits";
 
 const replicate = new Replicate({ auth: process.env.REPLICATE_API_KEY! });
 
-// PAUSED — set to false to re-enable generations
-const GENERATIONS_PAUSED = true;
+const GENERATIONS_PAUSED = false;
 const NANO_BANANA_PRO = "712e06a8e122fb7c8dae55dcf7ad6a8e717afb7b1c41c889fc8c5132fd42f374";
 
 const stylePrompts: Record<string, string> = {
