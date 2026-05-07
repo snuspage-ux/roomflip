@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from "motion/react";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import Link from "next/link";
 
+interface UserData {
+  id: string;
+  email: string;
+  credits: number;
+}
+
 const STYLES = [
   { name: "Modern", emoji: "🏢", color: "from-slate-500 to-gray-600" },
   { name: "Minimalist", emoji: "⬜", color: "from-gray-400 to-slate-500" },
@@ -168,6 +174,17 @@ export default function Home() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [furnitureImage, setFurnitureImage] = useState<string | null>(null);
   const [imageAspect, setImageAspect] = useState<string>('match_input_image');
+  const [user, setUser] = useState<UserData | null>(null);
+
+  // Check auth status on mount
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user) setUser(data.user);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleFile = useCallback((file: File) => {
     const reader = new FileReader();
@@ -211,12 +228,16 @@ export default function Home() {
         setResult(typeof data.output === "string" ? data.output : null);
         setIsWatermarked(data.isWatermarked === true);
         setLoading(false);
+        // Refresh user credits
+        fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); }).catch(() => {});
         return;
       } catch (err: unknown) {
         if (attempt === 1) setError(err instanceof Error ? err.message : "Generation failed. Please try again.");
       }
     }
     setLoading(false);
+    // Refresh user data after error (e.g., credits used up)
+    fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); }).catch(() => {});
   };
 
   const handleGenerate = () => {
@@ -309,8 +330,16 @@ export default function Home() {
             <a href="#generator" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Generate</a>
             <Link href="/pricing" className="px-4 py-1.5 rounded-full text-sm text-slate-300 hover:text-white hover:bg-white/10 transition-all">Pricing</Link>
           </div>
-          <div className="flex items-center gap-2 bg-indigo-500/15 border border-indigo-500/20 px-3 py-1.5 rounded-full">
-            <span className="text-xs font-semibold text-indigo-300">Powered by Google AI</span>
+          <div className="flex items-center gap-2">
+            {user !== null && (
+              <Link href="/pricing" className="flex items-center gap-2 bg-indigo-500/15 border border-indigo-500/20 px-3 py-1.5 rounded-full hover:bg-indigo-500/25 transition-all">
+                <svg className="w-3.5 h-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span className="text-xs font-semibold text-indigo-300">{user.credits} credits</span>
+              </Link>
+            )}
+            <Link href="/pricing" className="px-4 py-1.5 rounded-full text-sm font-medium bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white transition-all shadow-lg shadow-indigo-500/25">
+              Buy Credits
+            </Link>
           </div>
         </div>
       </motion.nav>
