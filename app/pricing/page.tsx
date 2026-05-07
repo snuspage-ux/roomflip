@@ -5,12 +5,6 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { CREDIT_PACKAGES } from "@/lib/credits";
 import PricingCard from "@/components/PricingCard";
-import EmailModal from "@/components/EmailModal";
-import PayPalButton from "@/components/PayPalButton";
-import CryptoCheckout from "@/components/CryptoCheckout";
-import StripeCheckout from "@/components/StripeCheckout";
-
-type PaymentMethod = "paypal" | "stripe" | "crypto" | null;
 
 interface UserData {
   id: string;
@@ -19,11 +13,8 @@ interface UserData {
 }
 
 export default function PricingPage() {
-  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
-  const [showEmailModal, setShowEmailModal] = useState(false);
   const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,24 +61,25 @@ export default function PricingPage() {
     }
   }, []);
 
-  const pkg = selectedPackage ? CREDIT_PACKAGES.find((p) => p.id === selectedPackage) : null;
-
-  const handleSelectPackage = (packageId: string) => {
-    setSelectedPackage(packageId);
-    setPaymentMethod(null);
+  const handleSelectPackage = async (packageId: string) => {
     setSuccessMessage(null);
     setError(null);
-  };
-
-  const handleEmailSent = (email: string) => {
-    // User needs to click magic link in email
-    setShowEmailModal(false);
+    try {
+      const resp = await fetch("/api/stripe/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ packageId }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "Failed");
+      if (data.url) window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Payment failed");
+    }
   };
 
   const handlePaymentSuccess = (credits: number) => {
     setSuccessMessage(`Payment successful! You got ${credits} credits.`);
-    setPaymentMethod(null);
-    setSelectedPackage(null);
 
     // Refresh user data
     fetch("/api/auth/me")
@@ -96,10 +88,6 @@ export default function PricingPage() {
         if (data.user) setUser(data.user);
       })
       .catch(() => {});
-  };
-
-  const handlePaymentError = (errorMsg: string) => {
-    setError(errorMsg);
   };
 
   return (
@@ -165,163 +153,21 @@ export default function PricingPage() {
             ))}
           </motion.div>
 
-          {/* Payment Flow */}
+          {/* Payment Error */}
           <AnimatePresence>
-            {selectedPackage && pkg && !successMessage && (
+            {error && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="max-w-md mx-auto"
+                exit={{ opacity: 0 }}
+                className="max-w-md mx-auto mt-6"
               >
-                <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">
-                      {pkg.label} — ${pkg.usd}
-                    </h3>
-                    <button
-                      onClick={() => { setSelectedPackage(null); setPaymentMethod(null); setError(null); }}
-                      className="text-slate-500 hover:text-white transition-colors"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <p className="text-sm text-green-400 mb-4 flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    You get {pkg.credits} credits — {pkg.credits} room redesigns
-                  </p>
-
-                  {/* Payment method selection */}
-                  {!paymentMethod && (
-                    <div className="space-y-3">
-                      <p className="text-sm text-slate-400 mb-3">Choose payment method:</p>
-                      <button
-                        onClick={() => { if (!user) { setShowEmailModal(true); } else { setPaymentMethod("paypal"); } }}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-[#003087] flex items-center justify-center text-white text-xs font-bold">
-                          <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-                            <path d="M7.076 21.337H2.47a.641.641 0 01-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106z"/>
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="text-sm font-medium">PayPal</p>
-                          <p className="text-xs text-slate-500">Pay with card or PayPal</p>
-                        </div>
-                      </button>
-
-                      <button
-                        onClick={() => setPaymentMethod("stripe")}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#635bff]/50 hover:bg-[#635bff]/5 transition-all"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-[#635bff]/20 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-[#635bff]" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.877 4.56 3.15 3.8 4.992 3.8 7.277c0 4.07 5.25 5.576 7.385 6.33 2.91 1.03 3.928 1.798 3.928 2.94 0 1.358-1.103 2.146-2.993 2.146-2.552 0-5.295-1.293-6.883-2.256l-.915 5.644c1.574.835 4.139 1.519 6.715 1.519 3.767 0 6.422-1.362 7.932-2.854 1.563-1.547 2.34-3.676 2.34-6.22 0-4.476-5.548-6.113-7.533-6.777z"/>
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="text-sm font-medium">Card (Stripe)</p>
-                          <p className="text-xs text-slate-500">Visa, Mastercard, Apple Pay, Google Pay</p>
-                        </div>
-                      </button>
-
-                      <button
-                        onClick={() => { if (!user) { setShowEmailModal(true); } else { setPaymentMethod("crypto"); } }}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
-                      >
-                        <div className="w-10 h-10 rounded-lg bg-emerald-600/20 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div className="flex-1 text-left">
-                          <p className="text-sm font-medium">Crypto</p>
-                          <p className="text-xs text-slate-500">Bitcoin, Ethereum, USDT + 100 more</p>
-                        </div>
-                      </button>
-                    </div>
-                  )}
-
-                  {/* PayPal */}
-                  {paymentMethod === "paypal" && (
-                    <div>
-                      <PayPalButton
-                        packageId={selectedPackage}
-                        amount={pkg.usd}
-                        email={user?.email}
-                        onSuccess={handlePaymentSuccess}
-                        onError={handlePaymentError}
-                      />
-                      <button
-                        onClick={() => setPaymentMethod(null)}
-                        className="mt-3 w-full text-center text-xs text-slate-500 hover:text-slate-400 transition-colors"
-                      >
-                        Choose another method
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Stripe */}
-                  {paymentMethod === "stripe" && (
-                    <div>
-                      <StripeCheckout
-                        packageId={selectedPackage}
-                        amount={pkg.usd}
-                        onSuccess={handlePaymentSuccess}
-                        onError={handlePaymentError}
-                      />
-                      <button
-                        onClick={() => setPaymentMethod(null)}
-                        className="mt-3 w-full text-center text-xs text-slate-500 hover:text-slate-400 transition-colors"
-                      >
-                        Choose another method
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Crypto */}
-                  {paymentMethod === "crypto" && (
-                    <div>
-                      <CryptoCheckout
-                        packageId={selectedPackage}
-                        amount={pkg.usd}
-                        email={user?.email}
-                        onSuccess={handlePaymentSuccess}
-                        onError={handlePaymentError}
-                      />
-                      <button
-                        onClick={() => setPaymentMethod(null)}
-                        className="mt-3 w-full text-center text-xs text-slate-500 hover:text-slate-400 transition-colors"
-                      >
-                        Choose another method
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Error */}
-                  <AnimatePresence>
-                    {error && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="mt-3 text-sm text-red-400 text-center"
-                      >
-                        {error}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-red-400 text-sm text-center">
+                  {error}
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
-
-          {/* Success message */}
+          </AnimatePresence>          {/* Success message */}
           <AnimatePresence>
             {successMessage && (
               <motion.div
@@ -405,12 +251,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Email Modal */}
-      <EmailModal
-        isOpen={showEmailModal}
-        onClose={() => { setShowEmailModal(false); setSelectedPackage(null); }}
-        onEmailSent={handleEmailSent}
-      />
+
     </main>
   );
 }
