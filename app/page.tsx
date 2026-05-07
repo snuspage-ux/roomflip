@@ -232,32 +232,47 @@ export default function Home() {
       const img = new window.Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0);
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(img, 0, 0);
 
-        // Watermark overlay
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        const barHeight = 50;
-        ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
+          // Watermark overlay
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+          const barHeight = 50;
+          ctx.fillRect(0, canvas.height - barHeight, canvas.width, barHeight);
 
-        ctx.fillStyle = "white";
-        ctx.font = `${Math.max(14, Math.round(canvas.width / 40))}px sans-serif`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("RoomFlip.io", canvas.width / 2, canvas.height - barHeight / 2);
+          ctx.fillStyle = "white";
+          ctx.font = `${Math.max(14, Math.round(canvas.width / 40))}px sans-serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("RoomFlip.io", canvas.width / 2, canvas.height - barHeight / 2);
 
-        canvas.toBlob((blob) => {
-          if (!blob) return;
-          const url = URL.createObjectURL(blob);
+          canvas.toBlob((blob) => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
+            link.click();
+            URL.revokeObjectURL(url);
+          }, "image/jpeg", 0.92);
+        } catch {
+          // CORS or canvas error — fall back to direct download (still watermarked in preview)
           const link = document.createElement("a");
-          link.href = url;
+          link.href = result;
           link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
           link.click();
-          URL.revokeObjectURL(url);
-        }, "image/jpeg", 0.92);
+        }
+      };
+      img.onerror = () => {
+        // Image load error — download directly
+        const link = document.createElement("a");
+        link.href = result;
+        link.download = "roomflip-" + style.toLowerCase().replace(/ /g, "-") + ".jpg";
+        link.click();
       };
       img.src = result;
       return;
@@ -445,6 +460,12 @@ export default function Home() {
                       </div>
                       <div className="rounded-2xl overflow-hidden border border-white/10 relative">
                         <CompareSlider beforeSrc={image} afterSrc={result} beforeLabel="Original" afterLabel={style + " Style"} />
+                        {isWatermarked && (
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-[2px] py-2 px-4 flex items-center justify-between">
+                            <span className="text-white/90 text-xs font-medium tracking-wider">🔒 Free preview with watermark</span>
+                            <span className="text-white/70 text-[10px]">RoomFlip.io</span>
+                          </div>
+                        )}
                       </div>
                       <div className="flex justify-center mt-4">
                         <button onClick={handleDownloadClick} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium transition-colors">
