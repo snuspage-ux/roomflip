@@ -429,7 +429,18 @@ export default function Home() {
                   <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent text-center">✨ Transform your room</h2>
                 </div>
                 <p className="relative text-slate-400 mb-8 text-lg text-center">Upload a photo and choose your dream style</p>
-                <div className="relative flex justify-center mb-6"><span className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-full text-sm text-indigo-300"><span>🎨</span> 5 free designs per day</span></div>
+                <div className="relative flex justify-center mb-6">
+                  {user && user.credits > 0 ? (
+                    <span className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-4 py-2 rounded-full text-sm text-green-300">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      {user.credits} {user.credits === 1 ? "credit" : "credits"} remaining
+                    </span>
+                  ) : (
+                    <Link href="/pricing" className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-sm text-amber-300 hover:bg-amber-500/20 transition-all">
+                      <span>🎨</span> 1 free design — buy more credits
+                    </Link>
+                  )}
+                </div>
                 <div onDragOver={(e) => { e.preventDefault(); setDragActive(true); }} onDragLeave={() => setDragActive(false)} onDrop={handleDrop} onClick={() => fileRef.current?.click()}
                   className={"relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all mb-6 " + (dragActive ? "border-indigo-500 bg-indigo-500/10" : image ? "border-green-500/50 bg-green-500/5" : "border-white/10 hover:border-white/30 hover:bg-white/5")}>
                   <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />

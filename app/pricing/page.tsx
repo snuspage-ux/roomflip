@@ -122,7 +122,7 @@ export default function PricingPage() {
               Get more <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">redesigns</span>
             </h1>
             <p className="text-lg text-slate-400 max-w-xl mx-auto">
-              Get 1 free room redesign (one-time). Buy credits for more — 1 credit = 1 room redesign.
+              Get 1 free room redesign (one-time, with watermark). Buy credits for unlimited redesigns — 1 credit = 1 room redesign.
             </p>
           </motion.div>
 
@@ -367,7 +367,7 @@ export default function PricingPage() {
             <div className="space-y-3">
               {[
                 { q: "What payment methods do you accept?", a: "We accept credit/debit cards through Stripe (Visa, Mastercard, Apple Pay, Google Pay), PayPal, and cryptocurrency payments through NowPayments (Bitcoin, Ethereum, USDT, and 100+ cryptocurrencies)." },
-                { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately. Each generation consumes 1 credit, and you skip the daily free limit." },
+                { q: "How do credits work?", a: "1 credit = 1 AI room redesign. When you buy a credit pack, the credits are added to your account immediately and never expire. Each generation consumes 1 credit." },
                 { q: "Do credits expire?", a: "No! Credits never expire. Buy once and use them whenever you want." },
                 { q: "Is crypto payment safe?", a: "Yes. All crypto payments are processed through NowPayments, a trusted payment gateway. You can pay with Bitcoin, Ethereum, USDT, and many other cryptocurrencies." },
                 { q: "What is your refund policy?", a: "We offer refunds for unused credits. If you haven't used any credits, we'll refund your purchase. See our <a href='/refund-policy' class='text-indigo-400 hover:underline'>Refund Policy</a> for details." },
