@@ -18,6 +18,11 @@ export async function GET() {
   const hdrs = await headers();
   const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() || hdrs.get("x-real-ip") || "unknown";
 
+  // Parse fingerprint from cookie header
+  const cookieHeader = hdrs.get("cookie") || "";
+  const fpMatch = cookieHeader.match(/rf_fp=([^;]+)/);
+  const fingerprint = fpMatch ? fpMatch[1] : null;
+
   if (user) {
     return NextResponse.json({
       user: {
@@ -30,7 +35,7 @@ export async function GET() {
   }
 
   // Anonymous user — check if free generation is used
-  const freeUsed = await checkFreeUsed(ip, null);
+  const freeUsed = await checkFreeUsed(ip, fingerprint);
 
   return NextResponse.json({
     user: null,

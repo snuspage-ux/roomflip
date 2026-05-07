@@ -176,6 +176,7 @@ export default function Home() {
   const [imageAspect, setImageAspect] = useState<string>('match_input_image');
   const [user, setUser] = useState<UserData | null>(null);
   const [freeUsed, setFreeUsed] = useState(false);
+  const [authLoaded, setAuthLoaded] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
 
   // Check auth status on mount
@@ -188,7 +189,8 @@ export default function Home() {
         }
         setFreeUsed(data.freeUsed === true);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setAuthLoaded(true));
   }, []);
 
   const handleFile = useCallback((file: File) => {
@@ -233,26 +235,30 @@ export default function Home() {
         setResult(typeof data.output === "string" ? data.output : null);
         setIsWatermarked(data.isWatermarked === true);
         setLoading(false);
-        // Refresh user credits + free gen status
+        // Refresh user + free gen status
         fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
         return;
       } catch (err: unknown) {
-        if (attempt === 1) setError(err instanceof Error ? err.message : "Generation failed. Please try again.");
+        if (attempt === 1) {
+          setError(err instanceof Error ? err.message : "Generation failed. Please try again.");
+          // Refresh auth — if free gen was used, show modal next time
+          fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
+        }
       }
     }
     setLoading(false);
-    // Refresh user data after error
-    fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
   };
 
   const handleGenerate = () => {
     if (!image) return;
-    // Check if user has credits or free generation available
-    const noCredits = user !== null && user.credits <= 0;
-    const freeUnavailable = user === null && freeUsed;
-    if (noCredits || freeUnavailable) {
-      setShowBuyModal(true);
-      return;
+    // If auth hasn't loaded yet, just proceed (API will handle it)
+    if (authLoaded) {
+      const noCredits = user !== null && user.credits <= 0;
+      const freeUnavailable = user === null && freeUsed;
+      if (noCredits || freeUnavailable) {
+        setShowBuyModal(true);
+        return;
+      }
     }
     doGenerate();
   };
