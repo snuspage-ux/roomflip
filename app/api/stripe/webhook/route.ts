@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       const metadata = session.metadata || {};
       const credits = parseInt(metadata.credits || "0", 10);
       const customerEmail = session.customer_details?.email || session.customer_email || metadata.email;
+      const fingerprint = metadata.fingerprint || null;
 
       if (!credits) {
         console.error("Missing credits in session metadata", { sessionId, metadata });
@@ -49,35 +50,43 @@ export async function POST(request: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // Determine the real user — create account if needed
+      // Determine the real user
       let userId = metadata.userId;
       const isAnonymous = !userId || userId === "anonymous";
 
-      if (isAnonymous && customerEmail) {
-        // Find or create user by email from Stripe
-        let dbUser = await prisma.user.findUnique({
-          where: { email: customerEmail },
-        });
-        if (!dbUser) {
-          dbUser = await prisma.user.create({
-            data: { email: customerEmail, credits: 0 },
-          });
+      // Priority: email user > fingerprint user > anonymous
+      if (isAnonymous) {
+        if (customerEmail) {
+          let dbUser = await prisma.user.findUnique({ where: { email: customerEmail } });
+          if (!dbUser) {
+            dbUser = await prisma.user.create({ data: { email: customerEmail, credits: 0 } });
+          }
+          userId = dbUser.id;
+        } else if (fingerprint) {
+          // Fingerprint-based account
+          const fpUserId = `fp:${fingerprint}`;
+          let fpUser = await prisma.user.findUnique({ where: { id: fpUserId } });
+          if (!fpUser) {
+            fpUser = await prisma.user.create({
+              data: { id: fpUserId, email: `fp_${fingerprint}@local.roomflip.io`, credits: 0 }
+            });
+          }
+          userId = fpUser.id;
         }
-        userId = dbUser.id;
-
-        // Update purchase record with real user ID
-        await prisma.purchase.update({
-          where: { id: purchase.id },
-          data: { userId: dbUser.id, email: dbUser.email },
-        });
       }
 
       if (!userId || userId === "anonymous") {
-        console.error("Could not resolve userId for session", sessionId, { customerEmail });
+        console.error("Could not resolve userId for session", sessionId, { customerEmail, fingerprint });
         return NextResponse.json({ received: true });
       }
 
-      // Add credits
+      // Update purchase with resolved userId
+      await prisma.purchase.update({
+        where: { id: purchase.id },
+        data: { userId },
+      });
+
+      // Add credits to user
       await addCredits(userId, credits);
 
       // Mark purchase as completed
@@ -86,7 +95,7 @@ export async function POST(request: Request) {
         data: { status: "completed" },
       });
 
-      console.log(`Stripe: Credited ${credits} credits to user ${userId} (session ${sessionId})`);
+      console.log(`Stripe: Credited ${credits} credits to ${userId} (session ${sessionId})`);
     }
 
     return NextResponse.json({ received: true });

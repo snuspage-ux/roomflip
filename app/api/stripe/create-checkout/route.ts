@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { createCheckoutSession } from "@/lib/stripe";
 import { getCreditPackage } from "@/lib/credits";
 import { getCurrentUser } from "@/lib/auth";
@@ -13,12 +14,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid package" }, { status: 400 });
     }
 
-    // Try to get current user; if not logged in, use the email from Stripe later
+    // Get device fingerprint for non-logged-in users
+    const hdrs = await headers();
+    const cookieHeader = hdrs.get("cookie") || "";
+    const fpMatch = cookieHeader.match(/rf_fp=([^;]+)/);
+    const fingerprint = fpMatch ? fpMatch[1] : null;
+
+    // Try to get current user; if not logged in, use fingerprint
     const user = await getCurrentUser();
-    const userId = user?.id || "anonymous";
+    const userId = user?.id || fingerprint || "anonymous";
     const userEmail = user?.email || email || "";
 
-    // Create Stripe checkout session (Stripe handles email if not provided)
+    // Create Stripe checkout session
     const session = await createCheckoutSession({
       packageId: pkg.id,
       name: `${pkg.credits} Room Credits`,
@@ -27,6 +34,7 @@ export async function POST(request: Request) {
       credits: pkg.credits,
       userId,
       email: userEmail,
+      fingerprint,
     });
 
     // Save purchase record

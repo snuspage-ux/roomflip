@@ -34,8 +34,29 @@ export async function GET() {
     });
   }
 
-  // Anonymous user — check if free generation is used
+  // Anonymous user — check credits by fingerprint
   const freeUsed = await checkFreeUsed(ip, fingerprint);
+
+  // Check fingerprint-based user
+  let fpUserCredits = 0;
+  if (fingerprint) {
+    const fpUserId = `fp:${fingerprint}`;
+    const fpUser = await prisma.user.findUnique({ where: { id: fpUserId } });
+    if (fpUser) {
+      fpUserCredits = fpUser.credits;
+    }
+  }
+
+  if (fpUserCredits > 0) {
+    return NextResponse.json({
+      user: {
+        id: `fp:${fingerprint}`,
+        email: "",
+        credits: fpUserCredits,
+      },
+      freeUsed: true,
+    });
+  }
 
   return NextResponse.json({
     user: null,

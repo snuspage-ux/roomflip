@@ -21,18 +21,24 @@ export async function createCheckoutSession(params: {
   credits: number;
   userId: string;
   email: string;
+  fingerprint?: string | null;
 }) {
-  const { packageId, name, description, amountUsd, credits, userId, email } = params;
+  const { packageId, name, description, amountUsd, credits, userId, email, fingerprint } = params;
+
+  const metadata: Record<string, string> = {
+    userId,
+    email,
+    credits: credits.toString(),
+    packageId,
+  };
+  if (fingerprint) {
+    metadata.fingerprint = fingerprint;
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     customer_email: email,
-    metadata: {
-      userId,
-      email,
-      credits: credits.toString(),
-      packageId,
-    },
+    metadata,
     line_items: [
       {
         price_data: {
