@@ -77,10 +77,6 @@ export default function PricingPage() {
     setPaymentMethod(null);
     setSuccessMessage(null);
     setError(null);
-
-    if (!user && !loading) {
-      setShowEmailModal(true);
-    }
   };
 
   const handleEmailSent = (email: string) => {
@@ -205,7 +201,7 @@ export default function PricingPage() {
                     <div className="space-y-3">
                       <p className="text-sm text-slate-400 mb-3">Choose payment method:</p>
                       <button
-                        onClick={() => setPaymentMethod("paypal")}
+                        onClick={() => { if (!user) { setShowEmailModal(true); } else { setPaymentMethod("paypal"); } }}
                         className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all"
                       >
                         <div className="w-10 h-10 rounded-lg bg-[#003087] flex items-center justify-center text-white text-xs font-bold">
@@ -235,7 +231,7 @@ export default function PricingPage() {
                       </button>
 
                       <button
-                        onClick={() => setPaymentMethod("crypto")}
+                        onClick={() => { if (!user) { setShowEmailModal(true); } else { setPaymentMethod("crypto"); } }}
                         className="w-full flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
                       >
                         <div className="w-10 h-10 rounded-lg bg-emerald-600/20 flex items-center justify-center">
