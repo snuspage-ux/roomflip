@@ -1,31 +1,29 @@
-import { NextResponse } from "next/server";
-import Stripe from "stripe";
+export const runtime = "nodejs";
 
 export async function GET() {
   try {
-    const hasKey = !!process.env.STRIPE_SECRET_KEY;
-    const keyPrefix = process.env.STRIPE_SECRET_KEY?.substring(0, 10) || "NONE";
-    
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2026-04-22.dahlia",
+    // Test with raw fetch (not Stripe SDK)
+    const resp = await fetch("https://api.stripe.com/v1/balance", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${process.env.STRIPE_SECRET_KEY}`,
+      },
     });
-
-    const result = await stripe.balance.retrieve();
     
-    return NextResponse.json({
-      hasKey,
-      keyPrefix,
-      balance: result,
+    const data = await resp.json();
+    
+    return Response.json({
+      status: resp.status,
+      ok: resp.ok,
+      data,
+      nodeVersion: process.version,
     });
   } catch (error: any) {
-    return NextResponse.json({
+    return Response.json({
       error: true,
       message: error.message,
-      type: error.type,
-      code: error.code,
-      stack: error.stack?.substring(0, 500),
-      hasKey: !!process.env.STRIPE_SECRET_KEY,
-      keyPrefix: process.env.STRIPE_SECRET_KEY?.substring(0, 10) || "NONE",
+      cause: error.cause?.message,
+      nodeVersion: process.version,
     });
   }
 }
