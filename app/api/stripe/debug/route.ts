@@ -1,39 +1,38 @@
-import Stripe from "stripe";
+import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-12-18.acacia",
-      httpClient: Stripe.createFetchHttpClient(),
-    });
-
-    const result = await stripe.checkout.sessions.create({
-      mode: "payment",
-      customer_email: "test@roomflip.io",
-      line_items: [{
-        price_data: {
-          currency: "usd",
-          product_data: { name: "Test Product", description: "Test description" },
-          unit_amount: 250,
-        },
-        quantity: 1,
-      }],
-      success_url: "https://roomflip.io/pricing?success=true&session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://roomflip.io/pricing?canceled=true",
-    });
+    const tursoUrl = process.env.TURSO_DATABASE_URL;
+    const tursoToken = process.env.TURSO_AUTH_TOKEN;
     
-    return Response.json({
-      ok: true,
-      id: result.id,
-      url: result.url,
-    });
+    // Test basic Prisma connection
+    try {
+      const result = await prisma.$queryRaw`SELECT 1 as test`;
+      return Response.json({
+        ok: true,
+        hasTursoUrl: !!tursoUrl,
+        hasTursoToken: !!tursoToken,
+        dbTest: result,
+      });
+    } catch (dbError: any) {
+      return Response.json({
+        ok: false,
+        step: "prisma_connect",
+        hasTursoUrl: !!tursoUrl,
+        tursoUrlPreview: tursoUrl?.substring(0, 30),
+        hasTursoToken: !!tursoToken,
+        message: dbError.message,
+        code: dbError.code,
+        stack: dbError.stack?.substring(0, 300),
+      });
+    }
   } catch (error: any) {
     return Response.json({
       ok: false,
+      fatal: true,
       message: error.message,
-      type: error.type,
-      param: error.param,
-      code: error.code,
+      stack: error.stack?.substring(0, 300),
     });
   }
 }
