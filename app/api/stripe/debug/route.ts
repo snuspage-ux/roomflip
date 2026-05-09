@@ -1,29 +1,32 @@
-import Stripe from "stripe";
+import { stripe } from "@/lib/stripe";
 
 export async function GET() {
   try {
-    // Test with proper email but also test something different
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-12-18.acacia",
-      httpClient: Stripe.createFetchHttpClient(),
-    });
-
-    // Create like the route does
+    // EXACT same parameters as create-checkout route
+    const pkg = { id: "starter", credits: 6, usd: 2.5, label: "Starter", description: "6 room redesigns — just $2.5" };
+    
     const result = await stripe.checkout.sessions.create({
       mode: "payment",
+      customer_email: "test@roomflip.io",
+      metadata: {
+        userId: "anonymous",
+        email: "test@roomflip.io",
+        credits: "6",
+        packageId: pkg.id,
+      },
       line_items: [{
         price_data: {
           currency: "usd",
-          product_data: { 
-            name: "6 Room Credits", 
-            description: "6 room redesigns — just $2.5" 
+          product_data: {
+            name: `${pkg.credits} Room Credits`,
+            description: pkg.description,
           },
-          unit_amount: 250,
+          unit_amount: Math.round(pkg.usd * 100),
         },
         quantity: 1,
       }],
-      success_url: "https://roomflip.io/pricing?success=true&session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "https://roomflip.io/pricing?canceled=true",
+      success_url: `https://roomflip.io/pricing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://roomflip.io/pricing?canceled=true`,
     });
     
     return Response.json({
@@ -37,6 +40,7 @@ export async function GET() {
       message: error.message,
       type: error.type,
       code: error.code,
+      param: error.param,
     });
   }
 }
