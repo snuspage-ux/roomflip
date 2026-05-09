@@ -1,34 +1,45 @@
-import { stripe, createCheckoutSession } from "@/lib/stripe";
+import Stripe from "stripe";
 
 export async function GET() {
   try {
-    // Test the exact function used by create-checkout
-    const result = await createCheckoutSession({
-      packageId: "starter",
-      name: "6 Room Credits",
-      description: "6 room redesigns — just $2.5",
-      amountUsd: 2.5,
-      credits: 6,
-      userId: "test-user-123",
-      email: "test@roomflip.io",
-      fingerprint: null,
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2024-12-18.acacia",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
+
+    // Test with template variable in URL
+    const result = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: "test@roomflip.io",
+      metadata: {
+        userId: "test123",
+        email: "test@roomflip.io",
+        credits: "6",
+        packageId: "starter",
+      },
+      line_items: [{
+        price_data: {
+          currency: "usd",
+          product_data: { name: "Test", description: "Test" },
+          unit_amount: 250,
+        },
+        quantity: 1,
+      }],
+      success_url: "https://roomflip.io/pricing?success=true&session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "https://roomflip.io/pricing?canceled=true",
     });
     
     return Response.json({
       ok: true,
       id: result.id,
-      url: typeof result.url,
-      hasUrl: !!result.url,
+      url: result.url,
     });
   } catch (error: any) {
     return Response.json({
       ok: false,
       message: error.message,
-      type: error.type || typeof error,
+      type: error.type,
       code: error.code,
-      name: error.name,
-      constructor: error.constructor?.name,
-      stack: error.stack?.substring(0, 300),
     });
   }
 }
