@@ -1,16 +1,25 @@
+import { headers } from "next/headers";
+import { getCurrentUser } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
 
 export async function GET() {
   try {
-    // EXACT same parameters as create-checkout route
+    // This is what create-checkout does
+    const hdrs = await headers();
+    const cookieHeader = hdrs.get("cookie") || "";
+    
+    const user = await getCurrentUser();
+    const userId = user?.id || "anonymous";
+    const userEmail = user?.email || "test@roomflip.io";
+
     const pkg = { id: "starter", credits: 6, usd: 2.5, label: "Starter", description: "6 room redesigns — just $2.5" };
     
     const result = await stripe.checkout.sessions.create({
       mode: "payment",
-      customer_email: "test@roomflip.io",
+      customer_email: userEmail,
       metadata: {
-        userId: "anonymous",
-        email: "test@roomflip.io",
+        userId: userId,
+        email: userEmail,
         credits: "6",
         packageId: pkg.id,
       },
