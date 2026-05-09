@@ -7,7 +7,6 @@ if (!stripeSecretKey) {
 
 export const stripe = new Stripe(stripeSecretKey, {
   apiVersion: "2024-12-18.acacia",
-  typescript: true,
   httpClient: Stripe.createFetchHttpClient(),
 });
 

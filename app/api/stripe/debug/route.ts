@@ -1,26 +1,21 @@
-import Stripe from "stripe";
+import { stripe } from "@/lib/stripe";
 
 export async function GET() {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-12-18.acacia",
-      httpClient: Stripe.createFetchHttpClient(),
-    });
-
-    // Test with template variable in URL
+    // Test with empty email (like when user is not logged in)
     const result = await stripe.checkout.sessions.create({
       mode: "payment",
-      customer_email: "test@roomflip.io",
+      customer_email: "",
       metadata: {
-        userId: "test123",
-        email: "test@roomflip.io",
+        userId: "anonymous",
+        email: "",
         credits: "6",
         packageId: "starter",
       },
       line_items: [{
         price_data: {
           currency: "usd",
-          product_data: { name: "Test", description: "Test" },
+          product_data: { name: "6 Room Credits", description: "6 room redesigns — just $2.5" },
           unit_amount: 250,
         },
         quantity: 1,
@@ -32,7 +27,6 @@ export async function GET() {
     return Response.json({
       ok: true,
       id: result.id,
-      url: result.url,
     });
   } catch (error: any) {
     return Response.json({
