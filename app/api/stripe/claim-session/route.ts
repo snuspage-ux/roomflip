@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, createSession } from "@/lib/auth";
 
 /**
  * After a successful Stripe Checkout, the user returns to /pricing?success=true&session_id=xxx
@@ -42,7 +42,6 @@ export async function GET(request: Request) {
     });
 
     if (!user) {
-      // Create user — they'll need to log in via magic link to access credits
       user = await prisma.user.create({
         data: {
           email: purchase.email,
@@ -59,11 +58,14 @@ export async function GET(request: Request) {
       });
     }
 
+    // Auto-login: create session + set httpOnly cookie
+    await createSession(user.id);
+
     return NextResponse.json({
       claimed: true,
       credits: purchase.credits,
       email: purchase.email,
-      loggedIn: !!currentUser,
+      loggedIn: true,
     });
   } catch (error) {
     console.error("Claim session error:", error);
