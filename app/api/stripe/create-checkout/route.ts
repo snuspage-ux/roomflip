@@ -21,7 +21,8 @@ export async function POST(request: Request) {
     const fingerprint = fpMatch ? fpMatch[1] : null;
 
     const user = await getCurrentUser();
-    const userId = user?.id || fingerprint || "anonymous";
+    // Guest users get fp:{fingerprint} format so webhook & claim can resolve them
+    const userId = user?.id || (fingerprint ? `fp:${fingerprint}` : "anonymous");
     const userEmail = user?.email || email || "";
 
     const session = await stripe.checkout.sessions.create({

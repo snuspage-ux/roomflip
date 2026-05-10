@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
       // Determine the real user
       let userId = metadata.userId;
-      const isAnonymous = !userId || userId === "anonymous";
+      const isAnonymous = !userId || userId === "anonymous" || !userId.startsWith("cm");
 
       // Priority: email user > fingerprint user > anonymous
       if (isAnonymous) {
@@ -69,6 +69,15 @@ export async function POST(request: Request) {
           if (!fpUser) {
             fpUser = await prisma.user.create({
               data: { id: fpUserId, email: `fp_${fingerprint}@local.roomflip.io`, credits: 0 }
+            });
+          }
+          userId = fpUser.id;
+        } else if (userId && userId.startsWith("fp:")) {
+          // Already fp: format from create-checkout, ensure user exists
+          let fpUser = await prisma.user.findUnique({ where: { id: userId } });
+          if (!fpUser) {
+            fpUser = await prisma.user.create({
+              data: { id: userId, email: `fp_${userId.replace("fp:", "").substring(0, 8)}@local.roomflip.io`, credits: 0 }
             });
           }
           userId = fpUser.id;

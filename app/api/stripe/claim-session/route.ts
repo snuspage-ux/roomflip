@@ -4,7 +4,7 @@ import { getCurrentUser, createSession } from "@/lib/auth";
 
 /**
  * After a successful Stripe Checkout, the user returns to /pricing?success=true&session_id=xxx
- * This endpoint claims the session: finds the purchase, creates/logs in the user.
+ * This endpoint claims the session: finds the purchase, auto-logs in the user.
  */
 export async function GET(request: Request) {
   try {
@@ -24,10 +24,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
     }
 
-    // Check if this purchase was already claimed by a logged-in user
+    // Already logged in — just return
     const currentUser = await getCurrentUser();
     if (currentUser) {
-      // User is already logged in — just return the purchase info
       return NextResponse.json({
         claimed: true,
         credits: purchase.credits,
@@ -36,22 +35,54 @@ export async function GET(request: Request) {
       });
     }
 
-    // Find or create user by the email from the purchase
-    let user = await prisma.user.findUnique({
-      where: { email: purchase.email },
-    });
+    let user = null;
+
+    // Guest user with fingerprint
+    if (purchase.userId.startsWith("fp:")) {
+      user = await prisma.user.findUnique({ where: { id: purchase.userId } });
+      if (!user) {
+        const fpSuffix = purchase.userId.replace("fp:", "").substring(0, 8);
+        user = await prisma.user.create({
+          data: {
+            id: purchase.userId,
+            email: `fp_${fpSuffix}@local.roomflip.io`,
+            credits: purchase.credits, // purchase was paid but webhook may not have fired
+          },
+        });
+      } else if (user.credits < purchase.credits) {
+        // Webhook didn't fire — add credits now
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { credits: purchase.credits },
+        });
+      }
+    } else if (purchase.email) {
+      // User provided email — find or create
+      user = await prisma.user.findUnique({ where: { email: purchase.email } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: { email: purchase.email, credits: purchase.credits },
+        });
+      } else if (user.credits < purchase.credits) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { credits: purchase.credits },
+        });
+      }
+    }
 
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          email: purchase.email,
-          credits: 0, // credits already added via webhook
-        },
-      });
+      // Fallback: try finding by purchase.userId
+      user = await prisma.user.findUnique({ where: { id: purchase.userId } });
+    }
+
+    if (!user) {
+      console.error("Could not resolve user for purchase", purchase.id);
+      return NextResponse.json({ error: "Could not resolve user" }, { status: 500 });
     }
 
     // Update purchase userId if it was anonymous
-    if (purchase.userId === "anonymous" && user.id !== "anonymous") {
+    if (purchase.userId !== user.id) {
       await prisma.purchase.update({
         where: { id: purchase.id },
         data: { userId: user.id },
