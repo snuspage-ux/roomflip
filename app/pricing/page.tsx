@@ -137,7 +137,7 @@ export default function PricingPage() {
 
           {/* Pricing Cards */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="grid md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto items-start"
+            className="grid md:grid-cols-2 gap-6 mb-10 max-w-xl mx-auto items-start"
           >
             {CREDIT_PACKAGES.map((pkg) => (
               <PricingCard

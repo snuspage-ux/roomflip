@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { stripe } from "@/lib/stripe";
 import { getCurrentUser, createSession } from "@/lib/auth";
 
 /**
@@ -37,6 +38,17 @@ export async function GET(request: Request) {
 
     let user = null;
 
+    // Resolve the Stripe customer email (useful for anonymous purchases)
+    let customerEmail = purchase.email;
+    if (!customerEmail && purchase.stripeSessionId) {
+      try {
+        const stripeSession = await stripe.checkout.sessions.retrieve(purchase.stripeSessionId);
+        customerEmail = stripeSession.customer_details?.email || stripeSession.customer_email || "";
+      } catch {
+        // Stripe API error — ignore, use empty email
+      }
+    }
+
     // Guest user with fingerprint
     if (purchase.userId.startsWith("fp:")) {
       user = await prisma.user.findUnique({ where: { id: purchase.userId } });
@@ -46,22 +58,21 @@ export async function GET(request: Request) {
           data: {
             id: purchase.userId,
             email: `fp_${fpSuffix}@local.roomflip.io`,
-            credits: purchase.credits, // purchase was paid but webhook may not have fired
+            credits: purchase.credits,
           },
         });
       } else if (user.credits < purchase.credits) {
-        // Webhook didn't fire — add credits now
         await prisma.user.update({
           where: { id: user.id },
           data: { credits: purchase.credits },
         });
       }
-    } else if (purchase.email) {
-      // User provided email — find or create
-      user = await prisma.user.findUnique({ where: { email: purchase.email } });
+    } else if (customerEmail) {
+      // User-provided or Stripe-resolved email
+      user = await prisma.user.findUnique({ where: { email: customerEmail } });
       if (!user) {
         user = await prisma.user.create({
-          data: { email: purchase.email, credits: purchase.credits },
+          data: { email: customerEmail, credits: purchase.credits },
         });
       } else if (user.credits < purchase.credits) {
         await prisma.user.update({
@@ -73,7 +84,9 @@ export async function GET(request: Request) {
 
     if (!user) {
       // Fallback: try finding by purchase.userId
-      user = await prisma.user.findUnique({ where: { id: purchase.userId } });
+      if (purchase.userId && purchase.userId !== "anonymous") {
+        user = await prisma.user.findUnique({ where: { id: purchase.userId } });
+      }
     }
 
     if (!user) {
@@ -81,11 +94,20 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Could not resolve user" }, { status: 500 });
     }
 
-    // Update purchase userId if it was anonymous
-    if (purchase.userId !== user.id) {
+    // Update purchase with resolved userId and email
+    await prisma.purchase.update({
+      where: { id: purchase.id },
+      data: {
+        userId: user.id,
+        ...(customerEmail && !purchase.email ? { email: customerEmail } : {}),
+      },
+    });
+
+    // Mark as completed if webhook didn't fire yet
+    if (purchase.status === "pending") {
       await prisma.purchase.update({
         where: { id: purchase.id },
-        data: { userId: user.id },
+        data: { status: "completed" },
       });
     }
 
@@ -95,7 +117,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       claimed: true,
       credits: purchase.credits,
-      email: purchase.email,
+      email: customerEmail || purchase.email,
       loggedIn: true,
     });
   } catch (error) {
