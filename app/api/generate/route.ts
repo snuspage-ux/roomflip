@@ -55,16 +55,6 @@ async function checkOneTime(id: string): Promise<boolean> {
   return true;
 }
 
-// Check BOTH IP and device fingerprint — if EITHER already used, block.
-async function checkFreeAllowed(ip: string, fingerprint: string | null): Promise<boolean> {
-  const ipOk = await checkOneTime(`free:${ip}`);
-  if (!ipOk) return false;
-  if (fingerprint) {
-    const fpOk = await checkOneTime(`free:fp:${fingerprint}`);
-    if (!fpOk) return false;
-  }
-  return true;
-}
 
 export async function POST(request: Request) {
   try {
@@ -94,10 +84,7 @@ export async function POST(request: Request) {
   const hasCredits = user ? await checkCredits(user.id, 1) : false;
 
   if (!hasCredits) {
-    // Non-credit users: one free generation per IP ever
-    if (!(await checkFreeAllowed(ip, fingerprint))) {
-      return NextResponse.json({ error: "Free generation already used. Buy credits for more." }, { status: 429 });
-    }
+    return NextResponse.json({ error: "Buy credits to generate." }, { status: 402 });
   }
 
   // Deduct credit if user has them and used one

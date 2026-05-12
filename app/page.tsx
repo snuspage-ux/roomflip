@@ -175,7 +175,7 @@ export default function Home() {
   const [furnitureImage, setFurnitureImage] = useState<string | null>(null);
   const [imageAspect, setImageAspect] = useState<string>('match_input_image');
   const [user, setUser] = useState<UserData | null>(null);
-  const [freeUsed, setFreeUsed] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
 
@@ -187,7 +187,7 @@ export default function Home() {
         if (data.user) {
           setUser(data.user);
         }
-        setFreeUsed(data.freeUsed === true);
+
       })
       .catch(() => {})
       .finally(() => setAuthLoaded(true));
@@ -236,7 +236,7 @@ export default function Home() {
         setIsWatermarked(data.isWatermarked === true);
         setLoading(false);
         // Refresh user + free gen status
-        fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
+        fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); }).catch(() => {});
         return;
       } catch (err: unknown) {
         if (attempt === 1) {
@@ -249,7 +249,7 @@ export default function Home() {
             setError(errMsg || "Generation failed. Please try again.");
           }
           // Refresh auth
-          fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); setFreeUsed(d.freeUsed === true); }).catch(() => {});
+          fetch("/api/auth/me").then(r => r.json()).then(d => { if (d.user) setUser(d.user); }).catch(() => {});
         }
       }
     }
@@ -260,9 +260,7 @@ export default function Home() {
     if (!image) return;
     // If auth hasn't loaded yet, just proceed (API will handle it)
     if (authLoaded) {
-      const noCredits = user !== null && user.credits <= 0;
-      const freeUnavailable = user === null && freeUsed;
-      if (noCredits || freeUnavailable) {
+      if (user !== null && user.credits <= 0) {
         setShowBuyModal(true);
         return;
       }
@@ -479,14 +477,10 @@ export default function Home() {
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       {user.credits} {user.credits === 1 ? "credit" : "credits"} remaining
                     </span>
-                  ) : freeUsed ? (
+                  ) : (
                     <Link href="/pricing" className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-sm text-amber-300 hover:bg-amber-500/20 transition-all">
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       0 credits — buy more
-                    </Link>
-                  ) : (
-                    <Link href="/pricing" className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-4 py-2 rounded-full text-sm text-indigo-300 hover:bg-indigo-500/20 transition-all">
-                      <span>🎨</span> 1 free design — buy more
                     </Link>
                   )}
                 </div>
@@ -542,7 +536,7 @@ export default function Home() {
                 </motion.button>
                 <AnimatePresence>{error && (
                   <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-4 p-4 rounded-xl text-sm">
-                    {error.includes("free") || error.includes("Free") || error.includes("credit") || error.includes("Credit") ? (
+                    {error.includes("credit") || error.includes("Credit") ? (
                       <div className="text-center">
                         <p className="text-amber-400 font-medium mb-3">{error}</p>
                         <Link href="/pricing" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-indigo-500/25">

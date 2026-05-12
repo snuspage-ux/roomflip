@@ -39,7 +39,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">3. Free Usage &amp; Watermarks</h2>
             <p className="mb-3">
-              RoomFlip.io offers 1 free room redesign per IP address (one-time). Free redesigns include a &quot;RoomFlip.io&quot; watermark overlay on downloaded images. The watermark is automatically applied to the downloaded file.
+              RoomFlip.io requires a credit pack to generate room redesigns. There are no free redesigns — each generation consumes one (1) credit.
             </p>
             <p className="mb-3">
               RoomFlip.io uses a device fingerprint stored in your browser to track your free redesigns and manage your credit purchases. No account or email is required to use the Service.
