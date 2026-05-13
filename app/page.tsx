@@ -177,7 +177,6 @@ export default function Home() {
   const [user, setUser] = useState<UserData | null>(null);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
-  const [showBuyModal, setShowBuyModal] = useState(false);
 
   // Check auth status on mount
   useEffect(() => {
