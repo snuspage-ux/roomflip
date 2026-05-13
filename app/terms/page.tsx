@@ -32,7 +32,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-white mb-3">2. Description of Service</h2>
             <p>
-              RoomFlip.io is an AI-powered interior design tool that allows users to upload photos of their rooms and receive AI-generated redesigns in various styles. The Service is offered free of charge with limited daily usage, as well as through paid credit packs with additional features.
+              RoomFlip.io is an AI-powered interior design tool that allows users to upload photos of their rooms and receive AI-generated redesigns in various styles. The Service is offered through paid credit packs.
             </p>
           </section>
 
@@ -42,7 +42,7 @@ export default function TermsPage() {
               RoomFlip.io requires a credit pack to generate room redesigns. There are no free redesigns — each generation consumes one (1) credit.
             </p>
             <p className="mb-3">
-              RoomFlip.io uses a device fingerprint stored in your browser to track your free redesigns and manage your credit purchases. No account or email is required to use the Service.
+              RoomFlip.io uses a device fingerprint stored in your browser to manage your credit purchases. No account or email is required to use the Service.
             </p>
           </section>
 
@@ -103,7 +103,7 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold text-white mb-3">7. Usage Limits &amp; Fair Use</h2>
             <p className="mb-3">To ensure fair access for all users, the following limits apply:</p>
             <ul className="list-disc list-inside space-y-2 ml-2">
-              <li>Free users: 1 AI room redesign per IP address (one-time) with watermark on download</li>
+              
               <li>Paid users: each credit consumed generates 1 room redesign without watermark</li>
               <li>Automated or programmatic access to the Service is prohibited</li>
               <li>Attempting to bypass usage or credit limits is a violation of these terms</li>

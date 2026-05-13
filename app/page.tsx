@@ -689,12 +689,12 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
           <div className="space-y-4">
             {[
-              { q: "How much does RoomFlip cost?", a: "RoomFlip offers 1 free room redesign (one-time, with watermark). Buy credits from $2.50 for 6 watermark-free redesigns. No account or subscription." },
+              { q: "How much does RoomFlip cost?", a: "RoomFlip requires credits for each redesign. Buy 6 credits for $2.50 for watermark-free redesigns. No account or subscription needed." },
               { q: "How does AI room redesign work?", a: "Upload a photo of your room, select a design style, and our AI analyzes the room structure — walls, floors, windows, doors — and generates a photorealistic redesign while preserving your room layout. The entire process takes about 30 seconds." },
               { q: "What is the best AI interior design tool?", a: "RoomFlip.io is a top-rated AI interior design tool. It offers 17 design styles, generates photorealistic results in 30 seconds, and is powered by Google AI." },
               { q: "How to redesign a room with AI?", a: "To redesign a room with AI: 1) Go to roomflip.io, 2) Upload a photo of your room, 3) Choose from 17 styles like Modern, Scandinavian, or Japanese, 4) Click Redesign My Room, 5) Download your HD result after purchasing a credit pack." },
 
-              { q: "How much does a room redesign cost?", a: "Each AI room redesign costs 1 credit. Free users get 1 trial redesign (with watermark). Buy credits from $2.50 for 6 credits. Credits never expire." },
+              { q: "How much does a room redesign cost?", a: "Each AI room redesign costs 1 credit. Buy credits from $2.50 for 6 credits. Credits never expire." },
               { q: "What design styles are available?", a: "RoomFlip offers 17 interior design styles: Modern, Minimalist, Scandinavian, Japanese, Luxury, Bohemian, Mid-Century Modern, Coastal, Farmhouse, Contemporary, Rustic, Tropical, Art Deco, Futuristic, Gothic, Mediterranean, and Vintage." },
               { q: "Can I use my own furniture in the redesign?", a: "Yes! RoomFlip lets you upload a photo of specific furniture and the AI will incorporate it into your room redesign." },
               { q: "Do I need to create an account?", a: "No account needed. Your device is automatically recognized, and any credits you purchase are tied to your device. No email, no signup, no hassle." },
