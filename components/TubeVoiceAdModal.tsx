@@ -2,7 +2,7 @@
 
 import { Dialog } from "radix-ui";
 import { motion } from "motion/react";
-import { X } from "lucide-react";
+import { X, ExternalLink } from "lucide-react";
 
 const AD_HREF = "https://tubevoice.io/?ref=roomflip";
 
@@ -86,6 +86,18 @@ export default function TubeVoiceAdModal({
                   width={900}
                   height={900}
                 />
+              </a>
+
+              {/* Visible CTA link — image alone isn't obviously clickable */}
+              <a
+                href={AD_HREF}
+                target="_blank"
+                rel="noopener"
+                onClick={() => onAdClick?.()}
+                className="mt-3 flex items-center justify-center gap-1.5 text-sm font-medium text-purple-400 transition-colors hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 rounded"
+              >
+                tubevoice.io
+                <ExternalLink size={14} />
               </a>
 
               {/* Sponsored disclosure (legal: must be disclosed as advertising) */}
