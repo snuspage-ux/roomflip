@@ -4,6 +4,8 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import Link from "next/link";
+import TubeVoiceAdModal from "@/components/TubeVoiceAdModal";
+import { useTubevoiceAd } from "@/hooks/useTubevoiceAd";
 
 interface UserData {
   id: string;
@@ -177,6 +179,7 @@ export default function Home() {
   const [user, setUser] = useState<UserData | null>(null);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [authLoaded, setAuthLoaded] = useState(false);
+  const ad = useTubevoiceAd();
 
   // Check auth status on mount
   useEffect(() => {
@@ -528,7 +531,7 @@ export default function Home() {
                     </label>
                   )}
                 </div>
-                <motion.button onClick={handleGenerate} disabled={!image || loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                <motion.button onClick={() => ad.guard(handleGenerate)} disabled={!image || loading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   className="w-full py-4 rounded-xl font-semibold text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-500/25">
                   {loading ? (<span className="flex items-center justify-center gap-3"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full" />Transforming your room...</span>)
                     : "Redesign My Room"}
@@ -574,6 +577,8 @@ export default function Home() {
                     <div className="fixed inset-0 -z-10" onClick={() => setShowBuyModal(false)} />
                   </div>
                 )}
+
+                <TubeVoiceAdModal open={ad.open} onContinue={ad.onContinue} onAdClick={ad.onAdClick} />
 
                 <AnimatePresence>
                   {result && image && (
